@@ -1,0 +1,35 @@
+{
+    "name": "sprintpilot",
+    "version": "1.0.0",
+    "description": "SprintPilot application",
+    "main": "index.js",
+    "scripts": {
+           "start": "node src/server.js",
+           "dev": "nodemon src/server.js",
+        "seed": "node seed.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "lint:js": "eslint .",
+        "lint:ejs": "ejslint ./public/**/*.ejs"
+    },
+    "dependencies": {
+        "dotenv": "^17.3.1",
+        "ejs": "^3.1.9",
+        "express": "^5.2.1",
+        "helmet": "^8.1.0",
+        "mongoose": "^9.2.4",
+        "morgan": "^1.10.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.0.2",
+        "globals": "^17.4.0",
+        "jest": "^30.2.0",
+        "nodemon": "^3.0.1",
+        "supertest": "^7.2.2",
+        "mongodb-memory-server": "^11.0.1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
