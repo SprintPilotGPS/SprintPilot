@@ -35,3 +35,53 @@ const createRequisito = async (req, res) => {
         });
     }
 };
+
+// Obtener requisito por ID
+const getRequisitoById = async (req, res) => {
+    try {
+        const requisito = await Requisito.findById(req.params.id);
+        if (!requisito) {
+            return res.status(404).json({
+                success: false,
+                error: 'Requisito no encontrado'
+            });
+        }
+        res.json({
+            success: true,
+            data: requisito
+        });
+    } catch (error) {
+        console.error('Error al obtener requisito:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+// Actualizar requisito
+const updateRequisito = async (req, res) => {
+    try {
+        const requisito = await Requisito.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        if (!requisito) {
+            return res.status(404).json({
+                success: false,
+                error: 'Requisito no encontrado'
+            });
+        }
+        res.json({
+            success: true,
+            data: requisito
+        });
+    } catch (error) {
+        console.error('Error al actualizar requisito:', error);
+        res.status(400).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
