@@ -85,3 +85,35 @@ const updateRequisito = async (req, res) => {
         });
     }
 };
+
+// Eliminar requisito
+const deleteRequisito = async (req, res) => {
+    try {
+        const requisito = await Requisito.findByIdAndDelete(req.params.id);
+        if (!requisito) {
+            return res.status(404).json({
+                success: false,
+                error: 'Requisito no encontrado'
+            });
+        }
+        res.json({
+            success: true,
+            message: 'Requisito eliminado exitosamente'
+        });
+    } catch (error) {
+        console.error('Error al eliminar requisito:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+// Expotamos al modelo los metodos para que se pueda acceder
+module.exports = {
+    getAllRequisitos,
+    createRequisito,
+    getRequisitoById,
+    updateRequisito,
+    deleteRequisito
+};
