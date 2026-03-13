@@ -4,7 +4,7 @@ const Requisito = require("./src/models/Requisito");
 
 const requisitosData = [
   {
-    identificador: "#SP001",
+    identificador: 1,
     nombre: "Completar sistema de autenticación de usuarios",
     prioridad: "high",
     estado: "in-progress",
@@ -12,7 +12,7 @@ const requisitosData = [
     descripcion: "Implementar autenticación JWT y funcionalidad de inicio de sesión y registro",
   },
   {
-    identificador: "#SP002",
+    identificador: 2,
     nombre: "Optimizar el rendimiento de consultas de base de datos",
     prioridad: "medium",
     estado: "pending",
@@ -20,7 +20,7 @@ const requisitosData = [
     descripcion: "Agregar índices y optimizar consultas lentas",
   },
   {
-    identificador: "#SP003",
+    identificador: 3,
     nombre: "Reestructuración de páginas frontend",
     prioridad: "high",
     estado: "completed",
@@ -28,7 +28,7 @@ const requisitosData = [
     descripcion: "Reestructurar página frontend usando Bootstrap",
   },
   {
-    identificador: "#SP004",
+    identificador: 4,
     nombre: "Redacción de documentación de API",
     prioridad: "medium",
     estado: "in-progress",
@@ -36,7 +36,7 @@ const requisitosData = [
     descripcion: "Escribir documentación completa de interfaz API",
   },
   {
-    identificador: "#SP005",
+    identificador: 5,
     nombre: "Cobertura de pruebas unitarias",
     prioridad: "low",
     estado: "pending",

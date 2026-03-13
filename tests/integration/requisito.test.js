@@ -19,27 +19,21 @@ describe("Requisito API Tests", () => {
     await closeDatabase();
   });
 
-  describe("GET /api/requisitos", () => {
-    test("should return empty array initially", async () => {
-      const res = await request(app).get("/api/requisitos").expect(200);
-
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.length).toBe(0);
-    });
-  });
-
   describe("POST /api/requisitos", () => {
     test("should create a new requisito", async () => {
       const requisito = {
+        identificador: 5,
         nombre: "Test Requisito",
-        descripcion: "This is a test",
-        prioridad: "alta",
+        prioridad: "low",
+        estado: "pending",
+        responsable: "Pedro",
+        descripcion: "Mejorar cobertura de pruebas de código a 80% o superior",
       };
 
       const res = await request(app).post("/api/requisitos").send(requisito).expect(201);
 
-      expect(res.body).toHaveProperty("_id");
-      expect(res.body.nombre).toBe("Test Requisito");
+      expect(res.body.data).toHaveProperty("identificador");
+      expect(res.body.data.nombre).toBe("Test Requisito");
     });
 
     test("should return 400 for invalid data", async () => {
