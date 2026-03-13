@@ -1,0 +1,8 @@
+{
+  "[ejs]": {
+    "editor.defaultFormatter": "DigitalBrainstem.javascript-ejs-support"
+  },
+
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
