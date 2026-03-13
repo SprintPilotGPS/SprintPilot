@@ -1,45 +1,57 @@
-// necesitamos mongoose
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// Creamos el schema de los requisitos
-const requisitoSchema = new mongoose.Schema({
+const counterSchema = new mongoose.Schema({
+  _id: { type: String, required: true }, // 序列名
+  seq: { type: Number, default: 0 },
+});
+const Counter = mongoose.models.Counter || mongoose.model("Counter", counterSchema);
+
+const requisitoSchema = new mongoose.Schema(
+  {
     identificador: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
+      type: Number,
+      required: true,
+      unique: true,
+      immutable: true,
     },
     nombre: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
     prioridad: {
-        type: String,
-        enum: ['high', 'medium', 'low'],
-        default: 'medium'
+      type: String,
+      enum: ["high", "medium", "low"],
+      default: "medium",
     },
     estado: {
-        type: String,
-        enum: ['in-progress', 'pending', 'completed'],
-        default: 'pending'
+      type: String,
+      enum: ["in-progress", "pending", "completed"],
+      default: "pending",
     },
     responsable: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
     descripcion: {
-        type: String,
-        trim: true
-    }
-},
-{
-    timestamps: true
+      type: String,
+      trim: true,
+    },
+  },
+  { timestamps: true }
+);
+
+requisitoSchema.pre("validate", async function nextId() {
+  if (!this.isNew || this.identificador) return;
+
+  const counter = await Counter.findByIdAndUpdate(
+    "requisito_identificador",
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  this.identificador = counter.seq;
 });
 
-// Le insertamos a mongoose el schema creado
-const Requisito = mongoose.model('Requisito', requisitoSchema);
-
-// Lo exportamos el schema a la coleccion en MongoDB
-module.exports = Requisito;
+module.exports = mongoose.model("Requisito", requisitoSchema);

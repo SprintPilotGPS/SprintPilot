@@ -59,7 +59,6 @@ $(function () {
     event.preventDefault();
 
     const payload = {
-      identificador: $("#identificador").val().trim(),
       nombre: $("#nombre").val().trim(),
       prioridad: $("#prioridad").val(),
       estado: $("#estado").val(),
