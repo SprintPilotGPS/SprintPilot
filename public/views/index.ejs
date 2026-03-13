@@ -14,7 +14,17 @@
 
         <!-- tabla de requisitos -->
         <div class="table-card">
-            <div class="table-header">📊 Tareas de Sprint Recientes</div>
+            <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                <span> Tareas de Sprint Recientes</span>
+                <button
+                    type="button"
+                    class="btn btn-light btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addRequisitoModal"
+                >
+                    Add Requisito
+                </button>
+            </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -52,6 +62,60 @@
                     <% } %>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Modal: Add Requisito -->
+    <div class="modal fade" id="addRequisitoModal" tabindex="-1" aria-labelledby="addRequisitoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRequisitoModalLabel">Add Requisito</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addRequisitoForm">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="identificador" class="form-label">ID de Tarea</label>
+                                <input type="text" class="form-control" id="identificador" name="identificador" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="responsable" class="form-label">Responsable</label>
+                                <input type="text" class="form-control" id="responsable" name="responsable" required />
+                            </div>
+                            <div class="col-12">
+                                <label for="nombre" class="form-label">Nombre de Tarea</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="prioridad" class="form-label">Prioridad</label>
+                                <select class="form-select" id="prioridad" name="prioridad" required>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select class="form-select" id="estado" name="estado" required>
+                                    <option value="pending" selected>Pending</option>
+                                    <option value="in-progress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="descripcion" class="form-label">Descripcion</label>
+                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Detalle opcional"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
