@@ -1,37 +1,34 @@
-name: Tests
+name: Compile and Run test
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: ["main", "DEV"]
   pull_request:
-    branches: [ main, dev ]
+    branches: ["main", "DEV", "DEV-**"]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
-    
+        node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run tests
-      run: npm test -- --coverage
-    
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./coverage/coverage-final.json
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Installing dependencies
+        run: npm ci
+
+      - name: Building application
+        run: npm run build --if-present
+
+      - name: Running test with coverage
+        run: npm test
