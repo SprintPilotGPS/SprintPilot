@@ -79,4 +79,17 @@ describe("requisitoController unit tests", () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
   });
+
+  test("getRequisitoById should return 404 when not found", async () => {
+    const req = { params: { id: "507f1f77bcf86cd799439011" } };
+    const res = mockRes();
+
+    Requisito.findById.mockResolvedValue(null);
+
+    await controller.getRequisitoById(req, res);
+
+    expect(Requisito.findById).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+  });
 });
