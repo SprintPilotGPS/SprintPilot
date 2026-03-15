@@ -3,6 +3,7 @@ const Requisito = require("../../src/models/Requisito");
 
 jest.mock("../../src/models/Requisito", () => {
   const MockRequisito = jest.fn();
+  MockRequisito.findOne = jest.fn();
   MockRequisito.findById = jest.fn();
   MockRequisito.findByIdAndUpdate = jest.fn();
   MockRequisito.findByIdAndDelete = jest.fn();
@@ -26,6 +27,8 @@ describe("requisitoController unit tests", () => {
     const req = { body: { nombre: "Task A" } };
     const res = mockRes();
 
+    Requisito.findOne.mockResolvedValue(null);
+
     const save = jest.fn().mockResolvedValue(undefined);
     Requisito.mockImplementation(function MockCtor(data) {
       this.save = save;
@@ -34,10 +37,34 @@ describe("requisitoController unit tests", () => {
 
     await controller.createRequisito(req, res);
 
+    expect(Requisito.findOne).toHaveBeenCalledWith({
+      nombre: { $regex: expect.any(RegExp) },
+    });
     expect(Requisito).toHaveBeenCalledWith(req.body);
     expect(save).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+  });
+
+  test("createRequisito should return 409 when nombre already exists", async () => {
+    const req = { body: { nombre: "Task A" } };
+    const res = mockRes();
+
+    Requisito.findOne.mockResolvedValue({ _id: "existing-id", nombre: "Task A" });
+
+    await controller.createRequisito(req, res);
+
+    expect(Requisito.findOne).toHaveBeenCalledWith({
+      nombre: { $regex: expect.any(RegExp) },
+    });
+    expect(Requisito).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        error: expect.stringMatching(/mismo nombre/i),
+      })
+    );
   });
 
   test("getRequisitoById should return 404 when not found", async () => {

@@ -39,6 +39,26 @@ describe("Requisito API Tests", () => {
     test("should return 400 for invalid data", async () => {
       const res = await request(app).post("/api/requisitos").send({}).expect(400);
     });
+
+    test("should return 409 when nombre already exists", async () => {
+      const requisito = {
+        nombre: "Duplicado",
+        prioridad: "medium",
+        estado: "pending",
+        responsable: "Ana",
+        descripcion: "Primera version",
+      };
+
+      await request(app).post("/api/requisitos").send(requisito).expect(201);
+
+      const res = await request(app)
+        .post("/api/requisitos")
+        .send({ ...requisito, nombre: "  duplicado  " })
+        .expect(409);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/mismo nombre/i);
+    });
   });
 
   describe("GET /api/requisitos/:id", () => {
