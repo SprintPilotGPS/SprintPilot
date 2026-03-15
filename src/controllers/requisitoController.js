@@ -1,7 +1,8 @@
 const Requisito = require("../models/Requisito");
 function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[]\]/g, "\$&");
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
