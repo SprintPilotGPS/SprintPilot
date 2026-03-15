@@ -1,4 +1,5 @@
 const Requisito = require("../models/Requisito");
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
