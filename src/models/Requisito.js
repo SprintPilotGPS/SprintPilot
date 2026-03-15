@@ -31,7 +31,6 @@ const requisitoSchema = new mongoose.Schema(
     },
     responsable: {
       type: String,
-      required: true,
       trim: true,
     },
     descripcion: {

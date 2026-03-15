@@ -1,5 +1,7 @@
 const Requisito = require("../models/Requisito");
-
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[]\]/g, "\$&");
+}
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
@@ -18,9 +20,24 @@ const getAllRequisitos = async (req, res) => {
   }
 };
 
-// Crear nuevo requisito
 const createRequisito = async (req, res) => {
   try {
+    const nombre = typeof req.body.nombre === "string" ? req.body.nombre.trim() : "";
+
+    if (nombre) {
+      const duplicatedRequisito = await Requisito.findOne({
+        nombre: { $regex: new RegExp(`^${escapeRegExp(nombre)}$`, "i") },
+      });
+
+      if (duplicatedRequisito) {
+        return res.status(409).json({
+          success: false,
+          error: "Ya existe un requisito con el mismo nombre",
+        });
+      }
+    }
+
+    req.body.nombre = nombre;
     const requisito = new Requisito(req.body);
     await requisito.save();
     res.status(201).json({
