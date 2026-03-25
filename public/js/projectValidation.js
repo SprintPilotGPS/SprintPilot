@@ -1,27 +1,39 @@
-document.getElementById('projectForm').addEventListener('submit', function(e) {
-    const nombre = document.getElementById('nombre').value.trim();
-    const id = document.getElementById('identificador').value.trim();
-    const desc = document.getElementById('descripcion').value.trim();
+$(document).ready(function() {
+    const modal = document.getElementById('projectModal');
+    
+    $('#openModal').on('click', function() {
+        modal.showModal(); // Esto hará que aparezca con el fondo oscuro
+    });
+    // Cerrar el modal
+    $('#closeModal').on('click', function() {
+        modal.close();
+        $('#projectForm')[0].reset();
+    });
 
-    // Validación: El ID debe ser un string no vacío
-    if (id.length === 0) {
+    // Envío AJAX
+    $('#projectForm').on('submit', function(e) {
         e.preventDefault();
-        alert("El ID es obligatorio.");
-        return;
-    }
 
-    // Ejemplo: Evitar que el ID tenga espacios (común en IDs de sistemas)
-    if (id.includes(" ")) {
-        e.preventDefault();
-        alert("El ID no debe contener espacios. Usa guiones como 'PROY-01'.");
-        return;
-    }
+        const formData = {
+            nombre: $('#nombre').val().trim(),
+            identificador: $('#identificador').val().trim(),
+            descripcion: $('#descripcion').val().trim() // Enviará "" si está vacío
+        };
 
-    if (nombre.length < 1) {
-        e.preventDefault();
-        alert("El nombre es demasiado corto.");
-        return;
-    }
-
-    console.log("Enviando nuevo proyecto con ID string:", id);
+        $.ajax({
+            url: '/api/proyectos',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert("✅ Proyecto guardado correctamente");
+                modal.close();
+                location.reload(); // Recarga la página para ver los cambios
+            },
+            error: function(xhr) {
+                const msg = xhr.responseJSON ? xhr.responseJSON.error : "Error al guardar";
+                alert("❌ " + msg);
+            }
+        });
+    });
 });
