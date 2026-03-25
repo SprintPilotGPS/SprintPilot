@@ -7,4 +7,8 @@ const proyectController =require("../controllers/proyectController");
 router.get("/", requisitoController.getAllRequisitos);
 router.get("/proyectos", proyectController.getAllProyectos);
 
+router.get("/nuevo-proyecto", (req, res) => {
+    res.render("createProyecto");
+});
+
 module.exports = router;

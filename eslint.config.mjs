@@ -22,6 +22,7 @@ export default defineConfig([
         ...globals.node,
         ...globals.jest,
       },
+      // Eliminamos jquery: true de aquí, ya que no es un parámetro válido en Flat Config
     },
   },
 
@@ -30,11 +31,12 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.browser,
+        ...globals.jquery, 
       },
     },
   },
   {
-    ignores: ["**/*.ejs"],
+    ignores: ["**/*.ejs", "node_modules/"],
   },
   eslintConfigPrettier,
 ]);

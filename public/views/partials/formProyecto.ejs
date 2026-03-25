@@ -1,0 +1,27 @@
+<dialog id="projectModal" style="border: none; border-radius: 12px; padding: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 450px;">
+    <div class="form-card" style="background: white; padding: 30px;">
+        <h2 style="margin-top: 0; font-family: sans-serif;">Nuevo Proyecto</h2>
+        
+        <form id="projectForm" method="POST">
+            <div class="form-group" style="margin-bottom: 15px; display: flex; flex-direction: column;">
+                <label for="nombre" style="font-weight: bold; margin-bottom: 5px; font-family: sans-serif;">Proyecto (Nombre)</label>
+                <input type="text" id="nombre" name="nombre" required style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px; display: flex; flex-direction: column;">
+                <label for="identificador" style="font-weight: bold; margin-bottom: 5px; font-family: sans-serif;">ID del Proyecto</label>
+                <input type="text" id="identificador" name="identificador" placeholder="Ej: PR-01" required style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px; display: flex; flex-direction: column;">
+                <label for="descripcion" style="font-weight: bold; margin-bottom: 5px; font-family: sans-serif;">Descripción (Opcional)</label>
+                <textarea id="descripcion" name="descripcion" rows="3" placeholder="Describe el contenido..." style="padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: sans-serif; resize: none;"></textarea>
+            </div>
+
+            <div class="form-actions" style="display: flex; align-items: center; gap: 15px;">
+                <button type="submit" class="btn-save" style="background-color: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Guardar Proyecto</button>
+                <button type="button" id="closeModal" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-family: sans-serif;">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</dialog>
