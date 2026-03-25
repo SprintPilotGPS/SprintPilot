@@ -48,6 +48,12 @@
               <td><%= req.responsable %></td>
               <td>
                 <div class="action-buttons">
+                  <button class="btn btn-sm btn-light" onclick="moverArriba('<%= req._id %>')">
+                    ⬆️
+                  </button>
+                  <button class="btn btn-sm btn-light" onclick="moverAbajo('<%= req._id %>')">
+                    ⬇️
+                  </button>
                   <button class="btn btn-sm btn-view" onclick="viewRequisito('<%= req._id %>')">
                     Ver
                   </button>

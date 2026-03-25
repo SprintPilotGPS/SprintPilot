@@ -7,7 +7,9 @@ function escapeRegExp(value) {
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
-    const requisitos = await Requisito.find().sort({ fechaLimite: 1 });
+    // ⭐ Ordenar por el campo 'orden' para que las flechas funcionen
+    const requisitos = await Requisito.find().sort({ orden: 1 });
+
     res.render("index", {
       title: "Sprint Pilot",
       requisitos: requisitos,
@@ -21,6 +23,7 @@ const getAllRequisitos = async (req, res) => {
     });
   }
 };
+
 
 const createRequisito = async (req, res) => {
   try {
