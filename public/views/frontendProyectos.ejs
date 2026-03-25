@@ -24,41 +24,21 @@
 
         <!--Proyectos-->
         <div id="proyects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
-            <div class="py-3 px-5 card scale-card">
-                <div class="card-body">
-                    <h3>nombre</h3>
-                    <p>identificador</p>
-                    <p>descripcion: es una prueba</p>
+            <% if(proyectos=undefined && proyectos.length > 0) { %>
+            <% proyectos.forEach(function(proyc) { %>
+                <div class="py-3 px-5 card scale-card">
+                    <div class="card-body">
+                        <h3><%= proyc.nombre %></h3>
+                        <p><%= proyc.identificador %></p>
+                        <p><%= proyc.descripcion %></p>
+                    </div>
                 </div>
-            </div>
-            <div class="py-3 px-5 card scale-card">
-                <div class="card-body">
-                    <h3>nombre</h3>
-                    <p>identificador</p>
-                    <p>descripcion: es una prueba</p>
-                </div>
-            </div>
-             <div class="py-3 px-5 card scale-card">
-                <div class="card-body">
-                    <h3>nombre</h3>
-                    <p>identificador</p>
-                    <p>descripcion: es una prueba</p>
-                </div>
-            </div>
-             <div class="py-3 px-5 card scale-card">
-                <div class="card-body">
-                    <h3>nombre</h3>
-                    <p>identificador</p>
-                    <p>descripcion: es una prueba</p>
-                </div>
-            </div>
-             <div class="py-3 px-5 card scale-card">
-                <div class="card-body">
-                    <h3>nombre</h3>
-                    <p>identificador</p>
-                    <p>descripcion: es una prueba</p>
-                </div>
-            </div>
+            <% }); %>
+            <% } else { %>
+                <p>No hay nada</p>
+            <% } %>
+
+            
         </div>
 
 
