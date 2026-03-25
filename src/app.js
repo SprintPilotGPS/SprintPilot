@@ -26,4 +26,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
+app.get('/proyectos', (req, res) => {
+  
+    res.render('frontendProyectos');
+});
+
+
 module.exports = app;

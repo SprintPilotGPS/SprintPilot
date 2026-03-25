@@ -188,3 +188,30 @@ footer {
     gap: 4px;
   }
 }
+
+
+/* Estilos para proyecto */
+.proyect{
+  margin: auto;
+  margin-top: 2em;
+  width: 90%;
+  color: #fff;
+}
+
+.proyect hr{
+  margin: 20px 0; 
+  border: white;
+  height: 5px;
+  background-color: white;
+  opacity: 1.0;
+}
+
+.scale-card {
+  transition: transform .25s ease;
+}
+.scale-card:hover {
+  transform: scale(1.07);
+}
+.scale-card:active{
+  transform: scale(1);
+}

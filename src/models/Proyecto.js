@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const requisitoSchema = new mongoose.Schema(
   {
     identificador: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
       immutable: true,

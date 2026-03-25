@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    
+    <%- include('./partials/head') %>
+    <title>Proyectos - SprintPilot</title>
+</head>
+<body>
+    <!--style="background-color: #6a5acd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;"-->
+    <!-- navbar -->
+    <%- include('./partials/navbar') %>
+
+    <!--Container-->
+    <div class="proyect">
+        <!--Cabezado-->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Proyectos</h2>
+                <a href="/createProyecto" class="btn bg-primary text-white fw-bold">
+                + Nuevo
+                </a>
+        </div>
+
+        <hr>
+
+        <!--Proyectos-->
+        <div id="proyects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
+            <div class="py-3 px-5 card scale-card">
+                <div class="card-body">
+                    <h3>nombre</h3>
+                    <p>identificador</p>
+                    <p>descripcion: es una prueba</p>
+                </div>
+            </div>
+            <div class="py-3 px-5 card scale-card">
+                <div class="card-body">
+                    <h3>nombre</h3>
+                    <p>identificador</p>
+                    <p>descripcion: es una prueba</p>
+                </div>
+            </div>
+             <div class="py-3 px-5 card scale-card">
+                <div class="card-body">
+                    <h3>nombre</h3>
+                    <p>identificador</p>
+                    <p>descripcion: es una prueba</p>
+                </div>
+            </div>
+             <div class="py-3 px-5 card scale-card">
+                <div class="card-body">
+                    <h3>nombre</h3>
+                    <p>identificador</p>
+                    <p>descripcion: es una prueba</p>
+                </div>
+            </div>
+             <div class="py-3 px-5 card scale-card">
+                <div class="card-body">
+                    <h3>nombre</h3>
+                    <p>identificador</p>
+                    <p>descripcion: es una prueba</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- footer -->、
+    <%- include('./partials/footer') %>
+
+    <script src="/js/projectValidation.js"></script>
+</body>
+</html>
