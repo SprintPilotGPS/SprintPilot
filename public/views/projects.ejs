@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head') %>
+    <title>Proyectos - SprintPilot</title>
+  </head>
+  <body>
+    <!--style="background-color: #6a5acd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;"-->
+    <!-- navbar -->
+    <%- include('./partials/navbar') %>
+
+    <!--Container-->
+    <div class="proyect">
+      <!--Cabezado-->
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Proyectos</h2>
+        <a id="openModal" class="btn bg-primary text-white fw-bold"> + Nuevo </a>
+      </div>
+
+      <hr class="mt-1" />
+
+      <!--Proyectos-->
+      <div id="proyects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
+        <% if(projects && projects.length > 0) { %>
+        <% projects.forEach(function(proj) { %>
+        <div class="p-4 card scale-card card-proj">
+          <div class="d-flex justify-content-between">
+            <h2 class="mb-1"><%= proj.nombre %></h2>
+            <p class="fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
+          </div>
+          <hr />
+          <p>
+            <% if(proj.descripcion == "") { %> No hay descripción. <% }else { %> <%=
+            proj.descripcion %> <% }; %>
+          </p>
+        </div>
+        <% }); %>
+        <% } else { %>
+        <p>No hay nada</p>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include("partials/formProject") %>
+
+    <!-- footer -->、
+    <%- include('./partials/footer') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/projectValidation.js"></script>
+  </body>
+</html>

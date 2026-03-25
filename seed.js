@@ -46,11 +46,23 @@ const requisitosData = [
   },
 ];
 
-const proyectosData =[
+const proyectosData = [
   {
-    identificador: "SP",
+    identificador: "PR",
     nombre: "Prueba de proyecto",
-    descripcion: "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres"
+    descripcion:
+      "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+  },
+  {
+    identificador: "LO",
+    nombre: "Longaniza",
+    descripcion:
+      "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+  },
+  {
+    identificador: "JU",
+    nombre: "Jugantes",
+    descripcion: "",
   },
 ];
 
