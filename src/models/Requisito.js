@@ -40,7 +40,6 @@ const requisitoSchema = new mongoose.Schema(
     orden: {
       type: Number,
       required: true,
-      unique: true,
     },
   },
   { timestamps: true }

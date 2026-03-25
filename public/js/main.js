@@ -20,27 +20,16 @@ window.viewRequisito = function (id) {
       alert("Error al obtener detalles de la tarea");
     });
 };
-// Mover fila hacia arriba
 window.moverArriba = function (id) {
-  const boton = document.querySelector(`button[onclick="moverArriba('${id}')"]`);
-  const fila = boton.closest("tr");
-  const filaAnterior = fila.previousElementSibling;
-
-  if (filaAnterior) {
-    fila.parentNode.insertBefore(fila, filaAnterior);
-  }
+  fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" })
+    .then(() => location.reload());
 };
 
-// Mover fila hacia abajo
 window.moverAbajo = function (id) {
-  const boton = document.querySelector(`button[onclick="moverAbajo('${id}')"]`);
-  const fila = boton.closest("tr");
-  const filaSiguiente = fila.nextElementSibling;
-
-  if (filaSiguiente) {
-    fila.parentNode.insertBefore(filaSiguiente, fila);
-  }
+  fetch(`/api/requisitos/${id}/mover-abajo`, { method: "POST" })
+    .then(() => location.reload());
 };
+
 
 // Editar requisito
 window.editRequisito = function (id) {
