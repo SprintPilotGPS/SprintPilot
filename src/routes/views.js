@@ -9,4 +9,8 @@ router.get("/nuevo-proyecto", (req, res) => {
     res.render("createProyecto");
 });
 
+router.get("/crear-sprint", (req, res) => {
+    res.render("partials/formularioCrearsprint");
+});
+
 module.exports = router;
