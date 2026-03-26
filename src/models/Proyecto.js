@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const requisitoSchema = new mongoose.Schema(
+const proyectoSchema = new mongoose.Schema(
   {
     identificador: {
       type: String,
@@ -21,4 +21,4 @@ const requisitoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Proyecto", requisitoSchema);
+module.exports = mongoose.model("Proyecto", proyectoSchema);
