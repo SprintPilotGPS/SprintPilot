@@ -1,6 +1,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Requisito = require("./src/models/Requisito");
+const Proyecto = require("./src/models/Proyecto");
 
 const requisitosData = [
   {
@@ -45,6 +46,26 @@ const requisitosData = [
   },
 ];
 
+const proyectosData = [
+  {
+    identificador: "PR",
+    nombre: "Prueba de proyecto",
+    descripcion:
+      "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+  },
+  {
+    identificador: "LO",
+    nombre: "Longaniza",
+    descripcion:
+      "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+  },
+  {
+    identificador: "JU",
+    nombre: "Jugantes",
+    descripcion: "",
+  },
+];
+
 const seedDatabase = async () => {
   try {
     const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/sprintpilot";
@@ -54,16 +75,23 @@ const seedDatabase = async () => {
 
     // Limpiar datos existentes
     await Requisito.deleteMany({});
+    await Proyecto.deleteMany({});
     console.log("🗑️  Datos existentes eliminados");
 
     // Insertar datos de ejemplo
     await Requisito.insertMany(requisitosData);
+    await Proyecto.insertMany(proyectosData);
     console.log("✅ Datos de ejemplo insertados exitosamente");
 
     console.log("\n📊 Requisitos insertados:");
     const requisitos = await Requisito.find();
     requisitos.forEach((req) => {
       console.log(`  - ${req.identificador}: ${req.nombre}`);
+    });
+    console.log("\n📊 Proyectos insertados:");
+    const proyectos = await Proyecto.find();
+    proyectos.forEach((proy) => {
+      console.log(`  - ${proy.identificador}: ${proy.nombre}`);
     });
 
     await mongoose.connection.close();
