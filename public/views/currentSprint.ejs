@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head') %>
+    <title>Sprint - SprintPilot</title>
+  </head>
+  <body>
+    <!--style="background-color: #6a5acd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;"-->
+    <!-- navbar -->
+    <%- include('./partials/navbar') %>
+
+    <main>
+      <!--Container-->
+      <div class="sprint">
+        <!--Cabezado-->
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Sprint</h2>     <!--sprint.id o sprints.end de BBDD-->
+          <a id="openModal" class="btn bg-primary text-white fw-bold"> + Nuevo </a>
+        </div>
+
+        <hr class="mt-1" />
+
+        <!--Proyectos-->
+       
+    </main>
+
+    <!-- footer -->、
+    <%- include('./partials/footer') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/projectValidation.js"></script>
+  </body>
+</html>
