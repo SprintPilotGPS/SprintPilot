@@ -1,38 +1,40 @@
-<dialog id="projectModal" class="modal-new-project rounded border-2">
-  <h2 class="text-center">Nuevo Proyecto</h2>
+<div id="projectModal" class="modal-new-project">
+  <div class="rounded border border-3 border-black">
+    <h2 class="text-center">Nuevo Proyecto</h2>
 
-  <form id="projectForm" method="POST">
-    <div class="mb-3">
-      <label class="form-label" for="nombre">Nombre de proyecto:</label>
-      <input class="form-control" type="text" id="nombre" name="nombre" required />
-    </div>
+    <form id="projectForm" method="POST">
+      <div class="mb-3">
+        <label class="form-label" for="nombre">Nombre de proyecto:</label>
+        <input class="form-control" type="text" id="nombre" name="nombre" required />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label" for="identificador">ID del Proyecto:</label>
-      <input
-        class="form-control"
-        type="text"
-        id="identificador"
-        name="identificador"
-        placeholder="Ej: PR-01"
-        required
-      />
-    </div>
+      <div class="mb-3">
+        <label class="form-label" for="identificador">ID del Proyecto:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="identificador"
+          name="identificador"
+          placeholder="Ej: PR-01"
+          required
+        />
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label" for="descripcion">Descripción (Opcional):</label>
-      <textarea
-        class="form-control"
-        id="descripcion"
-        name="descripcion"
-        rows="3"
-        placeholder="Describe el contenido..."
-      ></textarea>
-    </div>
+      <div class="mb-3">
+        <label class="form-label" for="descripcion">Descripción (Opcional):</label>
+        <textarea
+          class="form-control"
+          id="descripcion"
+          name="descripcion"
+          rows="3"
+          placeholder="Describe el contenido..."
+        ></textarea>
+      </div>
 
-    <div class="d-flex justify-content-around">
-      <button class="btn btn-primary" type="submit">Guardar Proyecto</button>
-      <button class="btn btn-danger" type="button" id="closeModal">Cancelar</button>
-    </div>
-  </form>
-</dialog>
+      <div class="d-flex justify-content-around">
+        <button class="btn btn-primary" type="submit">Guardar Proyecto</button>
+        <button class="btn btn-danger" type="button" id="closeModal">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
