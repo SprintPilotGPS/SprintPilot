@@ -20,9 +20,43 @@
 
         <hr class="mt-1" />
 
-        <!--Proyectos-->
-       
+        <!--Sprint Actual-->
+        <div class="contenidoSprint">
+          <h3>Sprint Goal</h3>
+
+          <div class="d-flex align-items-center">
+            <h3  class="mb-0 me-5">Requisitos</h3>     <!--sprint.id o sprints.end de BBDD-->
+            <a id="openModal" class="btn bg-primary text-white fw-bold"> Añadir </a>
+          </div>
+
+          <!--Aquí luego añadirá un for que recorre los requisitos que tiene ese sprint-->
+          <div class="requisitosSprint">
+            <h4>1. </h4>
+            <h4>2.</h4>
+            <h4>3.</h4>
+            <!--if(requisitos existe y length>0)
+                  forEach-->
+          </div>
+
+        </div>
+
     </main>
+
+
+    <!--No se como se hace para que este enlace queda por encima de footer
+    ahora está volando ( osea cambia dependiendo de main)-->
+    <div class="sprint" style="text-align: center;">
+      <a href="/sprintsPasados" style="
+        text-decoration: underline;
+        font-weight: 500;
+        cursor: pointer;
+        color: #fff;
+      ">
+        <h3>Sprints Pasados</h3>
+      </a>
+    </div>
+
+
 
     <!-- footer -->、
     <%- include('./partials/footer') %>

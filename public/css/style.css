@@ -188,3 +188,34 @@ footer {
     gap: 4px;
   }
 }
+
+
+/* Estilos para SprintActual */
+.sprint {
+  margin: auto;
+  margin-top: 2em;
+  width: 90%;
+  color: #fff;
+}
+
+.sprint hr {
+  margin: 20px 0;
+  border: white;
+  height: 5px;
+  background-color: white;
+  opacity: 1;
+}
+
+.contenidoSprint {
+  margin: auto;
+  margin-top: 2em;
+  width: 90%;
+  color: #fff;
+}
+
+.requisitosSprint {
+  margin: auto;
+  margin-top: 2em;
+  width: 90%;
+  color: #fff;
+}
