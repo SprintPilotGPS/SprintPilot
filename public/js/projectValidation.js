@@ -65,4 +65,13 @@ $(document).ready(function () {
       },
     });
   });
+
+  function redirectToRequisitos(p){
+    let id = p.querySelector("p.id").innerHTML;
+    
+  }
+
+  document.querySelectorAll(".proj").forEach((p) => {
+    p.onclick = e => redirectToRequisitos(p);
+  });
 });

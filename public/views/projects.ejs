@@ -24,17 +24,17 @@
         <div id="projects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
           <% if(projects && projects.length > 0) { %>
           <% projects.forEach(function(proj) { %>
-          <div class="p-4 card scale-card card-proj">
+          <a class="proj p-4 card scale-card card-proj text-decoration-none" href="/backlog/<%= proj.identificador %>">
             <div class="d-flex justify-content-between">
               <h2 class="mb-1"><%= proj.nombre %></h2>
-              <p class="fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
+              <p class="id fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
             </div>
             <hr />
             <p>
               <% if(proj.descripcion == "") { %> No hay descripción. <% }else { %> <%=
               proj.descripcion %> <% }; %>
             </p>
-          </div>
+          </a>
           <% }); %>
           <% } else { %>
           <p class="text-center text-black badge fs-2 bg-white" style="width: 100%;">No hay ningún proyecto.</p>

@@ -7,14 +7,15 @@ function escapeRegExp(value) {
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
+    console.log("Identificador de proyecto: " + req.params.id);
     const requisitos = await Requisito.find().sort({ orden: 1 });
-    res.render("index", {
+    res.render("requisitos", {
       title: "Sprint Pilot",
       requisitos: requisitos,
     });
   } catch (error) {
     console.error("Error al obtener requisitos:", error);
-    res.status(500).render("index", {
+    res.status(500).render("requisitos", {
       title: "Sprint Pilot",
       requisitos: [],
       error: "Error al cargar los datos",
