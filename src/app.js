@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
 });
 
 // Add here the routes to the different views
-app.get("/backlog/{:id}", (req, res) => {
+app.get("/{:id}/backlog", (req, res) => {
   res.render("requisitos");
 });
 

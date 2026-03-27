@@ -5,6 +5,6 @@ const projectController = require("../controllers/projectController");
 
 // View routes
 router.get("/", projectController.getAllProyectos);
-router.get("/backlog/{:id}", requisitoController.getAllRequisitos);
+router.get("/{:id}/backlog", requisitoController.getAllRequisitos);
 
 module.exports = router;

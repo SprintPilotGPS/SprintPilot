@@ -29,7 +29,7 @@ $(document).ready(function () {
         
         let descripcion = (res.data.descripcion == "")? "No hay descripción." : res.data.descripcion;
         let card = `
-        <a class="p-4 card scale-card card-proj text-decoration-none" href="/backlog/`+ res.data.identificador +`">
+        <a class="p-4 card scale-card card-proj text-decoration-none" href="/`+ res.data.identificador +`/backlog">
             <div class="d-flex justify-content-between">
               <h2 class="mb-1">` + res.data.nombre + `</h2>
               <p class="fs-5 mb-1 align-self-center badge bg-primary">` + res.data.identificador + `</p>

@@ -32,7 +32,7 @@ window.editRequisito = function (id) {
 window.deleteRequisito = function (id) {
   if (confirm("¿Está seguro de que desea eliminar esta tarea?")) {
     $.ajax({
-      url: `/api/requisitos/${id}`,
+      url: `/api/${id}/requisitos`,
       method: "DELETE",
     })
       .done((data) => {
@@ -68,7 +68,7 @@ $(function () {
       project_id: project_id,
     };
     $.ajax({
-      url: "/api/requisitos/"+project_id,
+      url: "/api/"+project_id+"/requisitos",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(payload),
