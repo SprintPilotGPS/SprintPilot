@@ -38,7 +38,7 @@
             <% if (requisitos && requisitos.length > 0) { %>
             <% requisitos.forEach(function(req) { %>
             <tr>
-              <td><%= req.identificador %></td>
+              <td><%= project_id + "-" + req.identificador %></td>
               <td><%= req.nombre %></td>
               <td>
                 <%= req.prioridadIcono %>
@@ -133,6 +133,7 @@
                     placeholder="Detalle opcional"
                   ></textarea>
                 </div>
+                <input id="project_id" type="hidden" value="<%= project_id %>">
               </div>
             </div>
             <div class="modal-footer">
@@ -156,6 +157,6 @@
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
       crossorigin="anonymous"
     ></script>
-    <script src="/js/main.js"></script>
+    <script src="/js/requisitosValidation.js"></script>
   </body>
 </html>

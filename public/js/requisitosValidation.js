@@ -58,16 +58,17 @@ $(function () {
   $("#addRequisitoForm").on("submit", function (event) {
     event.preventDefault();
 
+    let project_id = document.querySelector("#project_id").value;
     const payload = {
       nombre: $("#nombre").val().trim(),
       prioridad: $("#prioridad").val(),
       estado: $("#estado").val(),
       responsable: $("#responsable").val().trim(),
       descripcion: $("#descripcion").val().trim(),
+      project_id: project_id,
     };
-
     $.ajax({
-      url: "/api/requisitos",
+      url: "/api/requisitos/"+project_id,
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(payload),

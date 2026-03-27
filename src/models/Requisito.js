@@ -37,6 +37,11 @@ const requisitoSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    project_id: {
+      type: String,
+      required: true,
+      immutable: true,
+    }
   },
   { timestamps: true }
 );

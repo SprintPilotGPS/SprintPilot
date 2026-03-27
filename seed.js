@@ -11,6 +11,7 @@ const requisitosData = [
     estado: "in-progress",
     responsable: "Juan",
     descripcion: "Implementar autenticación JWT y funcionalidad de inicio de sesión y registro",
+    project_id: "PR",
   },
   {
     identificador: 2,
@@ -19,6 +20,7 @@ const requisitosData = [
     estado: "pending",
     responsable: "María",
     descripcion: "Agregar índices y optimizar consultas lentas",
+    project_id: "PR",
   },
   {
     identificador: 3,
@@ -27,6 +29,7 @@ const requisitosData = [
     estado: "completed",
     responsable: "Carlos",
     descripcion: "Reestructurar página frontend usando Bootstrap",
+    project_id: "LO",
   },
   {
     identificador: 4,
@@ -35,6 +38,7 @@ const requisitosData = [
     estado: "in-progress",
     responsable: "Ana",
     descripcion: "Escribir documentación completa de interfaz API",
+    project_id: "LO",
   },
   {
     identificador: 5,
@@ -43,6 +47,7 @@ const requisitosData = [
     estado: "pending",
     responsable: "Pedro",
     descripcion: "Mejorar cobertura de pruebas de código a 80% o superior",
+    project_id: "LO",
   },
 ];
 

@@ -24,10 +24,10 @@
         <div id="projects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
           <% if(projects && projects.length > 0) { %>
           <% projects.forEach(function(proj) { %>
-          <a class="proj p-4 card scale-card card-proj text-decoration-none" href="/backlog/<%= proj.identificador %>">
+          <a class="p-4 card scale-card card-proj text-decoration-none" href="/backlog/<%= proj.identificador %>">
             <div class="d-flex justify-content-between">
               <h2 class="mb-1"><%= proj.nombre %></h2>
-              <p class="id fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
+              <p class="fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
             </div>
             <hr />
             <p>

@@ -7,17 +7,24 @@ function escapeRegExp(value) {
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
-    console.log("Identificador de proyecto: " + req.params.id);
-    const requisitos = await Requisito.find().sort({ orden: 1 });
+    let project_id = req.params.id;
+    
+    console.log("Project ID: " + project_id);
+    console.log("Method: " + req.method);
+    console.log("Info of petition: " + JSON.stringify(req.body));
+
+    const requisitos = await Requisito.find({project_id: project_id}).sort({ orden: 1 });
     res.render("requisitos", {
       title: "Sprint Pilot",
       requisitos: requisitos,
+      project_id: project_id,
     });
   } catch (error) {
     console.error("Error al obtener requisitos:", error);
     res.status(500).render("requisitos", {
       title: "Sprint Pilot",
       requisitos: [],
+      project_id: project_id,
       error: "Error al cargar los datos",
     });
   }
@@ -25,11 +32,17 @@ const getAllRequisitos = async (req, res) => {
 
 const createRequisito = async (req, res) => {
   try {
+    let project_id = req.params.project_id;
     const nombre = typeof req.body.nombre === "string" ? req.body.nombre.trim() : "";
+
+    console.log("Project ID: " + project_id);
+    console.log("Method: " + req.method);
+    console.log("Info of petition: " + JSON.stringify(req.body));
 
     if (nombre) {
       const duplicatedRequisito = await Requisito.findOne({
         nombre: { $regex: new RegExp(`^${escapeRegExp(nombre)}$`, "i") },
+        project_id: project_id
       });
 
       if (duplicatedRequisito) {

@@ -29,14 +29,14 @@ $(document).ready(function () {
         
         let descripcion = (res.data.descripcion == "")? "No hay descripción." : res.data.descripcion;
         let card = `
-        <div class="p-4 card scale-card card-proj">
+        <a class="p-4 card scale-card card-proj text-decoration-none" href="/backlog/`+ res.data.identificador +`">
             <div class="d-flex justify-content-between">
               <h2 class="mb-1">` + res.data.nombre + `</h2>
               <p class="fs-5 mb-1 align-self-center badge bg-primary">` + res.data.identificador + `</p>
             </div>
             <hr />
             <p>` + descripcion + `</p>
-        </div>`
+        </a>`
         if(document.querySelector("#projects-cards > p") == null)
           cards.innerHTML += card;
         else
@@ -64,14 +64,5 @@ $(document).ready(function () {
         showResponse({success: false, error: msg});
       },
     });
-  });
-
-  function redirectToRequisitos(p){
-    let id = p.querySelector("p.id").innerHTML;
-    
-  }
-
-  document.querySelectorAll(".proj").forEach((p) => {
-    p.onclick = e => redirectToRequisitos(p);
   });
 });
