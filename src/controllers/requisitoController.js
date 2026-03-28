@@ -1,17 +1,13 @@
 const Requisito = require("../models/Requisito");
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+const Proyectos = require("../models/Proyecto");
+const Utils = require("./utils");
 
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
-    let project_id = req.params.id;
+    Utils.printLog(req, true, false);
     
-    console.log("Project ID: " + project_id);
-    console.log("Method: " + req.method);
-    console.log("Info of petition: " + JSON.stringify(req.body));
+    let project_id = req.params.id;
 
     const requisitos = await Requisito.find({project_id: project_id}).sort({ orden: 1 });
     res.render("requisitos", {
@@ -32,16 +28,14 @@ const getAllRequisitos = async (req, res) => {
 
 const createRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     let project_id = req.params.project_id;
     const nombre = typeof req.body.nombre === "string" ? req.body.nombre.trim() : "";
 
-    console.log("Project ID: " + project_id);
-    console.log("Method: " + req.method);
-    console.log("Info of petition: " + JSON.stringify(req.body));
-
     if (nombre) {
       const duplicatedRequisito = await Requisito.findOne({
-        nombre: { $regex: new RegExp(`^${escapeRegExp(nombre)}$`, "i") },
+        nombre: { $regex: new RegExp(`^${Utils.escapeRegExp(nombre)}$`, "i") },
         project_id: project_id
       });
 
@@ -53,9 +47,28 @@ const createRequisito = async (req, res) => {
       }
     }
 
+    const project = await Proyectos.findOne({ identificador: project_id });
+    if(!project){
+      return res.status(404).json({
+        success: false,
+        error: "No se pudo crear el requisito",
+      });
+    }
+
     req.body.nombre = nombre;
-    const requisito = new Requisito(req.body);
+    let r = req.body;
+    const requisito = new Requisito({
+      identificador: project.num_requisitos,
+      nombre: r.nombre,
+      prioridad: r.prioridad,
+      estado: r.estado,
+      responsable: r.responsable,
+      descripcion: r.descripcion,
+      project_id: r.project_id
+    });
     await requisito.save();
+    await project.updateOne({ num_requisitos: project.num_requisitos + 1 });
+
     res.status(201).json({
       success: true,
       data: requisito,
@@ -72,6 +85,8 @@ const createRequisito = async (req, res) => {
 // Obtener requisito por ID
 const getRequisitoById = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     const requisito = await Requisito.findById(req.params.id);
     if (!requisito) {
       return res.status(404).json({
@@ -95,6 +110,8 @@ const getRequisitoById = async (req, res) => {
 // Actualizar requisito
 const updateRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -121,6 +138,8 @@ const updateRequisito = async (req, res) => {
 // Eliminar requisito
 const deleteRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     const requisito = await Requisito.findByIdAndDelete(req.params.id);
     if (!requisito) {
       return res.status(404).json({

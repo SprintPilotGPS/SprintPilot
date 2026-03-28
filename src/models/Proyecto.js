@@ -17,6 +17,9 @@ const proyectoSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    num_requisitos: {
+      type: Number
+    }
   },
   { timestamps: true }
 );

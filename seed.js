@@ -5,7 +5,7 @@ const Proyecto = require("./src/models/Proyecto");
 
 const requisitosData = [
   {
-    identificador: 1,
+    identificador: 0,
     nombre: "Completar sistema de autenticación de usuarios",
     prioridad: "high",
     estado: "in-progress",
@@ -14,7 +14,7 @@ const requisitosData = [
     project_id: "PR",
   },
   {
-    identificador: 2,
+    identificador: 1,
     nombre: "Optimizar el rendimiento de consultas de base de datos",
     prioridad: "medium",
     estado: "pending",
@@ -23,7 +23,7 @@ const requisitosData = [
     project_id: "PR",
   },
   {
-    identificador: 3,
+    identificador: 0,
     nombre: "Reestructuración de páginas frontend",
     prioridad: "high",
     estado: "completed",
@@ -32,7 +32,7 @@ const requisitosData = [
     project_id: "LO",
   },
   {
-    identificador: 4,
+    identificador: 1,
     nombre: "Redacción de documentación de API",
     prioridad: "medium",
     estado: "in-progress",
@@ -41,7 +41,7 @@ const requisitosData = [
     project_id: "LO",
   },
   {
-    identificador: 5,
+    identificador: 2,
     nombre: "Cobertura de pruebas unitarias",
     prioridad: "low",
     estado: "pending",
@@ -57,17 +57,20 @@ const proyectosData = [
     nombre: "Prueba de proyecto",
     descripcion:
       "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+    num_requisitos: 2,
   },
   {
     identificador: "LO",
     nombre: "Longaniza",
     descripcion:
       "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+    num_requisitos: 3,
   },
   {
     identificador: "JU",
     nombre: "Jugantes",
     descripcion: "",
+    num_requisitos: 0,
   },
 ];
 

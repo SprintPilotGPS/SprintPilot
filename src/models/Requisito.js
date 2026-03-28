@@ -11,7 +11,6 @@ const requisitoSchema = new mongoose.Schema(
     identificador: {
       type: Number,
       required: true,
-      unique: true,
       immutable: true,
     },
     nombre: {
@@ -46,7 +45,7 @@ const requisitoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-requisitoSchema.pre("validate", async function nextId() {
+/* requisitoSchema.pre("validate", async function nextId() {
   if (!this.isNew || this.identificador) return;
 
   const counter = await Counter.findByIdAndUpdate(
@@ -56,6 +55,6 @@ requisitoSchema.pre("validate", async function nextId() {
   );
 
   this.identificador = counter.seq;
-});
+}); */
 
 module.exports = mongoose.model("Requisito", requisitoSchema);
