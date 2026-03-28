@@ -1,11 +1,5 @@
 const mongoose = require("mongoose");
 
-const counterSchema = new mongoose.Schema({
-  _id: { type: String, required: true },
-  seq: { type: Number, default: 0 },
-});
-const Counter = mongoose.models.Counter || mongoose.model("Counter", counterSchema);
-
 const requisitoSchema = new mongoose.Schema(
   {
     identificador: {
@@ -40,11 +34,15 @@ const requisitoSchema = new mongoose.Schema(
       type: String,
       required: true,
       immutable: true,
-    }
+    },
   },
   { timestamps: true }
 );
 
+requisitoSchema.index(
+  { project_id: 1, identificador: 1 },
+  { unique: true, name: "project_id_1_identificador_1" }
+);
 /* requisitoSchema.pre("validate", async function nextId() {
   if (!this.isNew || this.identificador) return;
 

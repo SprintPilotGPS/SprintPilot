@@ -4,14 +4,16 @@
   --success-color: #2e7d32;
   --warning-color: #e65100;
   --info-color: #1565c0;
+  --white: #fff;
+  --text-dark: #333;
 }
 
 body {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
 
 .navbar {
@@ -21,7 +23,7 @@ body {
 
 .navbar-brand {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 700;
   color: var(--primary-color) !important;
 }
 
@@ -34,243 +36,37 @@ body {
   color: var(--primary-color) !important;
 }
 
-.main-container {
-  flex: 1;
-  margin-top: 60px;
-  margin-bottom: 40px;
-}
-
-.welcome-section {
-  text-align: center;
-  color: white;
-  margin-bottom: 50px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.welcome-section h1 {
-  font-size: 48px;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.welcome-section p {
-  font-size: 18px;
-  opacity: 0.95;
-}
-
-.table-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  margin: 30px 0;
-}
-
-.table-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: white;
-  padding: 20px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.table {
-  margin: 0;
-}
-
-.table thead th {
-  background: #f5f5f5;
-  border-bottom: 2px solid #e0e0e0;
-  font-weight: 600;
-  color: #333;
-  padding: 15px;
-}
-
-.table tbody td {
-  padding: 12px 15px;
-  vertical-align: middle;
-  color: #555;
-}
-
-.table tbody tr {
-  transition: background-color 0.2s;
-}
-
-.table tbody tr:hover {
-  background-color: #f9f9f9;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-block;
-}
-
-.status-active {
-  background: #e8f5e9;
-  color: var(--success-color);
-}
-
-.status-pending {
-  background: #fff3e0;
-  color: var(--warning-color);
-}
-
-.status-completed {
-  background: #e3f2fd;
-  color: var(--info-color);
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-sm {
-  padding: 6px 12px;
-  font-weight: 600;
-  font-size: 12px;
-  border-radius: 6px;
-  transition: all 0.3s;
-}
-
-.btn-view {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-}
-
-.btn-view:hover {
-  background-color: #5568d3;
-  transform: translateY(-2px);
-  color: white;
-}
-
-.btn-edit {
-  background-color: #ffc107;
-  color: #333;
-  border: none;
-}
-
-.btn-edit:hover {
-  background-color: #ffb300;
-  transform: translateY(-2px);
-  color: #333;
-}
-
 footer {
-  background: rgba(0, 0, 0, 0.3);
-  color: white;
-  text-align: center;
-  padding: 20px;
   margin-top: auto;
+  padding: 20px;
+  color: var(--white);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
-  .welcome-section h1 {
-    font-size: 32px;
-  }
-
-  .table-header {
-    font-size: 16px;
-  }
-
-  .table thead th,
-  .table tbody td {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    gap: 4px;
-  }
-}
-
-/* Estilos para proyecto */
-.proyect {
-  margin: auto;
-  margin-top: 2em;
-  width: 90%;
-  color: #fff;
-}
-
-.proyect hr {
-  margin: 20px 0;
-  border: white;
-  height: 5px;
-  background-color: white;
-  opacity: 1;
-}
-
-.scale-card {
-  box-shadow: 0.1em 0.1em 0.5em 0.1em rgba(0, 0, 0, 0.4);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-.scale-card:hover {
-  box-shadow: 0.3em 0.3em 0.5em 0.1em rgba(0, 0, 0, 0.3);
-  transform: scale(1.02);
-}
-.scale-card:active {
-  box-shadow: 0 0 0 0;
-  transform: scale(0.98);
-}
-
-.card-proj {
-  width: 30%;
-}
-.card-proj hr {
-  display: block;
-  margin-top: 0;
-
-  width: 100%;
-  height: 0.3em;
-  background-color: var(--secondary-color);
-}
-
-.noti {
-  position: fixed;
-  top: 5em;
-  left: 0;
-  right: 0;
-
-  margin: auto;
-  width: fit-content;
-  display: flex;
-  justify-content: center;
-
-  visibility: hidden;
-
-  z-index: 2;
-}
-
-/* Estilos para el formulario de creación de proyecto*/
 .modal-new-project {
   position: fixed;
-  top: 0;
-  bottom: 0;
   left: 0;
   right: 0;
+  visibility: hidden;
+}
 
+.modal-new-project {
+  top: 0;
+  bottom: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(0.15em);
-
-  z-index: 1;
-  visibility: hidden;
 }
-.modal-new-project > div {
-  padding: 2em;
 
+.modal-new-project > div {
   width: 25%;
-  background: #fff;
-  border-color: black;
+  padding: 2em;
+  background: var(--white);
+  border-color: #000;
 }
 
 .show {

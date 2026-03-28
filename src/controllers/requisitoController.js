@@ -6,10 +6,10 @@ const Utils = require("./utils");
 const getAllRequisitos = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
-    
+
     let project_id = req.params.id;
 
-    const requisitos = await Requisito.find({project_id: project_id}).sort({ orden: 1 });
+    const requisitos = await Requisito.find({ project_id: project_id }).sort({ orden: 1 });
     res.render("requisitos", {
       title: "Sprint Pilot",
       requisitos: requisitos,
@@ -36,7 +36,7 @@ const createRequisito = async (req, res) => {
     if (nombre) {
       const duplicatedRequisito = await Requisito.findOne({
         nombre: { $regex: new RegExp(`^${Utils.escapeRegExp(nombre)}$`, "i") },
-        project_id: project_id
+        project_id: project_id,
       });
 
       if (duplicatedRequisito) {
@@ -48,23 +48,22 @@ const createRequisito = async (req, res) => {
     }
 
     const project = await Proyectos.findOne({ identificador: project_id });
-    if(!project){
+    if (!project) {
       return res.status(404).json({
         success: false,
-        error: "No se pudo crear el requisito",
       });
     }
 
     req.body.nombre = nombre;
     let r = req.body;
     const requisito = new Requisito({
-      identificador: project.num_requisitos,
+      identificador: project.num_requisitos + 1,
       nombre: r.nombre,
       prioridad: r.prioridad,
       estado: r.estado,
       responsable: r.responsable,
       descripcion: r.descripcion,
-      project_id: r.project_id
+      project_id: r.project_id,
     });
     await requisito.save();
     await project.updateOne({ num_requisitos: project.num_requisitos + 1 });

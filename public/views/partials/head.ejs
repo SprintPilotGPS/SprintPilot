@@ -6,3 +6,8 @@
   rel="stylesheet"
 />
 <link rel="stylesheet" href="/css/style.css" />
+<% if (typeof pageStyles !== "undefined" && Array.isArray(pageStyles)) { %>
+<% pageStyles.forEach(function (fileName) { %>
+<link rel="stylesheet" href="/css/<%= fileName %>.css" />
+<% }); %>
+<% } %>

@@ -1,0 +1,33 @@
+.sprint {
+  width: 90%;
+  margin: 2em auto 0;
+  color: var(--white);
+}
+
+.sprint hr {
+  height: 5px;
+  margin: 20px 0;
+  border: var(--white);
+  opacity: 1;
+  background-color: var(--white);
+}
+
+.contenidoSprint {
+  padding: 1.2em;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(1px);
+}
+
+.requisitosSprint {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .sprint {
+    width: 95%;
+  }
+}

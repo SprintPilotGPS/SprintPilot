@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <%- include('./partials/head') %>
+    <%- include('./partials/head', { pageStyles: ['requisitosCss'] }) %>
   </head>
 
   <body>
@@ -99,12 +99,7 @@
 
                 <div class="col-md-6">
                   <label for="responsable" class="form-label">Responsable</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="responsable"
-                    name="responsable"
-                  />
+                  <input type="text" class="form-control" id="responsable" name="responsable" />
                 </div>
 
                 <div class="col-md-6">
@@ -133,7 +128,7 @@
                     placeholder="Detalle opcional"
                   ></textarea>
                 </div>
-                <input id="project_id" type="hidden" value="<%= project_id %>">
+                <input id="project_id" type="hidden" value="<%= project_id %>" />
               </div>
             </div>
             <div class="modal-footer">
