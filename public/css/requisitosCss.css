@@ -1,6 +1,6 @@
 .main-container {
   flex: 1;
-  margin: 60px 0 40px;
+  margin: 60px auto 40px;
 }
 
 .table-card {

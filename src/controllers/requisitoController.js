@@ -25,6 +25,45 @@ const getAllRequisitos = async (req, res) => {
     });
   }
 };
+// Mover requisito hacia arriba
+const moverArriba = async (req, res) => {
+  try {
+    const actual = await Requisito.findById(req.params.id);
+    if (!actual) return res.status(404).send("No encontrado");
+
+    const superior = await Requisito.findOne({ orden: actual.orden - 1 });
+    if (!superior) return res.sendStatus(200); // ya está arriba
+
+    // Intercambiar orden
+    await Requisito.updateOne({ _id: actual._id }, { orden: actual.orden - 1 });
+    await Requisito.updateOne({ _id: superior._id }, { orden: superior.orden + 1 });
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al mover arriba");
+  }
+};
+
+// Mover requisito hacia abajo
+const moverAbajo = async (req, res) => {
+  try {
+    const actual = await Requisito.findById(req.params.id);
+    if (!actual) return res.status(404).send("No encontrado");
+
+    const inferior = await Requisito.findOne({ orden: actual.orden + 1 });
+    if (!inferior) return res.sendStatus(200); // ya está abajo
+
+    // Intercambiar orden
+    await Requisito.updateOne({ _id: actual._id }, { orden: actual.orden + 1 });
+    await Requisito.updateOne({ _id: inferior._id }, { orden: inferior.orden - 1 });
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al mover abajo");
+  }
+};
 
 const createRequisito = async (req, res) => {
   try {
@@ -166,4 +205,6 @@ module.exports = {
   getRequisitoById,
   updateRequisito,
   deleteRequisito,
+  moverArriba,
+  moverAbajo,
 };

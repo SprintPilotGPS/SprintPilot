@@ -35,6 +35,10 @@ const requisitoSchema = new mongoose.Schema(
       required: true,
       immutable: true,
     },
+    orden: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
@@ -45,7 +49,10 @@ requisitoSchema.index(
 );
 /* requisitoSchema.pre("validate", async function nextId() {
   if (!this.isNew || this.identificador) return;
-
+  if (this.isNew && this.orden === undefined) {
+    const total = await mongoose.model("Requisito").countDocuments();
+    this.orden = total;
+  }
   const counter = await Counter.findByIdAndUpdate(
     "requisito_identificador",
     { $inc: { seq: 1 } },
