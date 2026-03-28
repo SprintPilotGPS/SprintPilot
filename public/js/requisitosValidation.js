@@ -32,7 +32,7 @@ window.editRequisito = function (id) {
 window.deleteRequisito = function (id) {
   if (confirm("¿Está seguro de que desea eliminar esta tarea?")) {
     $.ajax({
-      url: `/api/requisitos/${id}`,
+      url: `/api/${id}/requisitos`,
       method: "DELETE",
     })
       .done((data) => {
@@ -58,16 +58,17 @@ $(function () {
   $("#addRequisitoForm").on("submit", function (event) {
     event.preventDefault();
 
+    let project_id = document.querySelector("#project_id").value;
     const payload = {
       nombre: $("#nombre").val().trim(),
       prioridad: $("#prioridad").val(),
       estado: $("#estado").val(),
       responsable: $("#responsable").val().trim(),
       descripcion: $("#descripcion").val().trim(),
+      project_id: project_id,
     };
-
     $.ajax({
-      url: "/api/requisitos",
+      url: "/api/"+project_id+"/requisitos",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(payload),
