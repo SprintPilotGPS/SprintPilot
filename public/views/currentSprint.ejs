@@ -45,21 +45,34 @@
 
     <!--No se como se hace para que este enlace queda por encima de footer
     ahora está volando ( osea cambia dependiendo de main)-->
-    <div class="sprint" style="text-align: center;">
-      <a href="/sprintsPasados" style="
-        text-decoration: underline;
-        font-weight: 500;
-        cursor: pointer;
-        color: #fff;
-      ">
-        <h3>Sprints Pasados</h3>
-      </a>
-    </div>
+<!-- Enlace fijo antes del footer -->
+<div style="text-align: center; margin-top: 40px;">
+  <a href="#sprintsPasados" style="
+    text-decoration: underline;
+    font-weight: 500;
+    cursor: pointer;
+    color: #fff;
+  ">
+    <h3>Sprints Pasados</h3>
+  </a>
+</div>
 
+<!-- Sprints Pasados -->
+<div id="sprintsPasados" class="sprints-pasados mt-5">
+  <h2 class="text-center mb-4">Sprints Pasados</h2>
 
+  <div class="lista-sprints-pasados">
+    <% sprintsPasados.forEach(sprint => { %>
+      <div class="sprint-card-faded">
+        <h3><%= sprint.nombre %></h3>
+        <p><strong>Objetivo:</strong> <%= sprint.goal %></p>
+      </div>
+    <% }) %>
+  </div>
+</div>
 
-    <!-- footer -->、
-    <%- include('./partials/footer') %>
+<!-- footer -->
+<%- include('./partials/footer') %>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/js/projectValidation.js"></script>
