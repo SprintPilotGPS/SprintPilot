@@ -20,11 +20,12 @@ window.viewRequisito = function (id) {
       alert("Error al obtener detalles de la tarea");
     });
 };
+
+/* Para odenar los requisitos */
 window.moverArriba = function (id) {
   fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" })
     .then(() => location.reload());
 };
-
 window.moverAbajo = function (id) {
   fetch(`/api/requisitos/${id}/mover-abajo`, { method: "POST" })
     .then(() => location.reload());
@@ -61,6 +62,71 @@ window.deleteRequisito = function (id) {
   }
 };
 
+function showCreate(res) {
+  let noti = document.querySelector("#noti");
+  let table = document.querySelector("#table-body");
+
+  if(res.success){
+    noti.innerHTML = `<p class="badge bg-success fs-5">Requisito creado correctamente</p>`;
+
+    let classEstado;
+    if(res.data.estado.toLowerCase() == "pending")
+      classEstado = "bg-secondary";
+    else if(res.data.estado.toLowerCase() == "in-progress")
+      classEstado = "bg-primary";
+    else
+      classEstado= "bg-success";
+
+    let classPrioridad;
+    if(res.data.prioridad.toLowerCase() == "high")
+      classPrioridad = "bg-danger";
+    else if(res.data.prioridad.toLowerCase() == "medium")
+      classPrioridad = "bg-warning";
+    else 
+      classPrioridad = "bg-info";
+
+    let requisito = `
+      <tr>
+        <td>`+ res.data.project_id + `-` + res.data.identificador  +`</td>
+        <td>`+ res.data.nombre +`</td>
+        <td class="text-center">
+          <span class="badge fw-bold `+ classPrioridad +`">`+ res.data.prioridad +`</span>
+        </td>
+        <td class="text-center">
+          <span class="status-badge fw-bold text-white `+ classEstado +`">`+ res.data.estado + `</span>
+        </td>
+        <td>`+ res.data.responsable +`</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn btn-sm btn-light" onclick="moverArriba('`+ res.data.identificador +`')">
+              ⬆️
+            </button>
+            <button class="btn btn-sm btn-light" onclick="moverAbajo('`+ res.data.identificador +`')">
+              ⬇️
+            </button>
+            <button class="btn btn-sm btn-view" onclick="viewRequisito('`+ res.data.identificador +`')">
+              Ver
+            </button>
+            <button class="btn btn-sm btn-edit" onclick="editRequisito('`+ res.data.identificador +`')">
+              Editar
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+    if(document.querySelector("#empty") == null)
+      table.innerHTML += requisito;
+    else
+      table.innerHTML = requisito;
+
+    bootstrap.Modal.getOrCreateInstance(document.querySelector("#addRequisitoModal")).hide();
+  }else{
+    noti.innerHTML = `<p class="badge bg-warning fs-5">`+ res.error +`</p>`;
+  }
+  noti.classList.add("show");
+  setTimeout(() => noti.classList.remove("show"), 5000);
+};
+
 // Inicialización después de que se cargue la página
 $(function () {
   console.log("SprintPilot cargado");
@@ -83,27 +149,15 @@ $(function () {
       contentType: "application/json",
       data: JSON.stringify(payload),
     })
-      .done((response) => {
-        if (response.success) {
-          const modalElement = document.getElementById("addRequisitoModal");
-          const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
-          modalInstance.hide();
-          this.reset();
-          alert("Tarea creada exitosamente");
-          location.reload();
-        } else {
-          alert("No se pudo crear la tarea");
-        }
+      .done((res) => {
+        showCreate(res);
       })
       .fail((jqXHR) => {
         const message =
           jqXHR.responseJSON && jqXHR.responseJSON.error
             ? jqXHR.responseJSON.error
             : "Error al crear la tarea";
-        alert(message);
+        showCreate({success: false, error: message});
       });
   });
-
-  // Se puede agregar más código de inicialización aquí
-  // Por ejemplo: validación de formularios, escuchadores de eventos, etc.
 });

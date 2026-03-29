@@ -28,23 +28,40 @@
             <tr>
               <th>ID de Tarea</th>
               <th>Nombre de Requisito</th>
-              <th>Prioridad</th>
-              <th>Estado</th>
-              <th>Responsable</th>
+              <th class="text-center">Prioridad</th>
+              <th class="text-center">Estado</th>
+              <th class="text-center">Responsable</th>
               <th>Acciones</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="table-body">
             <% if (requisitos && requisitos.length > 0) { %>
             <% requisitos.forEach(function(req) { %>
             <tr>
               <td><%= project_id + "-" + req.identificador %></td>
               <td><%= req.nombre %></td>
-              <td>
-                <%= req.prioridadIcono %>
-                <%= req.prioridad %>
+              <td class="text-center">
+                <span class="badge fw-bold 
+                  <% if(req.prioridad.toLowerCase() == "high") { %>bg-danger
+                  <% } else if(req.prioridad.toLowerCase() == "medium") { %>bg-warning
+                  <% } else { %>
+                  bg-info
+                  <% } %>">
+                  <%= req.prioridad %>
+                </span>
               </td>
-              <td><span class="status-badge <%= req.estadoClase %>"><%= req.estado %></span></td>
+              <td class="text-center">
+                <span class="status-badge fw-bold text-white
+                  <% if(req.estado.toLowerCase() == "pending") { %>
+                  bg-secondary
+                  <% } else if(req.estado.toLowerCase() == "in-progress") { %>
+                  bg-primary
+                  <% } else { %>
+                  bg-success
+                  <% } %>
+                  "><%= req.estado %>
+                </span>
+              </td>
               <td><%= req.responsable %></td>
               <td>
                 <div class="action-buttons">
@@ -65,7 +82,7 @@
             </tr>
             <% }); %>
             <% } else { %>
-            <tr>
+            <tr id="empty">
               <td colspan="7" class="text-center text-muted py-4">
                 No hay datos de tareas, por favor agregue una nueva tarea
               </td>
@@ -150,6 +167,7 @@
 
     <!-- footer -->
     <%- include('./partials/footer') %>
+    <div id="noti" class="noti"></div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -158,14 +176,6 @@
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
       crossorigin="anonymous"
     ></script>
-<<<<<<<< HEAD:public/views/requisitos.ejs
     <script src="/js/requisitosValidation.js"></script>
-========
-    <script src="/js/main.js"></script>
-    <script>
-  console.log("ESTE SCRIPT SE EJECUTA");
-</script>
-
->>>>>>>> origin/DEV-SP22-Crear-botones-ordenar-requisitos-manualmente:public/views/requisitos_index.ejs
   </body>
 </html>
