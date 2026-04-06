@@ -1,11 +1,5 @@
 const mongoose = require("mongoose");
 
-const counterSchema = new mongoose.Schema({
-  _id: { type: String, required: true },
-  seq: { type: Number, default: 0 },
-});
-const Counter = mongoose.models.Counter || mongoose.model("Counter", counterSchema);
-
 const requisitoSchema = new mongoose.Schema(
   {
     identificador: {
@@ -40,21 +34,15 @@ const requisitoSchema = new mongoose.Schema(
       type: String,
       required: true,
       immutable: true,
+    },
+    // CAMBIO CLAVE: Campo para gestionar la posición en la lista
+    orden: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }
 );
 
-/* requisitoSchema.pre("validate", async function nextId() {
-  if (!this.isNew || this.identificador) return;
-
-  const counter = await Counter.findByIdAndUpdate(
-    "requisito_identificador",
-    { $inc: { seq: 1 } },
-    { new: true, upsert: true }
-  );
-
-  this.identificador = counter.seq;
-}); */
-
-module.exports = mongoose.model("Requisito", requisitoSchema);
+// Evitamos que se cree el modelo varias veces si se recarga el servidor
+module.exports = mongoose.models.Requisito || mongoose.model("Requisito", requisitoSchema);

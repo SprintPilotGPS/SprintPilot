@@ -48,6 +48,12 @@
               <td><%= req.responsable %></td>
               <td>
                 <div class="action-buttons">
+                  <button class="btn btn-sm btn-light" onclick="moverArriba('<%= req._id %>')">
+                    ⬆️
+                  </button>
+                  <button class="btn btn-sm btn-light" onclick="moverAbajo('<%= req._id %>')">
+                    ⬇️
+                  </button>
                   <button class="btn btn-sm btn-view" onclick="viewRequisito('<%= req._id %>')">
                     Ver
                   </button>
@@ -147,7 +153,7 @@
       </div>
     </div>
 
-    <!-- footer -->、
+    <!-- footer -->
     <%- include('./partials/footer') %>
 
     <!-- Bootstrap JS -->
@@ -157,6 +163,14 @@
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
       crossorigin="anonymous"
     ></script>
+<<<<<<<< HEAD:public/views/requisitos.ejs
     <script src="/js/requisitosValidation.js"></script>
+========
+    <script src="/js/main.js"></script>
+    <script>
+  console.log("ESTE SCRIPT SE EJECUTA");
+</script>
+
+>>>>>>>> DEV-SP22-Crear-botones-ordenar-requisitos-manualmente:public/views/requisitos_index.ejs
   </body>
 </html>

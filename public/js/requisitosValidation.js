@@ -20,6 +20,16 @@ window.viewRequisito = function (id) {
       alert("Error al obtener detalles de la tarea");
     });
 };
+window.moverArriba = function (id) {
+  fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" })
+    .then(() => location.reload());
+};
+
+window.moverAbajo = function (id) {
+  fetch(`/api/requisitos/${id}/mover-abajo`, { method: "POST" })
+    .then(() => location.reload());
+};
+
 
 // Editar requisito
 window.editRequisito = function (id) {
