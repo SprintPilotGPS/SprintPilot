@@ -12,6 +12,7 @@ const sprintSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    project_id: { type: String, required: true },
     num_requisitos: {
       type: Number
     },

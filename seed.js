@@ -2,6 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const Requisito = require("./src/models/Requisito");
 const Proyecto = require("./src/models/Proyecto");
+const Sprint = require("./src/models/Sprint"); // <--- Importamos tu modelo de Sprint
 
 const requisitosData = [
   {
@@ -25,7 +26,7 @@ const requisitosData = [
     project_id: "PR",
   },
   {
-    identificador: 0,
+    identificador: 2,
     nombre: "Reestructuración de páginas frontend",
     prioridad: "high",
     orden: 0,
@@ -35,7 +36,7 @@ const requisitosData = [
     project_id: "LO",
   },
   {
-    identificador: 1,
+    identificador: 3,
     nombre: "Redacción de documentación de API",
     prioridad: "medium",
     orden: 1,
@@ -45,7 +46,7 @@ const requisitosData = [
     project_id: "LO",
   },
   {
-    identificador: 2,
+    identificador: 4,
     nombre: "Cobertura de pruebas unitarias",
     prioridad: "low",
     orden: 2,
@@ -60,15 +61,13 @@ const proyectosData = [
   {
     identificador: "PR",
     nombre: "Prueba de proyecto",
-    descripcion:
-      "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+    descripcion: "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
     num_requisitos: 2,
   },
   {
     identificador: "LO",
     nombre: "Longaniza",
-    descripcion:
-      "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
+    descripcion: "Esta es una descripción corta del proyecto y se vera con mas detalle cuando entres",
     num_requisitos: 3,
   },
   {
@@ -77,6 +76,31 @@ const proyectosData = [
     descripcion: "",
     num_requisitos: 0,
   },
+];
+
+// --- NUEVOS DATOS DE SPRINTS ---
+const sprintsData = [
+  {
+    identificador: 1,
+    sprintGoal: "Configurar el entorno base y la conexión a MongoDB",
+    num_requisitos: 3,
+    activo: false, 
+    project_id: "PR"
+  },
+  {
+    identificador: 2,
+    sprintGoal: "Diseñar el Dashboard de proyectos y modelos iniciales",
+    num_requisitos: 5,
+    activo: false,
+    project_id: "PR"
+  },
+  {
+    identificador: 3,
+    sprintGoal: "Implementar la gestión de requisitos y validaciones",
+    num_requisitos: 4,
+    activo: true,
+    project_id: "PR"
+  }
 ];
 
 const seedDatabase = async () => {
@@ -89,18 +113,21 @@ const seedDatabase = async () => {
     // Limpiar datos existentes
     await Requisito.deleteMany({});
     await Proyecto.deleteMany({});
+    await Sprint.deleteMany({}); // <--- Limpiamos sprints
     console.log("🗑️  Datos existentes eliminados");
 
     // Insertar datos de ejemplo
     await Requisito.insertMany(requisitosData);
     await Proyecto.insertMany(proyectosData);
+    await Sprint.insertMany(sprintsData); // <--- Insertamos sprints
     console.log("✅ Datos de ejemplo insertados exitosamente");
 
-    console.log("\n📊 Requisitos insertados:");
-    const requisitos = await Requisito.find();
-    requisitos.forEach((req) => {
-      console.log(`  - ${req.identificador}: ${req.nombre}`);
+    console.log("\n📊 Sprints insertados:");
+    const sprints = await Sprint.find();
+    sprints.forEach((s) => {
+      console.log(`  - Sprint #${s.identificador} [${s.activo ? 'ACTIVO' : 'PASADO'}]: ${s.sprintGoal}`);
     });
+
     console.log("\n📊 Proyectos insertados:");
     const proyectos = await Proyecto.find();
     proyectos.forEach((proy) => {

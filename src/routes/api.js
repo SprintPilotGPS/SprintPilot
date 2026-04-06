@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const requisitoController = require("../controllers/requisitoController");
 const projectController = require("../controllers/projectController");
+const sprintController = require("../controllers/sprintController");
 
 // API routes for requisitos
 
@@ -15,4 +16,6 @@ router.post("/projects", projectController.createProject);
 router.post("/requisitos/:id/mover-arriba", requisitoController.moverArriba);
 router.post("/requisitos/:id/mover-abajo", requisitoController.moverAbajo);
 
+//API route for sprints
+router.post("/:project_id/sprints", sprintController.createSprint);
 module.exports = router;
