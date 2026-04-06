@@ -1,109 +1,35 @@
-// SprintPilot - Script de interacción frontend
-/* global $, bootstrap */
+document.addEventListener('DOMContentLoaded', () => {
+    const addForm = document.getElementById('addRequisitoForm');
 
-// Ver detalles del requisito
-window.viewRequisito = function (id) {
-  $.getJSON(`/api/requisitos/${id}`)
-    .done((data) => {
-      if (data.success) {
-        const req = data.data;
-        alert(
-          `Detalles de la Tarea:\n\nID: ${req.identificador}\nNombre: ${req.nombre}\nPrioridad: ${req.prioridad}\nEstado: ${req.estado}\nResponsable: ${req.responsable}\nFecha Límite: ${req.fechaFormateada}\nDescripción: ${req.descripcion || "Ninguno"}`
-        );
-      } else {
-        alert("Error al obtener detalles de la tarea");
-      }
-    })
-    .fail((jqXHR, textStatus, errorThrown) => {
-      const error = errorThrown || textStatus;
-      console.error("Error:", error);
-      alert("Error al obtener detalles de la tarea");
-    });
-};
-window.moverArriba = function (id) {
-  fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" })
-    .then(() => location.reload());
-};
+    if (addForm) {
+        // Usamos onclick o onsubmit directo para asegurar que solo haya UN controlador
+        addForm.onsubmit = async (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation(); // Detiene cualquier otro trigger fantasma
 
-window.moverAbajo = function (id) {
-  fetch(`/api/requisitos/${id}/mover-abajo`, { method: "POST" })
-    .then(() => location.reload());
-};
+            const projectId = document.getElementById('project_id').value;
+            const formData = new FormData(addForm);
+            const data = Object.fromEntries(formData.entries());
 
+            try {
+                const response = await fetch(`/api/${projectId}/requisitos`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-// Editar requisito
-window.editRequisito = function (id) {
-  // Aquí se puede abrir un modal o redirigir a la página de edición
-  console.log("Editar tarea:", id);
-  alert("Función de edición en desarrollo...\nID de Tarea: " + id);
-};
+                const result = await response.json();
 
-// Eliminar requisito
-window.deleteRequisito = function (id) {
-  if (confirm("¿Está seguro de que desea eliminar esta tarea?")) {
-    $.ajax({
-      url: `/api/${id}/requisitos`,
-      method: "DELETE",
-    })
-      .done((data) => {
-        if (data.success) {
-          alert("Tarea eliminada");
-          location.reload();
-        } else {
-          alert("Error al eliminar");
-        }
-      })
-      .fail((jqXHR, textStatus, errorThrown) => {
-        const error = errorThrown || textStatus;
-        console.error("Error:", error);
-        alert("Error al eliminar la tarea");
-      });
-  }
-};
-
-// Inicialización después de que se cargue la página
-$(function () {
-  console.log("SprintPilot cargado");
-
-  $("#addRequisitoForm").on("submit", function (event) {
-    event.preventDefault();
-
-    let project_id = document.querySelector("#project_id").value;
-    const payload = {
-      nombre: $("#nombre").val().trim(),
-      prioridad: $("#prioridad").val(),
-      estado: $("#estado").val(),
-      responsable: $("#responsable").val().trim(),
-      descripcion: $("#descripcion").val().trim(),
-      project_id: project_id,
-    };
-    $.ajax({
-      url: "/api/"+project_id+"/requisitos",
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(payload),
-    })
-      .done((response) => {
-        if (response.success) {
-          const modalElement = document.getElementById("addRequisitoModal");
-          const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
-          modalInstance.hide();
-          this.reset();
-          alert("Tarea creada exitosamente");
-          location.reload();
-        } else {
-          alert("No se pudo crear la tarea");
-        }
-      })
-      .fail((jqXHR) => {
-        const message =
-          jqXHR.responseJSON && jqXHR.responseJSON.error
-            ? jqXHR.responseJSON.error
-            : "Error al crear la tarea";
-        alert(message);
-      });
-  });
-
-  // Se puede agregar más código de inicialización aquí
-  // Por ejemplo: validación de formularios, escuchadores de eventos, etc.
+                if (response.ok) {
+                    // Si todo va bien, recargamos la página para ver el nuevo requisito
+                    window.location.reload();
+                } else {
+                    alert(result.error || "Error al guardar el requisito");
+                }
+            } catch (error) {
+                console.error("Error en la petición fetch:", error);
+                alert("Error de conexión con el servidor");
+            }
+        };
+    }
 });
