@@ -5,12 +5,9 @@
   </head>
 
   <body>
-    <!-- navbar -->
     <%- include('./partials/navbar') %>
 
-    <!-- main container -->
     <div class="container-lg main-container">
-      <!-- tabla de requisitos -->
       <div class="table-card">
         <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
           <span>Backlog de proyecto: Requisitos</span>
@@ -76,7 +73,6 @@
       </div>
     </div>
 
-    <!-- Modal: Add Requisito -->
     <div
       class="modal fade"
       id="addRequisitoModal"
@@ -139,7 +135,7 @@
                     placeholder="Detalle opcional"
                   ></textarea>
                 </div>
-                <input id="project_id" type="hidden" value="<%= project_id %>">
+                <input id="project_id" name="project_id" type="hidden" value="<%= project_id %>">
               </div>
             </div>
             <div class="modal-footer">
@@ -153,24 +149,73 @@
       </div>
     </div>
 
-    <!-- footer -->
     <%- include('./partials/footer') %>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
       crossorigin="anonymous"
     ></script>
-<<<<<<<< HEAD:public/views/requisitos.ejs
-    <script src="/js/requisitosValidation.js"></script>
-========
-    <script src="/js/main.js"></script>
-    <script>
-  console.log("ESTE SCRIPT SE EJECUTA");
-</script>
 
->>>>>>>> DEV-SP22-Crear-botones-ordenar-requisitos-manualmente:public/views/requisitos_index.ejs
+    <script>
+      // 1. Lógica de Flechas (Movimiento)
+      async function moverArriba(id) {
+        try {
+          const response = await fetch(`/api/requisitos/${id}/mover-arriba`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (response.ok) location.reload();
+          else alert("No se puede subir más este requisito");
+        } catch (error) { console.error("Error:", error); }
+      }
+
+      async function moverAbajo(id) {
+        try {
+          const response = await fetch(`/api/requisitos/${id}/mover-abajo`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (response.ok) location.reload();
+          else alert("No se puede bajar más este requisito");
+        } catch (error) { console.error("Error:", error); }
+      }
+
+      // 2. Lógica de Guardado (SIN DUPLICADOS)
+      // Usamos .onsubmit para asegurarnos de que solo haya un controlador de evento
+      const form = document.getElementById('addRequisitoForm');
+      if (form) {
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
+          const projectId = document.getElementById('project_id').value;
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries());
+
+          try {
+            const response = await fetch(`/api/${projectId}/requisitos`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+              location.reload();
+            } else {
+              const result = await response.json();
+              alert(result.error || "Error al guardar");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        };
+      }
+
+      // 3. Funciones de navegación
+      function viewRequisito(id) { window.location.href = `/requisitos/${id}`; }
+      function editRequisito(id) { console.log("Editando:", id); }
+    </script>
   </body>
 </html>

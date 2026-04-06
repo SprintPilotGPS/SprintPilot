@@ -12,6 +12,7 @@ const requisitosData = [
     responsable: "Juan",
     descripcion: "Implementar autenticación JWT y funcionalidad de inicio de sesión y registro",
     project_id: "PR",
+    orden: 1,
   },
   {
     identificador: 1,
@@ -21,6 +22,7 @@ const requisitosData = [
     responsable: "María",
     descripcion: "Agregar índices y optimizar consultas lentas",
     project_id: "PR",
+    orden: 2,
   },
   {
     identificador: 0,

@@ -6,11 +6,9 @@ const Utils = require("./utils");
 const getAllRequisitos = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
-    
-    // Usamos project_id para que coincida con las rutas de tu compañero
     const project_id = req.params.project_id || req.params.id;
 
-    // Ordenamos por el campo 'orden' para que la vista respete los movimientos de las flechas
+    // Ordenamos por 'orden' para que la vista respete las flechas
     const requisitos = await Requisito.find({ project_id: project_id }).sort({ orden: 1 });
     
     res.render("requisitos", {
@@ -23,27 +21,26 @@ const getAllRequisitos = async (req, res) => {
     res.status(500).render("requisitos", {
       title: "Sprint Pilot",
       requisitos: [],
-      project_id: req.params.project_id,
+      project_id: req.params.project_id || req.params.id,
       error: "Error al cargar los datos",
     });
   }
 };
 
-// Mover requisito hacia arriba (Intercambio de orden con el superior inmediato)
+// Mover requisito hacia arriba
 const moverArriba = async (req, res) => {
   try {
+    Utils.printLog(req, true, false); // Log añadido
     const actual = await Requisito.findById(req.params.id);
     if (!actual) return res.status(404).send("No encontrado");
 
-    // Buscamos el requisito que tenga el orden inmediatamente inferior dentro del mismo proyecto
     const superior = await Requisito.findOne({ 
       project_id: actual.project_id, 
       orden: { $lt: actual.orden } 
     }).sort({ orden: -1 });
 
-    if (!superior) return res.sendStatus(200); // Ya es el primero, no hace nada
+    if (!superior) return res.sendStatus(200);
 
-    // Intercambiamos los valores de orden entre los dos
     const ordenTemporal = actual.orden;
     actual.orden = superior.orden;
     superior.orden = ordenTemporal;
@@ -58,21 +55,20 @@ const moverArriba = async (req, res) => {
   }
 };
 
-// Mover requisito hacia abajo (Intercambio de orden con el inferior inmediato)
+// Mover requisito hacia abajo
 const moverAbajo = async (req, res) => {
   try {
+    Utils.printLog(req, true, false); // Log añadido
     const actual = await Requisito.findById(req.params.id);
     if (!actual) return res.status(404).send("No encontrado");
 
-    // Buscamos el requisito que tenga el orden inmediatamente superior dentro del mismo proyecto
     const inferior = await Requisito.findOne({ 
       project_id: actual.project_id, 
       orden: { $gt: actual.orden } 
     }).sort({ orden: 1 });
 
-    if (!inferior) return res.sendStatus(200); // Ya es el último
+    if (!inferior) return res.sendStatus(200);
 
-    // Intercambiamos
     const ordenTemporal = actual.orden;
     actual.orden = inferior.orden;
     inferior.orden = ordenTemporal;
@@ -90,54 +86,48 @@ const moverAbajo = async (req, res) => {
 // Crear un nuevo requisito
 const createRequisito = async (req, res) => {
   try {
-    Utils.printLog(req, true, false);
-    const project_id = req.params.project_id;
-    const nombre = typeof req.body.nombre === "string" ? req.body.nombre.trim() : "";
+    const project_id = req.params.project_id; // El "PR" que viene de la URL
+    
+    // BUSQUEDA REAL: Si no existe el proyecto con ese identificador, ERROR.
+    const project = await Proyectos.findOne({ identificador: project_id });
 
-    // Validación de duplicados insensible a mayúsculas
-    const duplicated = await Requisito.findOne({
-      nombre: { $regex: new RegExp(`^${nombre}$`, "i") },
-      project_id: project_id
-    });
-
-    if (duplicated) {
-      return res.status(409).json({ success: false, error: "Ya existe un requisito con ese nombre" });
+    if (!project) {
+      // Si entra aquí, es que el SEED no se ejecutó bien o el ID en la URL está mal
+      return res.status(404).json({ 
+        success: false, 
+        error: `Error de Integridad: El proyecto '${project_id}' no existe en la base de datos.` 
+      });
     }
 
-    const project = await Proyectos.findOne({ identificador: project_id });
-    if (!project) return res.status(404).json({ success: false, error: "Proyecto no encontrado" });
-
-    // Calculamos el orden automático: buscar el último y sumar 1
+    // Lógica real de ordenación
     const ultimoRequisito = await Requisito.findOne({ project_id }).sort({ orden: -1 });
-    const nuevoOrden = ultimoRequisito ? ultimoRequisito.orden + 1 : 1;
+    const nuevoOrden = (ultimoRequisito && ultimoRequisito.orden) ? ultimoRequisito.orden + 1 : 1;
 
     const requisito = new Requisito({
-      identificador: project.num_requisitos + 1,
-      nombre: nombre,
+      identificador: project.num_requisitos + 1, // Contador real del proyecto
+      nombre: req.body.nombre,
       prioridad: req.body.prioridad,
       estado: req.body.estado,
       responsable: req.body.responsable,
       descripcion: req.body.descripcion,
       project_id: project_id,
-      orden: nuevoOrden // Campo fundamental para los botones de flechas
+      orden: nuevoOrden
     });
 
     await requisito.save();
     
-    // Actualizar el contador de requisitos del proyecto
+    // ACTUALIZACIÓN REAL: Incrementamos el contador del proyecto encontrado
     await Proyectos.updateOne(
-        { identificador: project_id }, 
-        { $inc: { num_requisitos: 1 } }
+      { identificador: project_id }, 
+      { $inc: { num_requisitos: 1 } }
     );
 
     res.status(201).json({ success: true, data: requisito });
   } catch (error) {
-    console.error("Error al crear requisito:", error);
-    res.status(400).json({ success: false, error: error.message });
+    console.error("ERROR EN DB:", error);
+    res.status(500).json({ success: false, error: "Error interno del servidor" });
   }
 };
-
-// Obtener requisito por ID
 const getRequisitoById = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
@@ -149,13 +139,12 @@ const getRequisitoById = async (req, res) => {
   }
 };
 
-// Actualizar requisito
 const updateRequisito = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
-    const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, { 
+        new: true, 
+        runValidators: true // Para que respete el Enum del Modelo
     });
     if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
     res.json({ success: true, data: requisito });
@@ -164,7 +153,6 @@ const updateRequisito = async (req, res) => {
   }
 };
 
-// Eliminar requisito
 const deleteRequisito = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
