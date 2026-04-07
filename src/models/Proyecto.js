@@ -20,6 +20,9 @@ const proyectoSchema = new mongoose.Schema({
     type: String, 
     trim: true,
     maxlength: 250   // Límite de 250 para la descripción
+  },
+  num_requisitos: {
+    type: Number
   }
 }, { timestamps: true });
 

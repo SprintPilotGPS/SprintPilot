@@ -1,18 +1,22 @@
 const Proyectos = require("../models/Proyecto");
+const Utils = require("./utils");
 
 // Para mostrar la lista de proyectos en la vista
 const getAllProyectos = async (req, res) => {
   try {
+    Utils.printLog(req, false, false);
+
     const projects = await Proyectos.find();
+
     res.render("projects", {
-      title: "Lista de Proyectos",
+      title: "SprintPilot - Proyectos",
       projects: projects,
     });
-    console.log("Enviado la lista de proyectos correctamente");
+    Utils.info("Enviado la lista de proyectos correctamente");
   } catch (error) {
-    console.error("Error: no se pudo cargar los proyectos");
+    console.error("Error: no se pudo cargar los proyectos", error);
     res.status(500).render("projects", {
-      title: "Error Lista de Proyectos",
+      title: "SprintPilot - Proyectos",
       projects: [],
       error: "No se pudo cargar la lista.",
     });
@@ -71,40 +75,42 @@ const createProject = async (req, res) => {
     if (duplicateId) {
       return res.status(409).json({
         success: false,
-        error: "Ya existe un proyecto con ese identificador.",
+        error: "Ya existe un proyecto con el mismo ID."
       });
     }
 
-    //Comprobar Nombre Duplicado (Insensible a mayúsculas)
-    const duplicateName = await Proyectos.findOne({ 
-      nombre: { $regex: new RegExp(`^${nombre}$`, "i") } 
+    // 3. Comprobamos si el NOMBRE ya existe (409) - ESTO ARREGLA TU TEST FALLIDO
+    const existeNombre = await Proyectos.findOne({ 
+      nombre: { $regex: new RegExp(`^${nombre.trim()}$`, 'i') } 
     });
-    if (duplicateName) {
+    
+    if (existeNombre) {
       return res.status(409).json({
         success: false,
-        error: "Ya existe un proyecto con ese nombre.",
+        error: "Ya existe un proyecto con el mismo nombre."
       });
     }
 
-    // Guardado en Base de Datos (Normalizamos el ID a Mayúsculas)
-    const p = new Proyectos({ 
-      identificador: id.toUpperCase(), 
-      nombre: nombre, 
-      descripcion: descripcion 
+    // Si todo está bien, creamos el proyecto
+    const nuevoProyecto = new Proyectos({
+      identificador: id.trim(),
+      nombre: nombre.trim(),
+      descripcion: descripcion ? descripcion.trim() : "",
+      num_requisitos: 0
     });
-    
-    await p.save();
-    
+
+    await nuevoProyecto.save();
+
     res.status(201).json({
       success: true,
-      data: p,
+      data: nuevoProyecto
     });
 
   } catch (error) {
     console.error("Error al crear proyecto:", error);
     res.status(500).json({
       success: false,
-      error: "Error interno al crear el proyecto. Vuelva a intentarlo.",
+      error: "Error al crear el proyecto. Vuelva a intentarlo."
     });
   }
 };

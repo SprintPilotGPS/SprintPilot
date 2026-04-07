@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <%- include('./partials/head') %>
-    <title>Proyectos - SprintPilot</title>
+    <title><%= title %></title>
   </head>
   <body>
     <!--style="background-color: #6a5acd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;"-->
@@ -24,7 +24,7 @@
         <div id="projects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
           <% if(projects && projects.length > 0) { %>
           <% projects.forEach(function(proj) { %>
-          <div class="p-4 card scale-card card-proj">
+          <a class="p-4 card scale-card card-proj text-decoration-none" href="/<%= proj.identificador %>/backlog">
             <div class="d-flex justify-content-between">
               <h2 class="mb-1"><%= proj.nombre %></h2>
               <p class="fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
@@ -34,10 +34,10 @@
               <% if(proj.descripcion == "") { %> No hay descripción. <% }else { %> <%=
               proj.descripcion %> <% }; %>
             </p>
-          </div>
+          </a>
           <% }); %>
           <% } else { %>
-          <p class="text-center text-black badge fs-2 bg-white" style="width: 100%;">No hay ningún proyecto.</p>
+          <p class="py-4 text-center text-black badge fs-2 bg-white" style="width: 100%;">No hay ningún proyecto.</p>
           <% } %>
         </div>
       </div>

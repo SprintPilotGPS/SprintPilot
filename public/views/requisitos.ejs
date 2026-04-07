@@ -2,18 +2,16 @@
 <html lang="es">
   <head>
     <%- include('./partials/head') %>
+    <title><%= title %></title>
   </head>
 
   <body>
-    <!-- navbar -->
     <%- include('./partials/navbar') %>
 
-    <!-- main container -->
     <div class="container-lg main-container">
-      <!-- tabla de requisitos -->
       <div class="table-card">
         <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
-          <span> Tareas de Sprint Recientes</span>
+          <span>Backlog de proyecto: Requisitos</span>
           <button
             type="button"
             class="btn btn-light btn-sm"
@@ -27,7 +25,7 @@
           <thead>
             <tr>
               <th>ID de Tarea</th>
-              <th>Nombre de Tarea</th>
+              <th>Nombre de Requisito</th>
               <th>Prioridad</th>
               <th>Estado</th>
               <th>Responsable</th>
@@ -38,7 +36,7 @@
             <% if (requisitos && requisitos.length > 0) { %>
             <% requisitos.forEach(function(req) { %>
             <tr>
-              <td><%= req.identificador %></td>
+              <td><%= project_id + "-" + req.identificador %></td>
               <td><%= req.nombre %></td>
               <td>
                 <%= req.prioridadIcono %>
@@ -48,12 +46,15 @@
               <td><%= req.responsable %></td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-view" onclick="viewRequisito('<%= req._id %>')">
-                    Ver
+                  <button class="btn btn-sm btn-light move-up">
+                    ⬆️
                   </button>
-                  <button class="btn btn-sm btn-edit" onclick="editRequisito('<%= req._id %>')">
-                    Editar
+                  <button class="btn btn-sm btn-light move-down">
+                    ⬇️
                   </button>
+                  <a class="btn btn-sm btn-view" href="/<%= project_id %>/requisitos/<%= req.identificador %>/view">Ver</a>
+                  <a class="btn btn-sm btn-edit" href="/<%= project_id %>/requisitos/<%= req.identificador %>/edit">Editar</a>
+                  <input type="hidden" value="<%= req.identificador %>">
                 </div>
               </td>
             </tr>
@@ -70,7 +71,6 @@
       </div>
     </div>
 
-    <!-- Modal: Add Requisito -->
     <div
       class="modal fade"
       id="addRequisitoModal"
@@ -133,6 +133,7 @@
                     placeholder="Detalle opcional"
                   ></textarea>
                 </div>
+                <input id="project_id" name="project_id" type="hidden" value="<%= project_id %>">
               </div>
             </div>
             <div class="modal-footer">
@@ -146,16 +147,15 @@
       </div>
     </div>
 
-    <!-- footer -->、
     <%- include('./partials/footer') %>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
       crossorigin="anonymous"
     ></script>
-    <script src="/js/main.js"></script>
+
+    <script src="/js/requisitosValidation.js"></script>
   </body>
 </html>
