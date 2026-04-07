@@ -44,10 +44,14 @@
       <div class="lista-sprints-pasados">
         <% if (sprintsPasados && sprintsPasados.length > 0) { %>
           <% sprintsPasados.forEach(s => { %>
-            <div class="sprint-card-faded mb-3">
-              <h3>Sprint #<%= s.identificador %></h3>
-              <p><strong>Objetivo:</strong> <%= s.sprintGoal %></p>
-            </div>
+            <a
+              href="/<%= project_id %>/sprint/<%= s.identificador %>"
+            >
+              <div class="sprint-card-faded mb-3">
+                <h3>Sprint #<%= s.identificador %></h3>
+                <p><strong>Objetivo:</strong> <%= s.sprintGoal %></p>
+              </div>
+            </a>
           <% }) %>
         <% } else { %>
           <p class="text-center text-white-50">No hay historial de sprints anteriores.</p>
