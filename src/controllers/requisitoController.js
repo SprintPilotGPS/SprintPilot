@@ -83,6 +83,18 @@ const moverAbajo = async (req, res) => {
   }
 };
 
+const getRequisitoEditForm = async (req, res) => {
+    try {
+        const requisito = await Requisito.findById(req.params.id);
+        if (!requisito) return res.status(404).send("No encontrado");
+        
+        // Renderiza la vista 'editarRequisito' (que crearemos en el paso 2)
+        res.render('editarRequisito', { requisito });
+    } catch (error) {
+        res.status(500).send("Error al cargar el formulario");
+    }
+};
+
 // Crear un nuevo requisito
 const createRequisito = async (req, res) => {
   try {
@@ -205,6 +217,7 @@ module.exports = {
   getAllRequisitos,
   createRequisito,
   getRequisitoById,
+  getRequisitoEditForm,
   updateRequisito,
   deleteRequisito,
   moverArriba,
