@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head', { pageStyles: ['projectsCss'] }) %>
+    <title>Proyectos - SprintPilot</title>
+  </head>
+  <body>
+    <!--style="background-color: #6a5acd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;"-->
+    <!-- navbar -->
+    <%- include('./partials/navbar') %>
+
+    <main>
+      <!--Container-->
+      <div class="proyect">
+        <!--Cabezado-->
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Proyectos</h2>
+          <a id="openModal" class="btn bg-primary text-white fw-bold"> + Nuevo </a>
+        </div>
+
+        <hr class="mt-1" />
+
+        <!--Proyectos-->
+        <div id="projects-cards" class="d-flex flex-start align-content-between flex-wrap gap-4">
+          <% if(projects && projects.length > 0) { %>
+          <% projects.forEach(function(proj) { %>
+          <a
+            class="p-4 card scale-card card-proj text-decoration-none"
+            href="/<%= proj.identificador %>/backlog"
+          >
+            <div class="d-flex justify-content-between">
+              <h2 class="mb-1"><%= proj.nombre %></h2>
+              <p class="fs-5 mb-1 align-self-center badge bg-primary"><%= proj.identificador %></p>
+            </div>
+            <hr />
+            <p>
+              <% if(proj.descripcion == "") { %> No hay descripción. <% }else { %> <%=
+              proj.descripcion %> <% }; %>
+            </p>
+          </a>
+          <% }); %>
+          <% } else { %>
+          <p class="py-4 text-center text-black badge fs-2 bg-white" style="width: 100%">
+            No hay ningún proyecto.
+          </p>
+          <% } %>
+        </div>
+      </div>
+
+      <%- include("partials/formProject") %>
+      <div id="noti" class="noti"></div>
+    </main>
+
+    <!-- footer -->、
+    <%- include('./partials/footer') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/projectValidation.js"></script>
+  </body>
+</html>

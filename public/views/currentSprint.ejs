@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head', { pageStyles: ['requisitosCss', 'sprintCss'] }) %>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include('./partials/navbar') %>
+
+    <main class="container-lg main-container">
+      <section class="table-card sprint-card">
+        <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
+          <span>Sprint actual: #<%= sprint ? sprint.identificador : '?' %></span>
+          <button id="openModal" type="button" class="btn btn-light btn-sm">+ Nuevo Sprint</button>
+        </div>
+
+        <div class="p-4">
+          <div class="row g-3">
+            <div class="col-12 col-lg-8">
+              <h3 class="section-title">Sprint Goal</h3>
+              <p class="section-content mb-0">
+                <%= sprint ? sprint.sprintGoal : 'No hay un objetivo definido para este sprint.' %>
+              </p>
+            </div>
+
+            <div class="col-12 col-lg-4">
+              <h3 class="section-title">Requisitos</h3>
+              <div class="sprint-metric-card">
+                <% if (sprint && sprint.num_requisitos > 0) { %>
+                <p class="mb-2">
+                  Este sprint tiene <strong><%= sprint.num_requisitos %></strong> requisitos.
+                </p>
+                <% } else { %>
+                <p class="mb-2">No hay requisitos asignados a este sprint.</p>
+                <% } %>
+                <a class="btn btn-outline-primary btn-sm" href="/<%= project_id %>/backlog"
+                  >Ir al Backlog</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sprintsPasados" class="table-card sprint-history-card">
+        <div class="table-header">
+          <span>Historial de Sprints</span>
+        </div>
+
+        <div class="p-3 p-md-4">
+          <div class="lista-sprints-pasados">
+            <% if (sprintsPasados && sprintsPasados.length > 0) { %> <% sprintsPasados.forEach(s =>
+            { %>
+            <div class="sprint-row-card">
+              <div>
+                <h3 class="mb-1">Sprint #<%= s.identificador %></h3>
+                <p class="mb-0 text-muted">
+                  <strong>Objetivo:</strong>
+                  <%= s.sprintGoal || 'Sin objetivo definido' %>
+                </p>
+              </div>
+              <button
+                class="btn btn-outline-primary btn-sm set-current-sprint"
+                data-sprint-id="<%= s._id %>"
+              >
+                Establecer como actual
+              </button>
+            </div>
+            <% }) %>
+            <% } else { %>
+            <p class="text-center text-muted mb-0 py-3">No hay historial de sprints anteriores.</p>
+            <% } %>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <%- include('./partials/formSprint') %>
+
+    <%- include('./partials/footer') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/SprintValidation.js"></script>
+  </body>
+</html>

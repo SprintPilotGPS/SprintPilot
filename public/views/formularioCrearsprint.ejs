@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head', { pageStyles: ['sprintCss'] }) %>
+    <title>Crear Sprint - SprintPilot</title>
+  </head>
+  <body
+    style="
+      background-color: #62cd5a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    "
+  >
+    <button id="openModal">Abrir Formulario</button>
+
+    <%- include('partials/formSprint') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/SprintValidation.js"></script>
+  </body>
+</html>

@@ -1,17 +1,10 @@
 const mongoose = require("mongoose");
 
-const counterSchema = new mongoose.Schema({
-  _id: { type: String, required: true },
-  seq: { type: Number, default: 0 },
-});
-const Counter = mongoose.models.Counter || mongoose.model("Counter", counterSchema);
-
 const requisitoSchema = new mongoose.Schema(
   {
     identificador: {
       type: Number,
       required: true,
-      unique: true,
       immutable: true,
     },
     nombre: {
@@ -23,6 +16,10 @@ const requisitoSchema = new mongoose.Schema(
       type: String,
       enum: ["high", "medium", "low"],
       default: "medium",
+    },
+    orden: {
+      type: Number,
+      required: true,
     },
     estado: {
       type: String,
@@ -37,13 +34,25 @@ const requisitoSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    project_id: {
+      type: String,
+      required: true,
+      immutable: true,
+    },
   },
   { timestamps: true }
 );
 
-requisitoSchema.pre("validate", async function nextId() {
+requisitoSchema.index(
+  { project_id: 1, identificador: 1 },
+  { unique: true, name: "project_id_1_identificador_1" }
+);
+/* requisitoSchema.pre("validate", async function nextId() {
   if (!this.isNew || this.identificador) return;
-
+  if (this.isNew && this.orden === undefined) {
+    const total = await mongoose.model("Requisito").countDocuments();
+    this.orden = total;
+  }
   const counter = await Counter.findByIdAndUpdate(
     "requisito_identificador",
     { $inc: { seq: 1 } },
@@ -51,6 +60,6 @@ requisitoSchema.pre("validate", async function nextId() {
   );
 
   this.identificador = counter.seq;
-});
+}); */
 
 module.exports = mongoose.model("Requisito", requisitoSchema);

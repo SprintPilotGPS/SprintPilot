@@ -1,34 +1,81 @@
 const Requisito = require("../models/Requisito");
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+const Proyectos = require("../models/Proyecto");
+const Utils = require("./utils");
 
 // conseguir todo los requisitos
 const getAllRequisitos = async (req, res) => {
   try {
-    const requisitos = await Requisito.find().sort({ fechaLimite: 1 });
-    res.render("index", {
+    Utils.printLog(req, true, false);
+
+    let project_id = req.params.id;
+
+    const requisitos = await Requisito.find({ project_id: project_id }).sort({ orden: 1 });
+    res.render("requisitos", {
       title: "Sprint Pilot",
       requisitos: requisitos,
+      project_id: project_id,
     });
   } catch (error) {
     console.error("Error al obtener requisitos:", error);
-    res.status(500).render("index", {
+    res.status(500).render("requisitos", {
       title: "Sprint Pilot",
       requisitos: [],
+      project_id: project_id,
       error: "Error al cargar los datos",
     });
+  }
+};
+// Mover requisito hacia arriba
+const moverArriba = async (req, res) => {
+  try {
+    const actual = await Requisito.findById(req.params.id);
+    if (!actual) return res.status(404).send("No encontrado");
+
+    const superior = await Requisito.findOne({ orden: actual.orden - 1 });
+    if (!superior) return res.sendStatus(200); // ya está arriba
+
+    // Intercambiar orden
+    await Requisito.updateOne({ _id: actual._id }, { orden: actual.orden - 1 });
+    await Requisito.updateOne({ _id: superior._id }, { orden: superior.orden + 1 });
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al mover arriba");
+  }
+};
+
+// Mover requisito hacia abajo
+const moverAbajo = async (req, res) => {
+  try {
+    const actual = await Requisito.findById(req.params.id);
+    if (!actual) return res.status(404).send("No encontrado");
+
+    const inferior = await Requisito.findOne({ orden: actual.orden + 1 });
+    if (!inferior) return res.sendStatus(200); // ya está abajo
+
+    // Intercambiar orden
+    await Requisito.updateOne({ _id: actual._id }, { orden: actual.orden + 1 });
+    await Requisito.updateOne({ _id: inferior._id }, { orden: inferior.orden - 1 });
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al mover abajo");
   }
 };
 
 const createRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
+    let project_id = req.params.project_id;
     const nombre = typeof req.body.nombre === "string" ? req.body.nombre.trim() : "";
 
     if (nombre) {
       const duplicatedRequisito = await Requisito.findOne({
-        nombre: { $regex: new RegExp(`^${escapeRegExp(nombre)}$`, "i") },
+        nombre: { $regex: new RegExp(`^${Utils.escapeRegExp(nombre)}$`, "i") },
+        project_id: project_id,
       });
 
       if (duplicatedRequisito) {
@@ -39,9 +86,33 @@ const createRequisito = async (req, res) => {
       }
     }
 
+    const project = await Proyectos.findOne({ identificador: project_id });
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+      });
+    }
+
+    const order = await Requisito.find({ project_id: project_id }).countDocuments();
+    Utils.info("Order of the requisito is: " + order);
+
     req.body.nombre = nombre;
-    const requisito = new Requisito(req.body);
+    let r = req.body;
+    const requisito = new Requisito({
+      identificador: project.num_requisitos + 1,
+      nombre: r.nombre,
+      prioridad: r.prioridad,
+      orden: order,
+      estado: r.estado,
+      responsable: r.responsable,
+      descripcion: r.descripcion,
+      project_id: r.project_id,
+    });
     await requisito.save();
+    await project.updateOne({ num_requisitos: project.num_requisitos + 1 });
+
+    Utils.info("The requisito has been created.")
+
     res.status(201).json({
       success: true,
       data: requisito,
@@ -58,6 +129,8 @@ const createRequisito = async (req, res) => {
 // Obtener requisito por ID
 const getRequisitoById = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     const requisito = await Requisito.findById(req.params.id);
     if (!requisito) {
       return res.status(404).json({
@@ -81,6 +154,8 @@ const getRequisitoById = async (req, res) => {
 // Actualizar requisito
 const updateRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -107,6 +182,8 @@ const updateRequisito = async (req, res) => {
 // Eliminar requisito
 const deleteRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
+
     const requisito = await Requisito.findByIdAndDelete(req.params.id);
     if (!requisito) {
       return res.status(404).json({
@@ -134,4 +211,6 @@ module.exports = {
   getRequisitoById,
   updateRequisito,
   deleteRequisito,
+  moverArriba,
+  moverAbajo,
 };
