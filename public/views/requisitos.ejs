@@ -2,6 +2,7 @@
 <html lang="es">
   <head>
     <%- include('./partials/head') %>
+    <title><%= title %></title>
   </head>
 
   <body>
@@ -45,18 +46,15 @@
               <td><%= req.responsable %></td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-light" onclick="moverArriba('<%= req._id %>')">
+                  <button class="btn btn-sm btn-light move-up">
                     ⬆️
                   </button>
-                  <button class="btn btn-sm btn-light" onclick="moverAbajo('<%= req._id %>')">
+                  <button class="btn btn-sm btn-light move-down">
                     ⬇️
                   </button>
-                  <button class="btn btn-sm btn-view" onclick="viewRequisito('<%= req._id %>')">
-                    Ver
-                  </button>
-                  <button class="btn btn-sm btn-edit" onclick="editRequisito('<%= req._id %>')">
-                    Editar
-                  </button>
+                  <a class="btn btn-sm btn-view" href="/<%= project_id %>/requisitos/<%= req.identificador %>/view">Ver</a>
+                  <a class="btn btn-sm btn-edit" href="/<%= project_id %>/requisitos/<%= req.identificador %>/edit">Editar</a>
+                  <input type="hidden" value="<%= req.identificador %>">
                 </div>
               </td>
             </tr>
@@ -158,64 +156,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script>
-      // 1. Lógica de Flechas (Movimiento)
-      async function moverArriba(id) {
-        try {
-          const response = await fetch(`/api/requisitos/${id}/mover-arriba`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-          });
-          if (response.ok) location.reload();
-          else alert("No se puede subir más este requisito");
-        } catch (error) { console.error("Error:", error); }
-      }
-
-      async function moverAbajo(id) {
-        try {
-          const response = await fetch(`/api/requisitos/${id}/mover-abajo`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-          });
-          if (response.ok) location.reload();
-          else alert("No se puede bajar más este requisito");
-        } catch (error) { console.error("Error:", error); }
-      }
-
-      // 2. Lógica de Guardado (SIN DUPLICADOS)
-      // Usamos .onsubmit para asegurarnos de que solo haya un controlador de evento
-      const form = document.getElementById('addRequisitoForm');
-      if (form) {
-        form.onsubmit = async (e) => {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-
-          const projectId = document.getElementById('project_id').value;
-          const formData = new FormData(form);
-          const data = Object.fromEntries(formData.entries());
-
-          try {
-            const response = await fetch(`/api/${projectId}/requisitos`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-              location.reload();
-            } else {
-              const result = await response.json();
-              alert(result.error || "Error al guardar");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        };
-      }
-
-      // 3. Funciones de navegación
-      function viewRequisito(id) { window.location.href = `/requisitos/${id}`; }
-      function editRequisito(id) { window.location.href = `/requisitos/edit/${id}` }
-    </script>
+    <script src="/js/requisitosValidation.js"></script>
   </body>
 </html>

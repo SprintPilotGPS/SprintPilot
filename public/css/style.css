@@ -189,6 +189,26 @@ footer {
   }
 }
 
+/* Estilos para la ver un requisito */
+.card-requisito{
+  background: white;
+  box-shadow: 0.3em 0.3em 0.75em 0.3em rgba(0, 0, 0, 0.4);
+}
+
+.card-requisito hr{
+  margin: auto;
+  margin-top: .2em;
+  width: 65%;
+  height: .15em;
+  background: linear-gradient(90deg,rgba(112, 64, 201, 1) 0%, rgba(88, 90, 219, 1) 25%, rgba(184, 87, 199, 1) 99%);
+  opacity: 1;
+}
+
+.card-requisito .req-body{
+  margin: auto;
+  width: 80%;
+}
+
 /* Estilos para proyecto */
 .proyect {
   margin: auto;

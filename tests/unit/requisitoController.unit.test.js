@@ -49,15 +49,20 @@ describe("requisitoController unit tests", () => {
   });
 
   test("getRequisitoById should return 404 when not found", async () => {
-    const req = { params: { id: "507f1f77bcf86cd799439011" } };
+    const req = { params: { project_id: "PR", id: "0" } };
     const res = mockRes();
 
     Requisito.findById.mockResolvedValue(null);
 
-    await controller.getRequisitoById(req, res);
+    await controller.viewRequisito(req, res);
 
-    // Como tu controlador ahora usa .send() en el 404
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.send).toHaveBeenCalledWith(expect.stringMatching(/no encontrado/i));
+    console.log(res.render);
+    expect(res.render).toHaveBeenCalledWith("requisitos", {
+      title: "Sprint Pilot - Backlog",
+      requisitos: [],
+      project_id: "PR",
+      error: "Requisitos con identificador: 0 no se a podido encontrar"
+    });
   });
 });

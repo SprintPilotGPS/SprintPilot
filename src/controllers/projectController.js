@@ -9,14 +9,14 @@ const getAllProyectos = async (req, res) => {
     const projects = await Proyectos.find();
 
     res.render("projects", {
-      title: "Lista de Proyectos",
+      title: "SprintPilot - Proyectos",
       projects: projects,
     });
     Utils.info("Enviado la lista de proyectos correctamente");
   } catch (error) {
     console.error("Error: no se pudo cargar los proyectos", error);
     res.status(500).render("projects", {
-      title: "Error Lista de Proyectos",
+      title: "SprintPilot - Proyectos",
       projects: [],
       error: "No se pudo cargar la lista.",
     });
