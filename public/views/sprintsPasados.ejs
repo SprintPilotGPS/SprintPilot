@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head', { pageStyles: ['sprintCss'] }) %>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include('./partials/navbar') %>
+
+    <main>
+      <div class="sprint">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Sprint #<%=sprint.identificador%></h2>
+        </div>
+
+        <hr class="mt-1" />
+
+        <div class="contenidoSprint">
+          <h3>Sprint Goal</h3>
+          <p class="mb-4">
+            <%=sprint.sprintGoal %>
+          </p>
+
+          <div class="d-flex align-items-center">
+            <h3 class="mb-0 me-5">Requisitos</h3>
+          </div>
+
+          <div class="requisitosSprint">
+            <% if (sprint && sprint.num_requisitos > 0) { %>
+                <p>Este sprint tiene <%= sprint.num_requisitos %> requisitos asignados.</p>
+                <% } else { %>
+                <h4>No hay requisitos asignados a este sprint aún.</h4>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/SprintValidation.js"></script>
+  </body>
+</html>

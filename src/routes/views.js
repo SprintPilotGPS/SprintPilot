@@ -13,4 +13,7 @@ router.get("/crear-sprint", (req, res) => {
 });
 
 router.get("/:project_id/sprints", sprintController.getSprintPage);
+
+router.get("/:project_id/sprint/:sprint_id", sprintController.getSprint);
+
 module.exports = router;
