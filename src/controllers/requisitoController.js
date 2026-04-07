@@ -86,56 +86,93 @@ const moverAbajo = async (req, res) => {
 // Crear un nuevo requisito
 const createRequisito = async (req, res) => {
   try {
-    const project_id = req.params.project_id; // El "PR" que viene de la URL
-    
-    // BUSQUEDA REAL: Si no existe el proyecto con ese identificador, ERROR.
+    const project_id = req.params.project_id;
+    const { nombre, prioridad, estado, responsable, descripcion } = req.body;
+
+    // 1. VALIDACIÓN PARA TEST (400): El nombre es obligatorio
+    if (!nombre || nombre.trim() === "") {
+      return res.status(400).json({ 
+        success: false, 
+        error: "ValidationError: El nombre del requisito es obligatorio." 
+      });
+    }
+
+    // BUSQUEDA DEL PROYECTO
     const project = await Proyectos.findOne({ identificador: project_id });
 
     if (!project) {
-      // Si entra aquí, es que el SEED no se ejecutó bien o el ID en la URL está mal
       return res.status(404).json({ 
         success: false, 
         error: `Error de Integridad: El proyecto '${project_id}' no existe en la base de datos.` 
       });
     }
 
-    // Lógica real de ordenación
+    // 2. VALIDACIÓN PARA TEST (409): No permitir nombres duplicados en el mismo proyecto
+    const existeNombre = await Requisito.findOne({ 
+      project_id, 
+      nombre: { $regex: new RegExp(`^${nombre.trim()}$`, 'i') } 
+    });
+    
+    if (existeNombre) {
+      return res.status(409).json({ 
+        success: false, 
+        error: "Ya existe un requisito con el mismo nombre en este proyecto." 
+      });
+    }
+
+    // Lógica de ordenación
     const ultimoRequisito = await Requisito.findOne({ project_id }).sort({ orden: -1 });
     const nuevoOrden = (ultimoRequisito && ultimoRequisito.orden) ? ultimoRequisito.orden + 1 : 1;
 
     const requisito = new Requisito({
-      identificador: project.num_requisitos + 1, // Contador real del proyecto
-      nombre: req.body.nombre,
-      prioridad: req.body.prioridad,
-      estado: req.body.estado,
-      responsable: req.body.responsable,
-      descripcion: req.body.descripcion,
+      identificador: (project.num_requisitos || 0) + 1,
+      nombre: nombre.trim(),
+      prioridad,
+      estado,
+      responsable,
+      descripcion,
       project_id: project_id,
       orden: nuevoOrden
     });
 
     await requisito.save();
     
-    // ACTUALIZACIÓN REAL: Incrementamos el contador del proyecto encontrado
+    // Incrementar el contador del proyecto
     await Proyectos.updateOne(
       { identificador: project_id }, 
       { $inc: { num_requisitos: 1 } }
     );
 
     res.status(201).json({ success: true, data: requisito });
+
   } catch (error) {
     console.error("ERROR EN DB:", error);
+    
+    // Si Mongoose lanza un error de validación que no capturamos antes
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
     res.status(500).json({ success: false, error: "Error interno del servidor" });
   }
 };
 const getRequisitoById = async (req, res) => {
   try {
-    Utils.printLog(req, true, false);
-    const requisito = await Requisito.findById(req.params.id);
-    if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
-    res.json({ success: true, data: requisito });
+    const { id } = req.params;
+    const requisito = await Requisito.findById(id);
+
+    if (!requisito) {
+      // CAMBIO: En lugar de .render('404'), mandamos un status y un mensaje
+      return res.status(404).send("Requisito no encontrado");
+    }
+
+    res.render('detalleRequisito', { 
+      requisito, 
+      project_id: requisito.project_id 
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error("Error al obtener detalle:", error);
+    res.status(500).send("Error interno del servidor");
   }
 };
 
