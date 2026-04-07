@@ -93,12 +93,16 @@ const createRequisito = async (req, res) => {
       });
     }
 
+    const order = await Requisito.find({ project_id: project_id }).countDocuments();
+    Utils.info("Order of the requisito is: " + order);
+
     req.body.nombre = nombre;
     let r = req.body;
     const requisito = new Requisito({
       identificador: project.num_requisitos + 1,
       nombre: r.nombre,
       prioridad: r.prioridad,
+      orden: order,
       estado: r.estado,
       responsable: r.responsable,
       descripcion: r.descripcion,
@@ -106,6 +110,8 @@ const createRequisito = async (req, res) => {
     });
     await requisito.save();
     await project.updateOne({ num_requisitos: project.num_requisitos + 1 });
+
+    Utils.info("The requisito has been created.")
 
     res.status(201).json({
       success: true,

@@ -2,66 +2,62 @@
 <html lang="es">
   <head>
     <%- include('./partials/head', { pageStyles: ['sprintCss'] }) %>
-    <title>Sprint - SprintPilot</title>
+    <title><%= title %></title>
   </head>
   <body>
-    <!--style="background-color: #6a5acd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;"-->
-    <!-- navbar -->
     <%- include('./partials/navbar') %>
 
     <main>
-      <!--Container-->
       <div class="sprint">
-        <!--Cabezado-->
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Sprint</h2>     <!--sprint.id o sprints.end de BBDD-->
+          <h2>Sprint #<%= sprint ? sprint.identificador : '?' %></h2> 
           <a id="openModal" class="btn bg-primary text-white fw-bold"> + Nuevo </a>
         </div>
 
         <hr class="mt-1" />
 
-        <!--Sprint Actual-->
         <div class="contenidoSprint">
           <h3>Sprint Goal</h3>
+          <p class="mb-4">
+            <%= sprint ? sprint.sprintGoal : 'No hay un objetivo definido para este sprint.' %>
+          </p>
 
           <div class="d-flex align-items-center">
-            <h3  class="mb-0 me-5">Requisitos</h3>     <!--sprint.id o sprints.end de BBDD-->
-            <a id="openModal" class="btn bg-primary text-white fw-bold"> Añadir </a>
+            <h3 class="mb-0 me-5">Requisitos</h3>
+            <a id="openModalRequisito" class="btn bg-primary text-white fw-bold"> Añadir </a>
           </div>
 
-          <!--Aquí luego añadirá un for que recorre los requisitos que tiene ese sprint-->
           <div class="requisitosSprint">
-            <h4>1. </h4>
-            <h4>2.</h4>
-            <h4>3.</h4>
-            <!--if(requisitos existe y length>0)
-                  forEach-->
+            <% if (sprint && sprint.num_requisitos > 0) { %>
+                <p>Este sprint tiene <%= sprint.num_requisitos %> requisitos asignados.</p>
+                <% } else { %>
+                <h4>No hay requisitos asignados a este sprint aún.</h4>
+            <% } %>
           </div>
-
         </div>
-
+      </div>
     </main>
 
+    <div id="sprintsPasados" class="sprints-pasados mt-5 container">
+      <h2 class="text-center mb-4">Sprints Pasados</h2>
 
-    <!--No se como se hace para que este enlace queda por encima de footer
-    ahora está volando ( osea cambia dependiendo de main)-->
-    <div class="sprint" style="text-align: center;">
-      <a href="/sprintsPasados" style="
-        text-decoration: underline;
-        font-weight: 500;
-        cursor: pointer;
-        color: #fff;
-      ">
-        <h3>Sprints Pasados</h3>
-      </a>
+      <div class="lista-sprints-pasados">
+        <% if (sprintsPasados && sprintsPasados.length > 0) { %>
+          <% sprintsPasados.forEach(s => { %>
+            <div class="sprint-card-faded mb-3">
+              <h3>Sprint #<%= s.identificador %></h3>
+              <p><strong>Objetivo:</strong> <%= s.sprintGoal %></p>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p class="text-center text-white-50">No hay historial de sprints anteriores.</p>
+        <% } %>
+      </div>
     </div>
 
-
-
-    <!-- footer -->、
     <%- include('./partials/footer') %>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/js/projectValidation.js"></script>
+    <script src="/js/SprintValidation.js"></script>
   </body>
 </html>

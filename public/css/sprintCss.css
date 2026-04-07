@@ -31,3 +31,28 @@
     width: 95%;
   }
 }
+.sprints-pasados {
+  padding: 20px;
+}
+
+.lista-sprints-pasados {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sprint-card-faded {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #ffffff20; /* blanco translúcido */
+  border: 1px solid #ffffff40;
+  filter: grayscale(100%);
+  opacity: 0.6;
+  transition: 0.3s ease;
+}
+
+.sprint-card-faded:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+  cursor: pointer;
+}

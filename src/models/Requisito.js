@@ -17,6 +17,10 @@ const requisitoSchema = new mongoose.Schema(
       enum: ["high", "medium", "low"],
       default: "medium",
     },
+    orden: {
+      type: Number,
+      required: true,
+    },
     estado: {
       type: String,
       enum: ["in-progress", "pending", "completed"],
@@ -34,10 +38,6 @@ const requisitoSchema = new mongoose.Schema(
       type: String,
       required: true,
       immutable: true,
-    },
-    orden: {
-      type: Number,
-      required: true,
     },
   },
   { timestamps: true }

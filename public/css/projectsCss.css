@@ -41,19 +41,6 @@
   background-color: var(--secondary-color);
 }
 
-.noti {
-  position: fixed;
-  top: 5em;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  display: flex;
-  width: fit-content;
-  margin: auto;
-  justify-content: center;
-  visibility: hidden;
-}
-
 @media (max-width: 992px) {
   .card-proj {
     width: 46%;
