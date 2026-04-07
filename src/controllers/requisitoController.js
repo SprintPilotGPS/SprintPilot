@@ -196,7 +196,8 @@ const updateRequisito = async (req, res) => {
         runValidators: true // Para que respete el Enum del Modelo
     });
     if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
-    res.json({ success: true, data: requisito });
+
+    res.redirect(`/${requisito.project_id}/backlog`);
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
