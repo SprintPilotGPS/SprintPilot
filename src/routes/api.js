@@ -21,5 +21,6 @@ router.delete("/requisitos/:id", requisitoController.deleteRequisito);
 // Estas son las que llaman tus botones de la interfaz
 router.post("/requisitos/:id/mover-arriba", requisitoController.moverArriba);
 router.post("/requisitos/:id/mover-abajo", requisitoController.moverAbajo);
+router.post('/requisitos/update/:id', requisitoController.updateRequisito);
 
 module.exports = router;
