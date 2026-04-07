@@ -31,6 +31,31 @@ const getSprintPage = async (req, res) => {
   }
 };
 
+const getSprint = async (req, res) => {
+  try {
+    const { project_id } = req.params; 
+    const { sprint_id } =req.params;
+    printLog(req, true, false); 
+
+    //Buscamos sprints que correspondan al proyecto
+    const sprint = await Sprint.findOne({ project_id: project_id, identificador: sprint_id});
+    console.log(sprint);
+    res.render("sprintsPasados", {
+      title: "Sprints del Proyecto",
+      project_id: project_id, 
+      sprint: sprint,
+    });
+
+  } catch (error) {
+    console.error("❌ Error grave en getSprintPage:", error.message);
+    res.status(500).render("sprintsPasados", {
+      title: "Error",
+      sprint: null,
+      error: "Error al cargar los datos."
+    });
+  }
+};
+
 const createSprint = async (req, res) => {
   try {
     printLog(req, true, false);
@@ -120,6 +145,7 @@ const setCurrentSprint = async (req, res) => {
 
 module.exports = {
   getSprintPage,
+  getSprint,
   createSprint,
   setCurrentSprint,
 };
