@@ -13,7 +13,7 @@ router.post("/:project_id/requisitos", requisitoController.createRequisito);
 
 // Obtener, actualizar o eliminar un requisito específico
 // Nota: El :id es el ID de MongoDB (_id)
-router.get("/:project_id/requisitos/:id", requisitoController.getRequisitoById);
+router.get("/:project_id/requisitos/:id", requisitoController.viewRequisito);
 router.put("/:project_id/requisitos/:id", requisitoController.updateRequisito);
 router.delete("/:project_id/requisitos/:id", requisitoController.deleteRequisito);
 

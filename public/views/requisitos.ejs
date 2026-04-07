@@ -45,18 +45,14 @@
               <td><%= req.responsable %></td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-light" onclick="moverArriba('<%= req._id %>')">
+                  <button class="btn btn-sm btn-light" onclick="moverArriba('<%= req.identificador %>')">
                     ⬆️
                   </button>
-                  <button class="btn btn-sm btn-light" onclick="moverAbajo('<%= req._id %>')">
+                  <button class="btn btn-sm btn-light" onclick="moverAbajo('<%= req.identificador %>')">
                     ⬇️
                   </button>
-                  <button class="btn btn-sm btn-view" onclick="viewRequisito('<%= req._id %>')">
-                    Ver
-                  </button>
-                  <button class="btn btn-sm btn-edit" onclick="editRequisito('<%= req._id %>')">
-                    Editar
-                  </button>
+                  <a class="btn btn-sm btn-view" href="/<%= project_id %>/requisitos/<%= req.identificador %>/view">Ver</a>
+                  <a class="btn btn-sm btn-edit" href="/<%= project_id %>/requisitos/<%= req.identificador %>/edit">Editar</a>
                 </div>
               </td>
             </tr>
