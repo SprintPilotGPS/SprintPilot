@@ -1,5 +1,4 @@
 // SprintPilot - Script de interacción frontend
-/* global $, bootstrap */
 
 // Ver detalles del requisito
 window.viewRequisito = function (id) {
@@ -23,14 +22,23 @@ window.viewRequisito = function (id) {
 
 /* Para odenar los requisitos */
 window.moverArriba = function (id) {
-  fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" })
-    .then(() => location.reload());
+  fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" }).then(() => location.reload());
 };
 window.moverAbajo = function (id) {
-  fetch(`/api/requisitos/${id}/mover-abajo`, { method: "POST" })
-    .then(() => location.reload());
+  let project_id = document.querySelector("#project_id").value;
+  $.ajax({
+    url: `/api/${project_id}/requisitos/${id}/mover-abajo`,
+    method: "POST",
+  })
+    .done(() => {
+      location.reload();
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      const error = errorThrown || textStatus;
+      console.error("Error:", error);
+      alert("Error al mover la tarea hacia abajo");
+    });
 };
-
 
 // Editar requisito
 window.editRequisito = function (id) {
@@ -42,8 +50,9 @@ window.editRequisito = function (id) {
 // Eliminar requisito
 window.deleteRequisito = function (id) {
   if (confirm("¿Está seguro de que desea eliminar esta tarea?")) {
+    let project_id = document.querySelector("#project_id").value;
     $.ajax({
-      url: `/api/${id}/requisitos`,
+      url: `/api/${project_id}/requisitos/${id}`,
       method: "DELETE",
     })
       .done((data) => {
@@ -66,66 +75,87 @@ function showCreate(res) {
   let noti = document.querySelector("#noti");
   let table = document.querySelector("#table-body");
 
-  if(res.success){
+  if (res.success) {
     noti.innerHTML = `<p class="badge bg-success fs-5">Requisito creado correctamente</p>`;
 
     let classEstado;
-    if(res.data.estado.toLowerCase() == "pending")
-      classEstado = "bg-secondary";
-    else if(res.data.estado.toLowerCase() == "in-progress")
-      classEstado = "bg-primary";
-    else
-      classEstado= "bg-success";
+    if (res.data.estado.toLowerCase() == "pending") classEstado = "bg-secondary";
+    else if (res.data.estado.toLowerCase() == "in-progress") classEstado = "bg-primary";
+    else classEstado = "bg-success";
 
     let classPrioridad;
-    if(res.data.prioridad.toLowerCase() == "high")
-      classPrioridad = "bg-danger";
-    else if(res.data.prioridad.toLowerCase() == "medium")
-      classPrioridad = "bg-warning";
-    else 
-      classPrioridad = "bg-info";
+    if (res.data.prioridad.toLowerCase() == "high") classPrioridad = "bg-danger";
+    else if (res.data.prioridad.toLowerCase() == "medium") classPrioridad = "bg-warning";
+    else classPrioridad = "bg-info";
 
-    let requisito = `
+    let requisito =
+      `
       <tr>
-        <td>`+ res.data.project_id + `-` + res.data.identificador  +`</td>
-        <td>`+ res.data.nombre +`</td>
+        <td>` +
+      res.data.project_id +
+      `-` +
+      res.data.identificador +
+      `</td>
+        <td>` +
+      res.data.nombre +
+      `</td>
         <td class="text-center">
-          <span class="badge fw-bold `+ classPrioridad +`">`+ res.data.prioridad +`</span>
+          <span class="badge fw-bold ` +
+      classPrioridad +
+      `">` +
+      res.data.prioridad +
+      `</span>
         </td>
         <td class="text-center">
-          <span class="status-badge fw-bold text-white `+ classEstado +`">`+ res.data.estado + `</span>
+          <span class="status-badge fw-bold text-white ` +
+      classEstado +
+      `">` +
+      res.data.estado +
+      `</span>
         </td>
-        <td>`+ res.data.responsable +`</td>
+        <td>` +
+      res.data.responsable +
+      `</td>
         <td>
           <div class="action-buttons">
-            <button class="btn btn-sm btn-light" onclick="moverArriba('`+ res.data.identificador +`')">
+            <button class="btn btn-sm btn-light" onclick="moverArriba('` +
+      res.data.identificador +
+      `')">
               ⬆️
             </button>
-            <button class="btn btn-sm btn-light" onclick="moverAbajo('`+ res.data.identificador +`')">
+            <button class="btn btn-sm btn-light" onclick="moverAbajo('` +
+      res.data.identificador +
+      `')">
               ⬇️
             </button>
-            <button class="btn btn-sm btn-view" onclick="viewRequisito('`+ res.data.identificador +`')">
+            <button class="btn btn-sm btn-view" onclick="viewRequisito('` +
+      res.data.identificador +
+      `')">
               Ver
             </button>
-            <button class="btn btn-sm btn-edit" onclick="editRequisito('`+ res.data.identificador +`')">
+            <button class="btn btn-sm btn-edit" onclick="editRequisito('` +
+      res.data.identificador +
+      `')">
               Editar
             </button>
           </div>
         </td>
       </tr>
     `;
-    if(document.querySelector("#empty") == null)
-      table.innerHTML += requisito;
-    else
-      table.innerHTML = requisito;
+    if (document.querySelector("#empty") == null) table.innerHTML += requisito;
+    else table.innerHTML = requisito;
 
-    bootstrap.Modal.getOrCreateInstance(document.querySelector("#addRequisitoModal")).hide();
-  }else{
-    noti.innerHTML = `<p class="badge bg-warning fs-5">`+ res.error +`</p>`;
+    const addModalEl = document.querySelector("#addRequisitoModal");
+    const bootstrapLib = window.bootstrap;
+    if (addModalEl && bootstrapLib && bootstrapLib.Modal) {
+      bootstrapLib.Modal.getOrCreateInstance(addModalEl).hide();
+    }
+  } else {
+    noti.innerHTML = `<p class="badge bg-warning fs-5">` + res.error + `</p>`;
   }
   noti.classList.add("show");
   setTimeout(() => noti.classList.remove("show"), 5000);
-};
+}
 
 // Inicialización después de que se cargue la página
 $(function () {
@@ -144,7 +174,7 @@ $(function () {
       project_id: project_id,
     };
     $.ajax({
-      url: "/api/"+project_id+"/requisitos",
+      url: "/api/" + project_id + "/requisitos",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(payload),
@@ -157,7 +187,7 @@ $(function () {
           jqXHR.responseJSON && jqXHR.responseJSON.error
             ? jqXHR.responseJSON.error
             : "Error al crear la tarea";
-        showCreate({success: false, error: message});
+        showCreate({ success: false, error: message });
       });
   });
 });

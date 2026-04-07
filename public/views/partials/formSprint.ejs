@@ -3,26 +3,33 @@
 
   <form id="sprintForm">
     <div class="mb-3">
-      <label class="form-label" for="fechaInicio">Fecha de inicio:</label>
-      <input 
-        class="form-control" 
-        type="date" 
-        id="fechaInicio" 
-        name="fechaInicio" 
-        required 
+      <label class="form-label" for="identificador">Identificador (opcional):</label>
+      <input
+        class="form-control"
+        type="number"
+        min="1"
+        id="identificador"
+        name="identificador"
+        placeholder="Si lo dejas vacío, se asigna automáticamente"
       />
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="fechaFin">Fecha de fin:</label>
-      <input 
-        class="form-control" 
-        type="date" 
-        id="fechaFin" 
-        name="fechaFin" 
-        required 
-      />
+      <label class="form-label" for="sprintGoal">Sprint Goal:</label>
+      <textarea
+        class="form-control"
+        id="sprintGoal"
+        name="sprintGoal"
+        rows="3"
+        placeholder="Objetivo principal de este sprint"
+      ></textarea>
     </div>
+
+    <input
+      id="project_id"
+      type="hidden"
+      value="<%= typeof project_id !== 'undefined' ? project_id : '' %>"
+    />
 
     <div class="d-flex justify-content-around mt-4">
       <button class="btn btn-primary" type="submit">Crear Sprint</button>

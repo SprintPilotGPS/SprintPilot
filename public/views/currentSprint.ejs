@@ -10,7 +10,7 @@
     <main>
       <div class="sprint">
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Sprint #<%= sprint ? sprint.identificador : '?' %></h2> 
+          <h2>Sprint #<%= sprint ? sprint.identificador : '?' %></h2>
           <a id="openModal" class="btn bg-primary text-white fw-bold"> + Nuevo </a>
         </div>
 
@@ -29,9 +29,9 @@
 
           <div class="requisitosSprint">
             <% if (sprint && sprint.num_requisitos > 0) { %>
-                <p>Este sprint tiene <%= sprint.num_requisitos %> requisitos asignados.</p>
-                <% } else { %>
-                <h4>No hay requisitos asignados a este sprint aún.</h4>
+            <p>Este sprint tiene <%= sprint.num_requisitos %> requisitos asignados.</p>
+            <% } else { %>
+            <h4>No hay requisitos asignados a este sprint aún.</h4>
             <% } %>
           </div>
         </div>
@@ -42,22 +42,29 @@
       <h2 class="text-center mb-4">Sprints Pasados</h2>
 
       <div class="lista-sprints-pasados">
-        <% if (sprintsPasados && sprintsPasados.length > 0) { %>
-          <% sprintsPasados.forEach(s => { %>
-            <a
+        <% if (sprintsPasados && sprintsPasados.length > 0) { %> <% sprintsPasados.forEach(s => { %>
+        <a
               href="/<%= project_id %>/sprint/<%= s.identificador %>"
             >
-              <div class="sprint-card-faded mb-3">
-                <h3>Sprint #<%= s.identificador %></h3>
-                <p><strong>Objetivo:</strong> <%= s.sprintGoal %></p>
-              </div>
-            </a>
-          <% }) %>
+        <div class="sprint-card-faded mb-3">
+          <h3>Sprint #<%= s.identificador %></h3>
+          <p>
+            <strong>Objetivo:</strong>
+            <%= s.sprintGoal %>
+          </p>
+          <button class="btn btn-light btn-sm set-current-sprint" data-sprint-id="<%= s._id %>">
+            Establecer como actual
+          </button>
+        </div>
+      </a>
+        <% }) %>
         <% } else { %>
-          <p class="text-center text-white-50">No hay historial de sprints anteriores.</p>
+        <p class="text-center text-white-50">No hay historial de sprints anteriores.</p>
         <% } %>
       </div>
     </div>
+
+    <%- include('./partials/formSprint') %>
 
     <%- include('./partials/footer') %>
 

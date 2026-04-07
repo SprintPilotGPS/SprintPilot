@@ -26,9 +26,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// Add here the routes to the different views
-app.get("/{:id}/backlog", (req, res) => {
-  res.render("requisitos");
-});
-
 module.exports = app;

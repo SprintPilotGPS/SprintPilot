@@ -1,58 +1,86 @@
 $(function () {
-    console.log("Controlador de Sprints cargado");
+  console.log("Controlador de Sprints cargado");
 
-    // Referencia al elemento <dialog>
-    const modal = document.getElementById('sprintModal');
+  const modal = document.getElementById("sprintModal");
 
-    // 1. Abrir el modal cuando se pulsa el botón
-    $('#openModal').on('click', function() {
+  $("#openModal").on("click", function () {
+    if (modal) {
+      modal.showModal();
+    }
+  });
+
+  $("#closeSprintModal").on("click", function () {
+    if (modal) {
+      modal.close();
+    }
+  });
+
+  $("#sprintForm").on("submit", function (event) {
+    event.preventDefault();
+
+    const projectId = $("#project_id").val();
+    if (!projectId) {
+      alert("No se encontró el proyecto para crear el sprint.");
+      return;
+    }
+
+    const rawIdentificador = $("#identificador").val().trim();
+    const parsedIdentificador = Number(rawIdentificador);
+
+    const payload = {
+      identificador:
+        rawIdentificador !== "" && Number.isInteger(parsedIdentificador) && parsedIdentificador > 0
+          ? parsedIdentificador
+          : undefined,
+      sprintGoal: $("#sprintGoal").val().trim(),
+    };
+
+    $.ajax({
+      url: `/api/${encodeURIComponent(projectId)}/sprints`,
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(payload),
+    })
+      .done(() => {
+        alert("Sprint creado y marcado como actual.");
         if (modal) {
-            modal.showModal();
+          modal.close();
         }
-    });
+        this.reset();
+        location.reload();
+      })
+      .fail((jqXHR) => {
+        const errorMsg =
+          jqXHR.responseJSON && jqXHR.responseJSON.error
+            ? jqXHR.responseJSON.error
+            : "Error al guardar el sprint";
+        alert(errorMsg);
+      });
+  });
 
-    // 2. Cerrar el modal cuando se pulsa el botón Cancelar
-    $('#closeSprintModal').on('click', function() {
-        if (modal) {
-            modal.close();
-        }
-    });
+  $(".set-current-sprint").on("click", function () {
+    const projectId = $("#project_id").val();
+    const sprintId = $(this).data("sprintId");
 
-    // 3. Envío del formulario mediante AJAX de jQuery
-    $('#sprintForm').on('submit', function (event) {
-        // Evitamos que el formulario recargue la página
-        event.preventDefault();
+    if (!projectId || !sprintId) {
+      alert("No se pudo cambiar el sprint actual.");
+      return;
+    }
 
-        // Recogemos únicamente los datos de las fechas (sin inventar campos)
-        const payload = {
-            fechaInicio: $('#fechaInicio').val(),
-            fechaFin: $('#fechaFin').val()
-        };
-
-        // Realizamos la petición POST al servidor
-        $.ajax({
-            url: "/api/sprints", // Endpoint para guardar sprints
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(payload),
-        })
-        .done((response) => {
-            // Si todo va bien (el servidor responde éxito)
-            alert("¡Sprint creado con éxito!");
-            
-            if (modal) {
-                modal.close(); // Cerramos el modal
-            }
-            this.reset(); // Limpiamos las fechas del formulario
-            location.reload(); // Recargamos la pantalla para ver el nuevo sprint
-        })
-        .fail((jqXHR) => {
-            // Si el servidor devuelve un error
-            const errorMsg = jqXHR.responseJSON && jqXHR.responseJSON.error 
-                             ? jqXHR.responseJSON.error 
-                             : "Error al guardar el sprint";
-            alert(errorMsg);
-            console.error("Detalle del error:", jqXHR.responseText);
-        });
-    });
+    $.ajax({
+      url: `/api/${encodeURIComponent(projectId)}/sprints/${encodeURIComponent(sprintId)}/current`,
+      method: "PUT",
+    })
+      .done(() => {
+        alert("Sprint actual actualizado correctamente.");
+        location.reload();
+      })
+      .fail((jqXHR) => {
+        const errorMsg =
+          jqXHR.responseJSON && jqXHR.responseJSON.error
+            ? jqXHR.responseJSON.error
+            : "No se pudo cambiar el sprint actual";
+        alert(errorMsg);
+      });
+  });
 });
