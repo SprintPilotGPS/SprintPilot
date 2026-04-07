@@ -14,14 +14,17 @@
       <div class="table-card">
         <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
           <span>Backlog de proyecto: Requisitos</span>
-          <button
-            type="button"
-            class="btn btn-light btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target="#addRequisitoModal"
-          >
-            Add Requisito
-          </button>
+          <div class="d-flex gap-2">
+            <a href="/<%= project_id %>/sprints" class="btn btn-outline-light btn-sm">Ver Sprints</a>
+            <button
+              type="button"
+              class="btn btn-light btn-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#addRequisitoModal"
+            >
+              Add Requisito
+            </button>
+          </div>
         </div>
         <table class="table table-hover">
           <thead>
@@ -177,12 +180,5 @@
       crossorigin="anonymous"
     ></script>
     <script src="/js/requisitosValidation.js"></script>
-========
-    <script src="/js/main.js"></script>
-    <script>
-  console.log("ESTE SCRIPT SE EJECUTA");
-</script>
-
->>>>>>>> origin/DEV-SP22-Crear-botones-ordenar-requisitos-manualmente:public/views/requisitos_index.ejs
   </body>
 </html>
