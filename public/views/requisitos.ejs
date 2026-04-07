@@ -162,7 +162,8 @@
       // 1. Lógica de Flechas (Movimiento)
       async function moverArriba(id) {
         try {
-          const response = await fetch(`/api/requisitos/${id}/mover-arriba`, {
+          const project_id = document.querySelector("#project_id").value;
+          const response = await fetch(`/api/${project_id}/requisitos/${id}/mover-arriba`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
           });
@@ -173,7 +174,8 @@
 
       async function moverAbajo(id) {
         try {
-          const response = await fetch(`/api/requisitos/${id}/mover-abajo`, {
+          const project_id = document.querySelector("#project_id").value;
+          const response = await fetch(`/api/${project_id}/requisitos/${id}/mover-abajo`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
           });
@@ -214,8 +216,8 @@
       }
 
       // 3. Funciones de navegación
-      function viewRequisito(id) { window.location.href = `/requisitos/${id}`; }
-      function editRequisito(id) { window.location.href = `/requisitos/edit/${id}` }
+      function viewRequisito(id) { window.location.href = `requisitos/${id}`; }
+      function editRequisito(id) { window.location.href = `requisitos/edit/${id}` }
     </script>
   </body>
 </html>
