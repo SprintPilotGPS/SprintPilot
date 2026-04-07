@@ -1,5 +1,4 @@
 // SprintPilot - Script de interacción frontend
-/* global $, bootstrap */
 
 // Ver detalles del requisito
 window.viewRequisito = function (id) {
@@ -146,7 +145,11 @@ function showCreate(res) {
     if (document.querySelector("#empty") == null) table.innerHTML += requisito;
     else table.innerHTML = requisito;
 
-    bootstrap.Modal.getOrCreateInstance(document.querySelector("#addRequisitoModal")).hide();
+    const addModalEl = document.querySelector("#addRequisitoModal");
+    const bootstrapLib = window.bootstrap;
+    if (addModalEl && bootstrapLib && bootstrapLib.Modal) {
+      bootstrapLib.Modal.getOrCreateInstance(addModalEl).hide();
+    }
   } else {
     noti.innerHTML = `<p class="badge bg-warning fs-5">` + res.error + `</p>`;
   }

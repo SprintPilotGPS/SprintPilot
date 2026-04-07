@@ -20,4 +20,5 @@ router.post("/requisitos/:id/mover-abajo", requisitoController.moverAbajo);
 
 //API route for sprints
 router.post("/:project_id/sprints", sprintController.createSprint);
+router.put("/:project_id/sprints/:sprint_id/current", sprintController.setCurrentSprint);
 module.exports = router;
