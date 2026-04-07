@@ -19,7 +19,7 @@ describe("Proyecto API Tests", () => {
   describe("POST /api/projects", () => {
     test("should create a new proyecto", async () => {
       const proyecto = {
-        id: "test-001",
+        id: "test",
         nombre: "Test Proyecto",
         descripcion: "test integral",
       };
@@ -36,8 +36,8 @@ describe("Proyecto API Tests", () => {
     });
 
     test("should return 409 when nombre already exists", async () => {
-      const p1 = { id: "p-01", nombre: "Repetido" };
-      const p2 = { id: "p-02", nombre: "Repetido" };
+      const p1 = { id: "proyecto1", nombre: "Repetido" };
+      const p2 = { id: "proyecto2", nombre: "Repetido" };
 
       await request(app).post("/api/projects").send(p1).expect(201);
       const res = await request(app).post("/api/projects").send(p2).expect(409);
@@ -47,8 +47,8 @@ describe("Proyecto API Tests", () => {
     });
 
     test("should return 409 when id already exists", async () => {
-      const p1 = { id: "id-unico", nombre: "Proyecto 1" };
-      const p2 = { id: "id-unico", nombre: "Proyecto 2" };
+      const p1 = { id: "idunico", nombre: "Proyecto 1" };
+      const p2 = { id: "idunico", nombre: "Proyecto 2" };
 
       await request(app).post("/api/projects").send(p1).expect(201);
       const res = await request(app).post("/api/projects").send(p2).expect(409);
