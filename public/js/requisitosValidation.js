@@ -20,16 +20,38 @@ window.viewRequisito = function (id) {
       alert("Error al obtener detalles de la tarea");
     });
 };
+
 window.moverArriba = function (id) {
-  fetch(`/api/requisitos/${id}/mover-arriba`, { method: "POST" })
-    .then(() => location.reload());
+  let project_id = document.querySelector("#project_id").value;
+  $.ajax({
+    url: `/api/${project_id}/requisitos/${id}/mover-arriba`,
+    method: "POST",
+  })
+    .done(() => {
+      location.reload();
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      const error = errorThrown || textStatus;
+      console.error("Error:", error);
+      alert("Error al mover la tarea hacia arriba");
+    });
 };
 
 window.moverAbajo = function (id) {
-  fetch(`/api/requisitos/${id}/mover-abajo`, { method: "POST" })
-    .then(() => location.reload());
+  let project_id = document.querySelector("#project_id").value;
+  $.ajax({
+    url: `/api/${project_id}/requisitos/${id}/mover-abajo`,
+    method: "POST",
+  })
+    .done(() => {
+      location.reload();
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      const error = errorThrown || textStatus;
+      console.error("Error:", error);
+      alert("Error al mover la tarea hacia abajo");
+    });
 };
-
 
 // Editar requisito
 window.editRequisito = function (id) {
@@ -41,8 +63,9 @@ window.editRequisito = function (id) {
 // Eliminar requisito
 window.deleteRequisito = function (id) {
   if (confirm("¿Está seguro de que desea eliminar esta tarea?")) {
+    let project_id = document.querySelector("#project_id").value;
     $.ajax({
-      url: `/api/${id}/requisitos`,
+      url: `/api/${project_id}/requisitos/${id}`,
       method: "DELETE",
     })
       .done((data) => {
@@ -78,7 +101,7 @@ $(function () {
       project_id: project_id,
     };
     $.ajax({
-      url: "/api/"+project_id+"/requisitos",
+      url: "/api/" + project_id + "/requisitos",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(payload),
