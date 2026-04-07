@@ -1,7 +1,7 @@
 const Proyectos = require("../models/Proyecto");
 const Utils = require("./utils");
 
-// To obtain the list of all projects
+// Para mostrar la lista de proyectos en la vista
 const getAllProyectos = async (req, res) => {
   try {
     Utils.printLog(req, false, false);
@@ -23,22 +23,56 @@ const getAllProyectos = async (req, res) => {
   }
 };
 
-// Create a new project from scratch
+// Crear un nuevo proyecto (desde el formulario)
 const createProject = async (req, res) => {
   try {
-    const { id, nombre, descripcion } = req.body;
+    // 1. Limpieza inicial y extracción (evitamos errores si algo viene undefined)
+    const id = req.body.id ? req.body.id.trim() : "";
+    const nombre = req.body.nombre ? req.body.nombre.trim() : "";
+    const descripcion = req.body.descripcion ? req.body.descripcion.trim() : "";
 
-    // 1. PRIMERO validamos que existan los datos para evitar el error de .trim()
+    // Validación de campos obligatorios
     if (!id || !nombre) {
       return res.status(400).json({
         success: false,
-        error: "El ID y el nombre son obligatorios."
+        error: "El ID y el Nombre son obligatorios.",
       });
     }
 
-    // 2. Comprobamos si el ID ya existe (409)
-    const existeId = await Proyectos.findOne({ identificador: id.trim() });
-    if (existeId) {
+    // REGEX: Solo letras y números, sin espacios ni símbolos (Corrige los "IDs extraños")
+    const idRegex = /^[A-Z0-9]+$/i; 
+    if (!idRegex.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: "El ID solo puede contener letras y números (sin espacios ni símbolos).",
+      });
+    }
+
+    // longitudes máximas
+    if (id.length > 10) {
+      return res.status(400).json({
+        success: false,
+        error: "El ID no puede superar los 10 caracteres.",
+      });
+    }
+    if (nombre.length > 50) {
+      return res.status(400).json({
+        success: false,
+        error: "El nombre no puede superar los 50 caracteres.",
+      });
+    }
+    if (descripcion.length > 250) {
+      return res.status(400).json({
+        success: false,
+        error: "La descripción no puede superar los 250 caracteres.",
+      });
+    }
+
+    //Comprobar Identificador Duplicado (Insensible a mayúsculas)
+    const duplicateId = await Proyectos.findOne({ 
+      identificador: { $regex: new RegExp(`^${id}$`, "i") } 
+    });
+    if (duplicateId) {
       return res.status(409).json({
         success: false,
         error: "Ya existe un proyecto con el mismo ID."
@@ -74,13 +108,12 @@ const createProject = async (req, res) => {
 
   } catch (error) {
     console.error("Error al crear proyecto:", error);
-    res.status(400).json({
+    res.status(500).json({
       success: false,
       error: "Error al crear el proyecto. Vuelva a intentarlo."
     });
   }
 };
-
 module.exports = {
   getAllProyectos,
   createProject,
