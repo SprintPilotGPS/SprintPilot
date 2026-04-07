@@ -1,58 +1,62 @@
-.sprint {
-  width: 90%;
-  margin: 2em auto 0;
-  color: var(--white);
+.sprint-card,
+.sprint-history-card {
+  margin: 30px 0;
 }
 
-.sprint hr {
-  height: 5px;
-  margin: 20px 0;
-  border: var(--white);
-  opacity: 1;
-  background-color: var(--white);
+.section-title {
+  margin-bottom: 10px;
+  color: var(--text-dark);
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.contenidoSprint {
-  padding: 1.2em;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(1px);
+.section-content {
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid #e7e9ef;
+  border-radius: 10px;
+  color: #4b5563;
+  background: #f8f9fc;
 }
 
-.requisitosSprint {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.15);
-}
-
-@media (max-width: 768px) {
-  .sprint {
-    width: 95%;
-  }
-}
-.sprints-pasados {
-  padding: 20px;
+.sprint-metric-card {
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid #e7e9ef;
+  border-radius: 10px;
+  color: #4b5563;
+  background: #f8f9fc;
 }
 
 .lista-sprints-pasados {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
-.sprint-card-faded {
-  padding: 15px;
+.sprint-row-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  background-color: #ffffff20; /* blanco translúcido */
-  border: 1px solid #ffffff40;
-  filter: grayscale(100%);
-  opacity: 0.6;
-  transition: 0.3s ease;
+  background: #fff;
+  transition: box-shadow 0.2s ease;
 }
 
-.sprint-card-faded:hover {
-  filter: grayscale(0%);
-  opacity: 1;
-  cursor: pointer;
+.sprint-row-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+  .sprint-row-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sprint-row-card .btn {
+    width: 100%;
+  }
 }

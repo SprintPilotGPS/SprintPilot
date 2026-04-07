@@ -1,68 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <%- include('./partials/head', { pageStyles: ['sprintCss'] }) %>
+    <%- include('./partials/head', { pageStyles: ['requisitosCss', 'sprintCss'] }) %>
     <title><%= title %></title>
   </head>
   <body>
     <%- include('./partials/navbar') %>
 
-    <main>
-      <div class="sprint">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Sprint #<%= sprint ? sprint.identificador : '?' %></h2>
-          <a id="openModal" class="btn bg-primary text-white fw-bold"> + Nuevo </a>
+    <main class="container-lg main-container">
+      <section class="table-card sprint-card">
+        <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
+          <span>Sprint actual: #<%= sprint ? sprint.identificador : '?' %></span>
+          <button id="openModal" type="button" class="btn btn-light btn-sm">+ Nuevo Sprint</button>
         </div>
 
-        <hr class="mt-1" />
+        <div class="p-4">
+          <div class="row g-3">
+            <div class="col-12 col-lg-8">
+              <h3 class="section-title">Sprint Goal</h3>
+              <p class="section-content mb-0">
+                <%= sprint ? sprint.sprintGoal : 'No hay un objetivo definido para este sprint.' %>
+              </p>
+            </div>
 
-        <div class="contenidoSprint">
-          <h3>Sprint Goal</h3>
-          <p class="mb-4">
-            <%= sprint ? sprint.sprintGoal : 'No hay un objetivo definido para este sprint.' %>
-          </p>
-
-          <div class="d-flex align-items-center">
-            <h3 class="mb-0 me-5">Requisitos</h3>
-            <a id="openModalRequisito" class="btn bg-primary text-white fw-bold"> Añadir </a>
+            <div class="col-12 col-lg-4">
+              <h3 class="section-title">Requisitos</h3>
+              <div class="sprint-metric-card">
+                <% if (sprint && sprint.num_requisitos > 0) { %>
+                <p class="mb-2">
+                  Este sprint tiene <strong><%= sprint.num_requisitos %></strong> requisitos.
+                </p>
+                <% } else { %>
+                <p class="mb-2">No hay requisitos asignados a este sprint.</p>
+                <% } %>
+                <a class="btn btn-outline-primary btn-sm" href="/<%= project_id %>/backlog"
+                  >Ir al Backlog</a
+                >
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div class="requisitosSprint">
-            <% if (sprint && sprint.num_requisitos > 0) { %>
-            <p>Este sprint tiene <%= sprint.num_requisitos %> requisitos asignados.</p>
+      <section id="sprintsPasados" class="table-card sprint-history-card">
+        <div class="table-header">
+          <span>Historial de Sprints</span>
+        </div>
+
+        <div class="p-3 p-md-4">
+          <div class="lista-sprints-pasados">
+            <% if (sprintsPasados && sprintsPasados.length > 0) { %> <% sprintsPasados.forEach(s =>
+            { %>
+            <div class="sprint-row-card">
+              <div>
+                <h3 class="mb-1">Sprint #<%= s.identificador %></h3>
+                <p class="mb-0 text-muted">
+                  <strong>Objetivo:</strong>
+                  <%= s.sprintGoal || 'Sin objetivo definido' %>
+                </p>
+              </div>
+              <button
+                class="btn btn-outline-primary btn-sm set-current-sprint"
+                data-sprint-id="<%= s._id %>"
+              >
+                Establecer como actual
+              </button>
+            </div>
+            <% }) %>
             <% } else { %>
-            <h4>No hay requisitos asignados a este sprint aún.</h4>
+            <p class="text-center text-muted mb-0 py-3">No hay historial de sprints anteriores.</p>
             <% } %>
           </div>
         </div>
-      </div>
+      </section>
     </main>
-
-    <div id="sprintsPasados" class="sprints-pasados mt-5 container">
-      <h2 class="text-center mb-4">Sprints Pasados</h2>
-
-      <div class="lista-sprints-pasados">
-        <% if (sprintsPasados && sprintsPasados.length > 0) { %> <% sprintsPasados.forEach(s => { %>
-        <a
-              href="/<%= project_id %>/sprint/<%= s.identificador %>"
-            >
-        <div class="sprint-card-faded mb-3">
-          <h3>Sprint #<%= s.identificador %></h3>
-          <p>
-            <strong>Objetivo:</strong>
-            <%= s.sprintGoal %>
-          </p>
-          <button class="btn btn-light btn-sm set-current-sprint" data-sprint-id="<%= s._id %>">
-            Establecer como actual
-          </button>
-        </div>
-      </a>
-        <% }) %>
-        <% } else { %>
-        <p class="text-center text-white-50">No hay historial de sprints anteriores.</p>
-        <% } %>
-      </div>
-    </div>
 
     <%- include('./partials/formSprint') %>
 
