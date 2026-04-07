@@ -26,4 +26,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
+// Add here the routes to the different views
+app.get("/projects", (req, res) => {
+  res.render("projects");
+});
+
 module.exports = app;

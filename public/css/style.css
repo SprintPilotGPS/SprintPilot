@@ -188,3 +188,95 @@ footer {
     gap: 4px;
   }
 }
+
+/* Estilos para proyecto */
+.proyect {
+  margin: auto;
+  margin-top: 2em;
+  width: 90%;
+  color: #fff;
+}
+
+.proyect hr {
+  margin: 20px 0;
+  border: white;
+  height: 5px;
+  background-color: white;
+  opacity: 1;
+}
+
+.scale-card {
+  box-shadow: 0.1em 0.1em 0.5em 0.1em rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.scale-card:hover {
+  box-shadow: 0.3em 0.3em 0.5em 0.1em rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+.scale-card:active {
+  box-shadow: 0 0 0 0;
+  transform: scale(0.98);
+}
+
+.card-proj {
+  width: 30%;
+}
+.card-proj hr {
+  display: block;
+  margin-top: 0;
+
+  width: 100%;
+  height: 0.3em;
+  background-color: var(--secondary-color);
+}
+
+.noti {
+  position: fixed;
+  top: 5em;
+  left: 0;
+  right: 0;
+
+  margin: auto;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+
+  visibility: hidden;
+
+  z-index: 2;
+}
+
+/* Estilos para el formulario de creación de proyecto*/
+.modal-new-project {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(0.15em);
+
+  z-index: 1;
+  visibility: hidden;
+}
+.modal-new-project > div {
+  padding: 2em;
+
+  width: 25%;
+  background: #fff;
+  border-color: black;
+}
+
+.show {
+  visibility: visible;
+}
+
+textarea {
+  max-height: 7em;
+}
