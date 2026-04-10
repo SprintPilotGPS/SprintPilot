@@ -3,17 +3,19 @@ Se va explicar las aplicaciones que se deben instalar, como clonar el repositori
 
 ## Índice
 1. [Introducción](#introducción)
-2. [Preparación](#preparación)
+   1. [Resumen de docs](#resumen-de-docs)
+3. [Preparación](#preparación)
    1. [Herremientas](#herramientas)
    2. [Clonado](#clonado)
-3. [Estructura](#estructura)
+4. [Estructura](#estructura)
    1. [PUBLIC (FRONTEND)](#public-frontend)
    2. [SRC (BACKEND/SERVIDOR)](#src-backendservidor)
    3. [TEST](#test)
    4. [Otros archivos importantes](#otros-archivos-importantes)
 5. [Comandos](#comandos)
    1. [Setup para la aplicación](#setup-para-la-aplicación)
-7. [Otros detalles](#otros-detalles)
+   2. [Resumen de comandos](#resumen-de-comandos)
+7. [Funcionamiento de la aplicación](#funcionamiento-de-la-aplicación)
 
 ## Introducción
 El proyecto usa las siguientes tecnologías:
@@ -30,6 +32,24 @@ Herramientas que facilitan el uso de la aplicación:
 - **[Morgan](https://www.npmjs.com/package/morgan)**: middleware que facilita el manejo de peticiones y repuestas HTTP.
 
 El editor del código que se usa es [VSCode](https://code.visualstudio.com/), aunque puedes usar otro es más que recomendable usar el mismo por compatibilidad.
+
+### Resumen de docs
+- [EJS docs](https://ejs.co/#docs)
+- CSS
+  - [Selectores](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Basic_selectors)
+  - [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS)
+  - [w3schools](https://www.w3schools.com/css/)
+- [Docs de Express 5](https://expressjs.com/en/guide/routing.html)
+  - [Propiedades de req](https://expressjs.com/en/5x/api.html#req.app)
+  - [Métodos de req](https://expressjs.com/en/5x/api.html#req.accepts)
+  - [Propiedades de res](https://expressjs.com/en/5x/api.html#res.app)
+  - [Métodos de res](https://expressjs.com/en/5x/api.html#res.append)
+  - [Metodos para router](https://expressjs.com/en/5x/api.html#router.all): Para ayudar con las rutas.
+- [Mongoose docs](https://mongoosejs.com/docs/guides.html)
+  - [Sobre los schemas](https://mongoosejs.com/docs/guide.html)
+  - [Api de Mongoose](https://mongoosejs.com/docs/api/mongoose.html)
+    - [Query](https://mongoosejs.com/docs/api/query.html)
+    - Extra: [Model](https://mongoosejs.com/docs/api/model.html)
 
 ## Preparación
 Para poder desarrollar probar y ejecutar la aplicación se deberá instalar el software de la sección de herramientas. En caso de no tener alguno de estos puede no funcionar o tener problemas para desarrollarlo.
@@ -151,4 +171,97 @@ NODE_ENV=development   # variable de entorno de node.js
 | `npm run lint:ejs` | Ejecuta linting en plantillas EJS |
 | `npm run format` | Ejecuta prettier formateando el texto |
 
-## Otros detalles
+## Funcionamiento de la aplicación
+Como ya he mencionado antes la aplicación tiene 2 partes: Frontend y Backend.
+<br><br>
+En el frontend esta lo que se va a mostrar en la aplicación, en este caso usamos HTML con EJS, CSS con Bootstrap y Javascript. Recomiendo mirarse como funciona HTML y las bases de CSS (el sistema de cajas con margin, boder, padding y content).
+<br>
+Para HTML con EJS debeis saber que es simplemente HTML que puede integrar código javascript en el (no es lo mismo que los scripts estos afectan solo a la interactibilidad). Recomiendo mirar se la página de cdocumentación de [EJS docs](https://ejs.co/#docs). Nosostros solo nos vamos a centrar en las etiquetas, y ni siquiera todas:
+| Etiqueta | Uso |
+|----------|---------------|
+| `<%  %>` | Para controlar el flujo (if, for, while...) |
+| `<%= %>` | Saca el valor de lo que haya dentro escapando HTML |
+| `<%- %>` | Lo mismo que `<%= %>`, pero no escapa HTML |
+
+Para CSS recomiendo saberse como funcionan los selectores (miralos aquí: [Selectores](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Basic_selectors)), si tienes alguna duda más de como funciona css mira las siguientes paginas: [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS) y [w3schools](https://www.w3schools.com/css/).
+<br><br>
+En el Backend hay varios elementos de los cuales tienes que tener algo de conocimiento, entre ellos el flujo que sigue la aplicación.
+<br>
+Para poder entender el flujo ponte en la perspectiva de un usuario, es decir, empezamos desde el frontend desde las plantillas. Estas tendrán siempre un javascript al final de la plantilla, este javascript (además de encargarse de interacciones basicas) es el encargado de enviar peticiones (Generalmente se hace con fetch). Aunque se puede no usar javascript para enviar peticiones, solo tener un sistema en mente ayuda a centralizar las cosas.
+<br>
+Las peticiones siempre van dirigidas a una url del servidor, estas estan en api.js y views.js. Vamos a empezar por las peticiones de vistas que son de tipo GET:
+<br>
+Cada vez que se accede una url dentro de la página se hace una petición al servidor para obtener la plantilla de la vista, es decir, si tenemos:
+````html
+<a href="/Pagina">Pagina</a>
+````
+y en view.js tenemos:
+````js
+const express = require("express");
+const router = express.Router();
+
+const paginaController = require("../controllers/paginaController")
+
+router.get("/Pagina", paginaController.Pagina);
+
+module.exports = router;
+````
+Cuando se haga clic en el link se ejecutara la función que se ponga. En nuestro caso estas funciones estaran en los controladores. En el controlador en este caso se pondría:
+````js
+const pagina = async (req, res) => {
+  try {
+   res.render("pagina", {}); // Renderiza "pagina.ejs" dando le ningun dato
+  } catch (error) {
+    res.status(500).render("error", {}); // Renderiza "error.ejs" con un estado 500
+  }
+};
+
+// Necesario para que se pueda acceder en view.js y api.js
+module.exports = {
+   pagina
+}
+````
+Esto renderiza la "pagina.ejs" cuando la url sea "_localhost:3000/Pagina_"
+<br>
+En el caso de api.js no sería para renderizar paginas si no para hacer cambios en la BD, pedir info... De todas formas sigue el mismo patrón.
+<br><br>
+Para no tener que explicar todas las funciones que tiene Express es más que recomendable que te mires los [Docs de Express 5](https://expressjs.com/en/guide/routing.html). Para que sepais donde mirar os dejo un desglose de los docs de la API de express:
+- [Propiedades de req](https://expressjs.com/en/5x/api.html#req.app)
+- [Métodos de req](https://expressjs.com/en/5x/api.html#req.accepts)
+- [Propiedades de res](https://expressjs.com/en/5x/api.html#res.app)
+- [Métodos de res](https://expressjs.com/en/5x/api.html#res.append)
+- [Metodos para router](https://expressjs.com/en/5x/api.html#router.all): Para ayudar con las rutas.
+<br>
+
+Vamos ahora con Mongoose que es para acceder a la BD de MongoDB. Como ya mencione arriba en la carpeta "_models_" estan los schemas (usado por Mongoose), que se usan para hacer las colleciones (tablas) en MongoDB. Un ejemplo es:
+````js
+const mongoose = require("mongoose");
+
+const schema = new mongoose.Schema({
+  identificador: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    uppercase: true, // Lo guarda siempre en mayúsculas
+    trim: true,
+    minlength: 2,    // Mínimo 2 caracteres (ej: PR)
+    maxlength: 10     // Máximo 10 caracteres (ej: SPRINT)
+  },
+  nombre: { 
+    type: String, 
+    required: true, 
+    trim: true,
+    maxlength: 50    // Límite de 50 para el título
+  },
+}, { timestamps: true });
+
+module.exports = mongoose.model("Ejemplo", schema);
+````
+Gracias a mongoose es muy sencillo, es un simplemente un json que indica los "atributos" que van a tener los datos. Si quereis saber más mirar [Mongoose docs](https://mongoosejs.com/docs/guides.html). Os hago un desglose de los más importante de la documentación:
+- [Sobre los schemas](https://mongoosejs.com/docs/guide.html)
+- [Api de Mongoose](https://mongoosejs.com/docs/api/mongoose.html)
+  - [Query](https://mongoosejs.com/docs/api/query.html)
+  - Extra: [Model](https://mongoosejs.com/docs/api/model.html)
+
+Con esto deberias de ser capaces de hacer casi todo si consultais la documentación y usas la IA.
+
