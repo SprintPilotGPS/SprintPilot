@@ -1,137 +1,254 @@
 const Requisito = require("../models/Requisito");
+const Proyectos = require("../models/Proyecto");
+const Utils = require("./utils");
 
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-// conseguir todo los requisitos
+/* ============= Operaciones CRUD ============= */
+// Obtener todos los requisitos ordenados para la vista
 const getAllRequisitos = async (req, res) => {
   try {
-    const requisitos = await Requisito.find().sort({ fechaLimite: 1 });
-    res.render("index", {
-      title: "Sprint Pilot",
+    Utils.printLog(req, true, false);
+    const project_id = req.params.project_id;
+
+    // Ordenamos por 'orden' para que la vista respete las flechas
+    const requisitos = await Requisito.find({ project_id: project_id }).sort({ orden: 1 });
+    
+    res.render("requisitos", {
+      title: "Sprint Pilot - Backlog",
       requisitos: requisitos,
+      project_id: project_id,
     });
   } catch (error) {
     console.error("Error al obtener requisitos:", error);
-    res.status(500).render("index", {
+    res.status(500).render("requisitos", {
       title: "Sprint Pilot",
       requisitos: [],
+      project_id: project_id,
       error: "Error al cargar los datos",
     });
   }
 };
 
+// Crear un nuevo requisito
 const createRequisito = async (req, res) => {
   try {
-    const nombre = typeof req.body.nombre === "string" ? req.body.nombre.trim() : "";
+    const project_id = req.params.project_id;
+    const { nombre, prioridad, estado, responsable, descripcion } = req.body;
 
-    if (nombre) {
-      const duplicatedRequisito = await Requisito.findOne({
-        nombre: { $regex: new RegExp(`^${escapeRegExp(nombre)}$`, "i") },
+    // 1. VALIDACIÓN PARA TEST (400): El nombre es obligatorio
+    if (!nombre || nombre.trim() === "") {
+      return res.status(400).json({ 
+        success: false, 
+        error: "ValidationError: El nombre del requisito es obligatorio." 
       });
-
-      if (duplicatedRequisito) {
-        return res.status(409).json({
-          success: false,
-          error: "Ya existe un requisito con el mismo nombre",
-        });
-      }
     }
 
-    req.body.nombre = nombre;
-    const requisito = new Requisito(req.body);
+    // BUSQUEDA DEL PROYECTO
+    const project = await Proyectos.findOne({ identificador: project_id });
+
+    if (!project) {
+      return res.status(404).json({ 
+        success: false, 
+        error: `Error de Integridad: El proyecto '${project_id}' no existe en la base de datos.` 
+      });
+    }
+
+    // 2. VALIDACIÓN PARA TEST (409): No permitir nombres duplicados en el mismo proyecto
+    const existeNombre = await Requisito.findOne({ 
+      project_id, 
+      nombre: { $regex: new RegExp(`^${nombre.trim()}$`, 'i') } 
+    });
+    
+    if (existeNombre) {
+      return res.status(409).json({ 
+        success: false, 
+        error: "Ya existe un requisito con el mismo nombre en este proyecto." 
+      });
+    }
+
+    // Lógica de ordenación
+    const ultimoRequisito = await Requisito.findOne({ project_id }).sort({ orden: -1 });
+    const nuevoOrden = (ultimoRequisito && ultimoRequisito.orden) ? ultimoRequisito.orden + 1 : 1;
+
+    const requisito = new Requisito({
+      identificador: (project.num_requisitos || 0) + 1,
+      nombre: nombre.trim(),
+      prioridad,
+      estado,
+      responsable,
+      descripcion,
+      project_id: project_id,
+      orden: nuevoOrden
+    });
+
     await requisito.save();
-    res.status(201).json({
-      success: true,
-      data: requisito,
-    });
-  } catch (error) {
-    console.error("Error al crear requisito:", error);
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
-  }
-};
+    
+    // Incrementar el contador del proyecto
+    await Proyectos.updateOne(
+      { identificador: project_id }, 
+      { $inc: { num_requisitos: 1 } }
+    );
 
-// Obtener requisito por ID
-const getRequisitoById = async (req, res) => {
-  try {
-    const requisito = await Requisito.findById(req.params.id);
-    if (!requisito) {
-      return res.status(404).json({
-        success: false,
-        error: "Requisito no encontrado",
-      });
+    res.status(201).json({ success: true, data: requisito });
+
+  } catch (error) {
+    console.error("ERROR EN DB:", error);
+    
+    // Si Mongoose lanza un error de validación que no capturamos antes
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ success: false, error: error.message });
     }
-    res.json({
-      success: true,
-      data: requisito,
-    });
-  } catch (error) {
-    console.error("Error al obtener requisito:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+
+    res.status(500).json({ success: false, error: "Error interno del servidor" });
   }
 };
 
-// Actualizar requisito
 const updateRequisito = async (req, res) => {
   try {
-    const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    Utils.printLog(req, true, false);
+    const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, { 
+        new: true, 
+        runValidators: true // Para que respete el Enum del Modelo
     });
-    if (!requisito) {
-      return res.status(404).json({
-        success: false,
-        error: "Requisito no encontrado",
-      });
-    }
-    res.json({
-      success: true,
-      data: requisito,
-    });
+    if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
+
+    res.redirect(`/${requisito.project_id}/backlog`);
   } catch (error) {
-    console.error("Error al actualizar requisito:", error);
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
-// Eliminar requisito
 const deleteRequisito = async (req, res) => {
   try {
+    Utils.printLog(req, true, false);
     const requisito = await Requisito.findByIdAndDelete(req.params.id);
-    if (!requisito) {
-      return res.status(404).json({
-        success: false,
-        error: "Requisito no encontrado",
-      });
-    }
-    res.json({
-      success: true,
-      message: "Requisito eliminado exitosamente",
-    });
+    if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
+    res.json({ success: true, message: "Eliminado exitosamente" });
   } catch (error) {
-    console.error("Error al eliminar requisito:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
-// Expotamos al modelo los metodos para que se pueda acceder
+async function getRequisito(vista, req, res){
+  Utils.printLog(req, true, false);
+
+    let project_id = req.params.project_id;
+    let id = req.params.id;
+
+    const requisito = await Requisito.findOne({project_id: project_id, identificador: id});
+    if(!requisito)
+      res.status(404).render("requisitos", {
+      title: "Sprint Pilot - Backlog",
+      requisitos: [],
+      project_id: project_id,
+      error: "Requisitos con identificador: " + id + " no se a podido encontrar"
+    });
+
+    res.status(200).render(vista, {
+      title: "Sprint Pilot - Ver Requsito",
+      requisito: requisito,
+      project_id: project_id
+    });
+}
+
+const viewRequisito = async (req, res) => {
+  try {
+    getRequisito("detallerequisito", req, res);
+  } catch (error) {
+    res.status(500).render("requisitos", {
+      title: "Sprint Pilot - Backlog",
+      requisitos: [],
+      project_id: project_id,
+      error: "Requisitos con identificador: " + id + " no se a podido encontrar"
+    });
+  }
+}
+
+const editRequisito = async (req, res) => {
+  try {
+    getRequisito("editarRequisito", req, res);
+  } catch (error) {
+    res.status(500).render("requisitos", {
+      title: "Sprint Pilot - Backlog",
+      requisitos: [],
+      project_id: project_id,
+      error: "Requisitos con identificador: " + id + " no se a podido encontrar"
+    });
+  }
+}
+
+/* ============= Otras operaciones ============= */
+
+// Mover requisito hacia arriba
+const moverArriba = async (req, res) => {
+  try {
+    Utils.printLog(req, true, false);
+
+    let project_id = req.params.project_id;
+    let id = req.params.id;
+
+    const actual = await Requisito.findOne({project_id: project_id, identificador: id});
+    if (!actual) return res.status(404).send("No encontrado");
+
+    const superior = await Requisito.findOne({ 
+      project_id: actual.project_id, 
+      orden: { $lt: actual.orden } 
+    }).sort({ orden: -1 });
+
+    if (!superior) return res.sendStatus(200);
+
+    const ordenTemporal = actual.orden;
+    actual.orden = superior.orden;
+    superior.orden = ordenTemporal;
+
+    await actual.save();
+    await superior.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error al mover arriba:", error);
+    res.status(500).send("Error al mover arriba");
+  }
+};
+
+// Mover requisito hacia abajo
+const moverAbajo = async (req, res) => {
+  try {
+    Utils.printLog(req, true, false);
+
+    let project_id = req.params.project_id;
+    let id = req.params.id;
+
+    const actual = await Requisito.findOne({project_id: project_id, identificador: id});
+    if (!actual) return res.status(404).send("No encontrado");
+
+    const inferior = await Requisito.findOne({ 
+      project_id: actual.project_id, 
+      orden: { $gt: actual.orden } 
+    }).sort({ orden: 1 });
+
+    if (!inferior) return res.sendStatus(200);
+
+    const ordenTemporal = actual.orden;
+    actual.orden = inferior.orden;
+    inferior.orden = ordenTemporal;
+
+    await actual.save();
+    await inferior.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error al mover abajo:", error);
+    res.status(500).send("Error al mover abajo");
+  }
+};
+
 module.exports = {
   getAllRequisitos,
   createRequisito,
-  getRequisitoById,
   updateRequisito,
   deleteRequisito,
+  viewRequisito,
+  editRequisito,
+  moverArriba,
+  moverAbajo,
 };
