@@ -189,13 +189,13 @@ footer {
   }
 }
 
-/* Estilos para la ver un requisito */
-.card-requisito{
+/* Estilos para la ver un proyecto */
+.card-hu{
   background: white;
   box-shadow: 0.3em 0.3em 0.75em 0.3em rgba(0, 0, 0, 0.4);
 }
 
-.card-requisito hr{
+.card-hu hr{
   margin: auto;
   margin-top: .2em;
   width: 65%;
@@ -204,7 +204,7 @@ footer {
   opacity: 1;
 }
 
-.card-requisito .req-body{
+.card-hu .req-body{
   margin: auto;
   width: 80%;
 }

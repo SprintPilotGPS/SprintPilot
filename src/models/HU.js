@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const requisitoSchema = new mongoose.Schema(
+const huSchema = new mongoose.Schema(
   {
     identificador: {
       type: Number,
@@ -12,20 +12,12 @@ const requisitoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    prioridad: {
-      type: String,
-      enum: ["high", "medium", "low"],
-      default: "medium",
-    },
     estado: {
       type: String,
       enum: ["in-progress", "pending", "completed"],
       default: "pending",
     },
-    responsable: {
-      type: String,
-      trim: true,
-    },
+
     descripcion: {
       type: String,
       trim: true,
@@ -45,4 +37,4 @@ const requisitoSchema = new mongoose.Schema(
 );
 
 // Evitamos que se cree el modelo varias veces si se recarga el servidor
-module.exports = mongoose.models.Requisito || mongoose.model("Requisito", requisitoSchema);
+module.exports = mongoose.models.HU || mongoose.model("HU", huSchema);

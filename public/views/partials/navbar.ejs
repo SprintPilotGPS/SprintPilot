@@ -14,9 +14,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
+        <% if(typeof(project_id) != "undefined") { %>
+         <li class="nav-item">
           <a class="nav-link" href="/">SprintPilot</a>
-        </li>
+         </li>
+        <% } %>
         <% if(typeof(project_id) != "undefined" ) {%>
         <li class="nav-item">
           <a href="/<%= project_id %>/backlog" class="nav-link">Backlog</a>

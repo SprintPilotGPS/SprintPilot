@@ -1,26 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const requisitoController = require("../controllers/requisitoController");
+const huController = require("../controllers/huController");
 const projectController = require("../controllers/projectController");
 
 // --- RUTAS DE PROYECTOS ---
 router.post("/projects", projectController.createProject);
 
-// --- RUTAS DE REQUISITOS (Jerárquicas) ---
+// --- RUTAS DE HUS (Jerárquicas) ---
 
-// Crear un requisito dentro de un proyecto
-router.post("/:project_id/requisitos", requisitoController.createRequisito);
+// Crear una HU dentro de un proyecto
+router.post("/:project_id/hus", huController.createHU);
 
-// Obtener, actualizar o eliminar un requisito específico
+// Obtener, actualizar o eliminar una HU específica
 // Nota: El :id es el ID de MongoDB (_id)
-router.get("/:project_id/requisitos/:id", requisitoController.viewRequisito);
-router.put("/:project_id/requisitos/:id", requisitoController.updateRequisito);
-router.delete("/:project_id/requisitos/:id", requisitoController.deleteRequisito);
+router.get("/:project_id/hus/:id", huController.viewHU);
+router.put("/:project_id/hus/:id", huController.updateHU);
+router.delete("/:project_id/hus/:id", huController.deleteHU);
 
 // --- RUTAS DE MOVIMIENTO (Para las flechas) ---
 // Estas son las que llaman tus botones de la interfaz
-router.post("/:project_id/requisitos/:id/mover-arriba", requisitoController.moverArriba);
-router.post("/:project_id/requisitos/:id/mover-abajo", requisitoController.moverAbajo);
-router.post('/:project_id/requisitos/update/:id', requisitoController.updateRequisito);
+router.post("/:project_id/hus/:id/mover-arriba", huController.moverArriba);
+router.post("/:project_id/hus/:id/mover-abajo", huController.moverAbajo);
+router.post('/:project_id/hus/update/:id', huController.updateHU);
 
 module.exports = router;

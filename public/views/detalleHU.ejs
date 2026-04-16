@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head') %>
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('./partials/navbar') %>
+
+    <main class="m-auto mt-5" style="width: 90%;">
+        <div class="card-hu p-4 rounded-3 d-flex flex-column">
+            <div class="d-flex gap-5 align-items-start">
+                <p class="badge bg-primary fs-4"><%= project_id + "-" + hu.identificador %></p>
+                <h2 class="text-center flex-grow-1">
+                    Detalle: <%= hu.nombre %>
+                    <hr>
+                </h2>
+            </div>
+            
+            <div class="req-body">
+                <h4>Descripción:</h4>
+                <p><%= hu.descripcion %></p>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="text-center">Estado:</h4>
+                        <p class="p-2 text-white text-center fw-bold rounded-3
+                        <% if(hu.estado == "in-progress") {%>
+                            bg-primary
+                        <% } else if(hu.estado == "completed") { %>
+                            bg-success
+                        <% } else { %>
+                            bg-secondary
+                        <% } %>
+                        "><%= hu.estado.toUpperCase() %></p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="/<%= hu.project_id %>/backlog" class="btn btn-secondary fw-bold">Volver</a>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+  </body>
+</html>
