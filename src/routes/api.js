@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const huController = require("../controllers/huController");
 const projectController = require("../controllers/projectController");
+const sprintController = require("../controllers/sprintController");
 
 // --- RUTAS DE PROYECTOS ---
 router.post("/projects", projectController.createProject);
@@ -22,5 +23,9 @@ router.delete("/:project_id/hus/:id", huController.deleteHU);
 router.post("/:project_id/hus/:id/mover-arriba", huController.moverArriba);
 router.post("/:project_id/hus/:id/mover-abajo", huController.moverAbajo);
 router.post('/:project_id/hus/update/:id', huController.updateHU);
+
+// --- RUTAS DE SPRINTS ---
+router.get("/:project_id/sprints/:id", sprintController.getSprint);
+router.post("/:project_id/crearSprint", sprintController.crearSprint);
 
 module.exports = router;

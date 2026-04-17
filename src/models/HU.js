@@ -26,6 +26,10 @@ const huSchema = new mongoose.Schema(
     orden: {
       type: Number,
       default: 0
+    },
+    sprint_id: {
+      type: Number,
+      default: null
     }
   },
   { timestamps: true }

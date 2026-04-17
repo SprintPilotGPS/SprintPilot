@@ -1,0 +1,67 @@
+<div id="modal-new-sprint" class="modal-new-project">
+  <div class="card shadow-lg border-0 rounded-4" style="width: 40%; max-height: 80vh; overflow-y: auto;">
+    <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+      <h3 class="fw-bold text-primary mb-0">Nuevo Sprint</h3>
+      <button type="button" class="btn-close" onclick="hideModal()"></button>
+    </div>
+    <div class="card-body p-4">
+      <p class="text-muted small mb-4">Al crear un nuevo sprint, el sprint actual (si existe) se marcará como completado.</p>
+      
+      <form id="form-new-sprint">
+        <div class="mb-4">
+          <label class="form-label fw-bold">Seleccionar HUs para el Sprint</label>
+          <div class="list-group" style="max-height: 300px; overflow-y: auto;">
+            <% if (availableHUs && availableHUs.length > 0) { %>
+              <% availableHUs.forEach(hu => { %>
+                <label class="list-group-item d-flex gap-3 align-items-center rounded mb-1 border-light">
+                  <input class="form-check-input flex-shrink-0" type="checkbox" name="hus" value="<%= hu.identificador %>">
+                  <span>
+                    <strong>HU-<%= hu.identificador %></strong>: <%= hu.titulo %>
+                  </span>
+                </label>
+              <% }) %>
+            <% } else { %>
+              <div class="text-center py-3 border rounded bg-light">
+                <p class="text-muted mb-0 small">No hay HUs disponibles en el backlog.</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-bold shadow-sm">Iniciar Sprint</button>
+          <button type="button" class="btn btn-link text-muted text-decoration-none" onclick="hideModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('form-new-sprint').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const checkboxes = document.querySelectorAll('input[name="hus"]:checked');
+    const hus_ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+    try {
+      const response = await fetch('/api/<%= project_id %>/crearSprint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ hus_ids })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        location.reload();
+      } else {
+        alert('Error: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al conectar con el servidor');
+    }
+  });
+</script>
