@@ -30,10 +30,7 @@ describe("HU API Tests", () => {
     // 1. TEST POSITIVO: Creación normal
     test("should create a new hu", async () => {
       const hu = {
-        nombre: "Test HU",
-        
-        estado: "pending",
-        
+        titulo: "Test HU",
         descripcion: "Prueba de integración",
       };
 
@@ -43,11 +40,11 @@ describe("HU API Tests", () => {
         .expect(201);
 
       expect(res.body.success).toBe(true);
-      expect(res.body.data.nombre).toBe("Test HU");
+      expect(res.body.data.titulo).toBe("Test HU");
     });
 
-    // 2. TEST NEGATIVO: Datos inválidos (Falta nombre)
-    test("should return 400 for invalid data (missing nombre)", async () => {
+    // 2. TEST NEGATIVO: Datos inválidos (Falta título)
+    test("should return 400 for invalid data (missing titulo)", async () => {
       await request(app)
         .post(`/api/${testProjectId}/hus`)
         .send({  })
@@ -58,16 +55,14 @@ describe("HU API Tests", () => {
     test("should return 404 if project does not exist", async () => {
       await request(app)
         .post("/api/NO-EXISTE/hus")
-        .send({ nombre: "Invalido" })
+        .send({ titulo: "Invalido" })
         .expect(404);
     });
 
-    // 4. TEST DE CONFLICTO: Nombre duplicado (Recuperado)
-    test("should return 409 when nombre already exists in same project", async () => {
+    // 4. TEST DE CONFLICTO: Título duplicado (Recuperado)
+    test("should return 409 when titulo already exists in same project", async () => {
       const hu = {
-        nombre: "Duplicado",
-        
-        estado: "pending",
+        titulo: "Duplicado",
       };
 
       // Insertamos el primero
@@ -76,11 +71,11 @@ describe("HU API Tests", () => {
         .send(hu)
         .expect(201);
 
-      // Intentamos insertar el mismo nombre
+      // Intentamos insertar el mismo título
       const res = await request(app)
         .post(`/api/${testProjectId}/hus`)
         .send(hu)
-        .expect(409); // Si tu controlador aún no gestiona el 409, este fallará hasta que añadas la lógica de duplicados
+        .expect(409); 
 
       expect(res.body.success).toBe(false);
     });

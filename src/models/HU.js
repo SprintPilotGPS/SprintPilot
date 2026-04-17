@@ -7,15 +7,10 @@ const huSchema = new mongoose.Schema(
       required: true,
       immutable: true,
     },
-    nombre: {
+    titulo: {
       type: String,
       required: true,
       trim: true,
-    },
-    estado: {
-      type: String,
-      enum: ["in-progress", "pending", "completed"],
-      default: "pending",
     },
 
     descripcion: {

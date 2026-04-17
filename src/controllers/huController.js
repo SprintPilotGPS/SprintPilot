@@ -32,13 +32,13 @@ const getAllHUs = async (req, res) => {
 const createHU = async (req, res) => {
   try {
     const project_id = req.params.project_id;
-    const { nombre, estado, descripcion } = req.body;
+    const { titulo, descripcion } = req.body;
 
-    // 1. VALIDACIÓN PARA TEST (400): El nombre es obligatorio
-    if (!nombre || nombre.trim() === "") {
+    // 1. VALIDACIÓN PARA TEST (400): El título es obligatorio
+    if (!titulo || titulo.trim() === "") {
       return res.status(400).json({ 
         success: false, 
-        error: "ValidationError: El nombre del hu es obligatorio." 
+        error: "ValidationError: El título del hu es obligatorio." 
       });
     }
 
@@ -52,16 +52,16 @@ const createHU = async (req, res) => {
       });
     }
 
-    // 2. VALIDACIÓN PARA TEST (409): No permitir nombres duplicados en el mismo proyecto
-    const existeNombre = await HU.findOne({ 
+    // 2. VALIDACIÓN PARA TEST (409): No permitir títulos duplicados en el mismo proyecto
+    const existeTitulo = await HU.findOne({ 
       project_id, 
-      nombre: { $regex: new RegExp(`^${nombre.trim()}$`, 'i') } 
+      titulo: { $regex: new RegExp(`^${titulo.trim()}$`, 'i') } 
     });
     
-    if (existeNombre) {
+    if (existeTitulo) {
       return res.status(409).json({ 
         success: false, 
-        error: "Ya existe un hu con el mismo nombre en este proyecto." 
+        error: "Ya existe un hu con el mismo título en este proyecto." 
       });
     }
 
@@ -70,9 +70,8 @@ const createHU = async (req, res) => {
     const nuevoOrden = (ultimoHU && typeof ultimoHU.orden === 'number') ? ultimoHU.orden + 1 : 1;
 
     const hu = new HU({
-      identificador: (project.num_HUs || project.num_hus || 0) + 1,
-      nombre: nombre.trim(),
-      estado,
+      identificador: req.body.identificador || (project.num_HUs || project.num_hus || 0) + 1,
+      titulo: titulo.trim(),
       descripcion,
       project_id: project_id,
       orden: nuevoOrden

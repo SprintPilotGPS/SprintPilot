@@ -6,40 +6,35 @@ const Proyecto = require("./src/models/Proyecto");
 const husData = [
   {
     identificador: 0,
-    nombre: "Completar sistema de autenticación de usuarios",
-    estado: "in-progress",
+    titulo: "Completar sistema de autenticación de usuarios",
     descripcion: "Implementar autenticación JWT y funcionalidad de inicio de sesión y registro",
     project_id: "PR",
     orden: 1,
   },
   {
     identificador: 1,
-    nombre: "Optimizar el rendimiento de consultas de base de datos",
-    estado: "pending",
+    titulo: "Optimizar el rendimiento de consultas de base de datos",
     descripcion: "Agregar índices y optimizar consultas lentas",
     project_id: "PR",
     orden: 2,
   },
   {
     identificador: 0,
-    nombre: "Reestructuración de páginas frontend",
-    estado: "completed",
+    titulo: "Reestructuración de páginas frontend",
     descripcion: "Reestructurar página frontend usando Bootstrap",
     project_id: "LO",
     orden: 1,
   },
   {
     identificador: 1,
-    nombre: "Redacción de documentación de API",
-    estado: "in-progress",
+    titulo: "Redacción de documentación de API",
     descripcion: "Escribir documentación completa de interfaz API",
     project_id: "LO",
     orden: 2,
   },
   {
     identificador: 2,
-    nombre: "Cobertura de pruebas unitarias",
-    estado: "pending",
+    titulo: "Cobertura de pruebas unitarias",
     descripcion: "Mejorar cobertura de pruebas de código a 80% o superior",
     project_id: "LO",
     orden: 3,
@@ -89,7 +84,7 @@ const seedDatabase = async () => {
     console.log("\n📊 HUs insertadas:");
     const hus = await HU.find();
     hus.forEach((req) => {
-      console.log(`  - ${req.identificador}: ${req.nombre}`);
+      console.log(`  - ${req.identificador}: ${req.titulo}`);
     });
     console.log("\n📊 Proyectos insertados:");
     const proyectos = await Proyecto.find();

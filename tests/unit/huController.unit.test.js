@@ -23,7 +23,7 @@ describe("huController unit tests", () => {
   test("createHU should return 201 on success", async () => {
     const req = { 
       params: { project_id: "PR" },
-      body: { nombre: "Task A",  } 
+      body: { titulo: "Task A" } 
     };
     const res = mockRes();
 
