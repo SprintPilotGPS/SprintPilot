@@ -1,5 +1,6 @@
 const Sprint = require("../models/Sprint");
 const Proyectos = require("../models/Proyecto"); // Importamos Proyectos para validar que existe
+const HU = require("../models/HU");
 const Utils = require("./utils");
 
 // ---------------------------------------------------------
@@ -7,7 +8,25 @@ const Utils = require("./utils");
 // ---------------------------------------------------------
 
 const getSprint = async (req, res) => {
-  res.status(501).json({ error: "No implementado todavía" });
+  try {
+    const { project_id, id } = req.params;
+    
+    // Busca el sprint por ID numérico e ID de proyecto
+    const sprint = await Sprint.findOne({ idProyecto: project_id, id: Number(id) });
+    if (!sprint) {
+      return res.status(404).json({ success: false, error: "Sprint no encontrado" });
+    }
+
+    // Busca las historias de usuario asociadas a este sprint
+    const hus = await HU.find({ 
+      project_id: project_id, 
+      identificador: { $in: sprint.HU } 
+    }).sort({ orden: 1 });
+    
+    res.json({ success: true, data: { sprint, hus } });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 const getAllSprintPasados = async (req, res) => {
