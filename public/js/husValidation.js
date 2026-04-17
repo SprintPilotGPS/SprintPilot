@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const addForm = document.getElementById('addRequisitoForm');
+    const addForm = document.getElementById('addHUForm');
 
     if (addForm) {
         // Usamos onclick o onsubmit directo para asegurar que solo haya UN controlador
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = Object.fromEntries(formData.entries());
 
             try {
-                const response = await fetch(`/api/${projectId}/requisitos`, { 
+                const response = await fetch(`/api/${projectId}/hus`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Si todo va bien, recargamos la página para ver el nuevo requisito
+                    // Si todo va bien, recargamos la página para ver el nuevo hu
                     window.location.reload();
                 } else {
-                    alert(result.error || "Error al guardar el requisito");
+                    alert(result.error || "Error al guardar el hu");
                 }
             } catch (error) {
                 console.error("Error en la petición fetch:", error);
@@ -43,30 +43,30 @@ document.addEventListener('DOMContentLoaded', () => {
     async function moverArriba(id) {
     try {
         const project_id = document.querySelector("#project_id").value;
-        const response = await fetch(`/api/${project_id}/requisitos/${id}/mover-arriba`, {
+        const response = await fetch(`/api/${project_id}/hus/${id}/mover-arriba`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
         });
         if (response.ok) location.reload();
-        else alert("No se puede subir más este requisito");
+        else alert("No se puede subir más este hu");
     } catch (error) { console.error("Error:", error); }
     }
 
     async function moverAbajo(id) {
     try {
         const project_id = document.querySelector("#project_id").value;
-        const response = await fetch(`/api/${project_id}/requisitos/${id}/mover-abajo`, {
+        const response = await fetch(`/api/${project_id}/hus/${id}/mover-abajo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
         });
         if (response.ok) location.reload();
-        else alert("No se puede bajar más este requisito");
+        else alert("No se puede bajar más este hu");
     } catch (error) { console.error("Error:", error); }
     }
 
     // Lógica de Guardado (SIN DUPLICADOS)
     // Usamos .onsubmit para asegurarnos de que solo haya un controlador de evento
-    const form = document.getElementById('addRequisitoForm');
+    const form = document.getElementById('addHUForm');
     if (form) {
     form.onsubmit = async (e) => {
         e.preventDefault();
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = Object.fromEntries(formData.entries());
 
         try {
-        const response = await fetch(`/api/${projectId}/requisitos`, {
+        const response = await fetch(`/api/${projectId}/hus`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

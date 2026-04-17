@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <%- include('./partials/head') %>
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('./partials/navbar') %>
+
+    <main class="m-auto mt-5" style="width: 90%;">
+        <div class="card-hu p-4 rounded-3 d-flex flex-column">
+            <div class="d-flex gap-5 align-items-start">
+                <p class="badge bg-primary fs-4"><%= project_id + "-" + hu.identificador %></p>
+                <h2 class="text-center flex-grow-1">
+                    Detalle: <%= hu.titulo %>
+                    <hr>
+                </h2>
+            </div>
+            
+            <div class="req-body">
+                <h4>Descripción:</h4>
+                <p><%= hu.descripcion %></p>
+            </div>
+
+            <a href="/<%= hu.project_id %>/backlog" class="btn btn-secondary fw-bold">Volver</a>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+  </body>
+</html>

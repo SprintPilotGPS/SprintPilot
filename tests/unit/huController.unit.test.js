@@ -1,8 +1,8 @@
-const controller = require("../../src/controllers/requisitoController");
-const Requisito = require("../../src/models/Requisito");
+const controller = require("../../src/controllers/huController");
+const HU = require("../../src/models/HU");
 const Proyecto = require("../../src/models/Proyecto");
 
-jest.mock("../../src/models/Requisito");
+jest.mock("../../src/models/HU");
 jest.mock("../../src/models/Proyecto");
 
 function mockRes() {
@@ -15,54 +15,54 @@ function mockRes() {
   return res;
 }
 
-describe("requisitoController unit tests", () => {
+describe("huController unit tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test("createRequisito should return 201 on success", async () => {
+  test("createHU should return 201 on success", async () => {
     const req = { 
       params: { project_id: "PR" },
-      body: { nombre: "Task A", prioridad: "high" } 
+      body: { titulo: "Task A" } 
     };
     const res = mockRes();
 
     // 1. Mock de Proyecto (existe)
-    Proyecto.findOne.mockResolvedValue({ identificador: "PR", num_requisitos: 2 });
+    Proyecto.findOne.mockResolvedValue({ identificador: "PR", num_hus: 2 });
     
     // 2. Mock de Búsqueda de Duplicados (debe devolver null para que no falle)
-    Requisito.findOne.mockResolvedValueOnce(null); 
+    HU.findOne.mockResolvedValueOnce(null); 
     
     // 3. Mock de Cálculo de Orden (segunda llamada a findOne)
-    Requisito.findOne.mockReturnValueOnce({
+    HU.findOne.mockReturnValueOnce({
         sort: jest.fn().mockResolvedValue({ orden: 2 })
     });
 
     const saveMock = jest.fn().mockResolvedValue(true);
-    Requisito.mockImplementation(() => ({ save: saveMock }));
+    HU.mockImplementation(() => ({ save: saveMock }));
     Proyecto.updateOne.mockResolvedValue({ nModified: 1 });
 
-    await controller.createRequisito(req, res);
+    await controller.createHU(req, res);
 
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });
 
-  test("getRequisitoById should return 404 when not found", async () => {
+  test("getHUById should return 404 when not found", async () => {
     const req = { params: { project_id: "PR", id: "0" } };
     const res = mockRes();
 
-    Requisito.findById.mockResolvedValue(null);
+    HU.findById.mockResolvedValue(null);
 
-    await controller.viewRequisito(req, res);
+    await controller.viewHU(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
     console.log(res.render);
-    expect(res.render).toHaveBeenCalledWith("requisitos", {
+    expect(res.render).toHaveBeenCalledWith("HUs", {
       title: "Sprint Pilot - Backlog",
-      requisitos: [],
+      hus: [],
       project_id: "PR",
-      error: "Requisitos con identificador: 0 no se a podido encontrar"
+      error: "HUs con identificador: 0 no se ha podido encontrar"
     });
   });
 });

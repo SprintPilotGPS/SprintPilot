@@ -1,44 +1,44 @@
-const Requisito = require("../models/Requisito");
+const HU = require("../models/HU");
 const Proyectos = require("../models/Proyecto");
 const Utils = require("./utils");
 
 /* ============= Operaciones CRUD ============= */
-// Obtener todos los requisitos ordenados para la vista
-const getAllRequisitos = async (req, res) => {
+// Obtener todos los hus ordenados para la vista
+const getAllHUs = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
     const project_id = req.params.project_id;
 
     // Ordenamos por 'orden' para que la vista respete las flechas
-    const requisitos = await Requisito.find({ project_id: project_id }).sort({ orden: 1 });
+    const hus = await HU.find({ project_id: project_id }).sort({ orden: 1 });
     
-    res.render("requisitos", {
+    res.render("HUs", {
       title: "Sprint Pilot - Backlog",
-      requisitos: requisitos,
+      hus: hus,
       project_id: project_id,
     });
   } catch (error) {
-    console.error("Error al obtener requisitos:", error);
-    res.status(500).render("requisitos", {
+    console.error("Error al obtener hus:", error);
+    res.status(500).render("HUs", {
       title: "Sprint Pilot",
-      requisitos: [],
+      hus: [],
       project_id: project_id,
       error: "Error al cargar los datos",
     });
   }
 };
 
-// Crear un nuevo requisito
-const createRequisito = async (req, res) => {
+// Crear un nuevo hu
+const createHU = async (req, res) => {
   try {
     const project_id = req.params.project_id;
-    const { nombre, prioridad, estado, responsable, descripcion } = req.body;
+    const { titulo, descripcion } = req.body;
 
-    // 1. VALIDACIÓN PARA TEST (400): El nombre es obligatorio
-    if (!nombre || nombre.trim() === "") {
+    // 1. VALIDACIÓN PARA TEST (400): El título es obligatorio
+    if (!titulo || titulo.trim() === "") {
       return res.status(400).json({ 
         success: false, 
-        error: "ValidationError: El nombre del requisito es obligatorio." 
+        error: "ValidationError: El título del hu es obligatorio." 
       });
     }
 
@@ -52,43 +52,40 @@ const createRequisito = async (req, res) => {
       });
     }
 
-    // 2. VALIDACIÓN PARA TEST (409): No permitir nombres duplicados en el mismo proyecto
-    const existeNombre = await Requisito.findOne({ 
+    // 2. VALIDACIÓN PARA TEST (409): No permitir títulos duplicados en el mismo proyecto
+    const existeTitulo = await HU.findOne({ 
       project_id, 
-      nombre: { $regex: new RegExp(`^${nombre.trim()}$`, 'i') } 
+      titulo: { $regex: new RegExp(`^${titulo.trim()}$`, 'i') } 
     });
     
-    if (existeNombre) {
+    if (existeTitulo) {
       return res.status(409).json({ 
         success: false, 
-        error: "Ya existe un requisito con el mismo nombre en este proyecto." 
+        error: "Ya existe un hu con el mismo título en este proyecto." 
       });
     }
 
     // Lógica de ordenación
-    const ultimoRequisito = await Requisito.findOne({ project_id }).sort({ orden: -1 });
-    const nuevoOrden = (ultimoRequisito && ultimoRequisito.orden) ? ultimoRequisito.orden + 1 : 1;
+    const ultimoHU = await HU.findOne({ project_id }).sort({ orden: -1 });
+    const nuevoOrden = (ultimoHU && typeof ultimoHU.orden === 'number') ? ultimoHU.orden + 1 : 1;
 
-    const requisito = new Requisito({
-      identificador: (project.num_requisitos || 0) + 1,
-      nombre: nombre.trim(),
-      prioridad,
-      estado,
-      responsable,
+    const hu = new HU({
+      identificador: req.body.identificador || (project.num_HUs || project.num_hus || 0) + 1,
+      titulo: titulo.trim(),
       descripcion,
       project_id: project_id,
       orden: nuevoOrden
     });
 
-    await requisito.save();
+    await hu.save();
     
     // Incrementar el contador del proyecto
     await Proyectos.updateOne(
       { identificador: project_id }, 
-      { $inc: { num_requisitos: 1 } }
+      { $inc: { num_HUs: 1 } }
     );
 
-    res.status(201).json({ success: true, data: requisito });
+    res.status(201).json({ success: true, data: hu });
 
   } catch (error) {
     console.error("ERROR EN DB:", error);
@@ -102,83 +99,84 @@ const createRequisito = async (req, res) => {
   }
 };
 
-const updateRequisito = async (req, res) => {
+const updateHU = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
-    const requisito = await Requisito.findByIdAndUpdate(req.params.id, req.body, { 
+    const hu = await HU.findByIdAndUpdate(req.params.id, req.body, { 
         new: true, 
         runValidators: true // Para que respete el Enum del Modelo
     });
-    if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
+    if (!hu) return res.status(404).json({ success: false, error: "No encontrado" });
 
-    res.redirect(`/${requisito.project_id}/backlog`);
+    res.redirect(`/${hu.project_id}/backlog`);
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 };
 
-const deleteRequisito = async (req, res) => {
+const deleteHU = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
-    const requisito = await Requisito.findByIdAndDelete(req.params.id);
-    if (!requisito) return res.status(404).json({ success: false, error: "No encontrado" });
+    const hu = await HU.findByIdAndDelete(req.params.id);
+    if (!hu) return res.status(404).json({ success: false, error: "No encontrado" });
     res.json({ success: true, message: "Eliminado exitosamente" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
-async function getRequisito(vista, req, res){
+async function getHU(vista, req, res){
   Utils.printLog(req, true, false);
 
-    let project_id = req.params.project_id;
-    let id = req.params.id;
+  let project_id = req.params.project_id;
+  let id = req.params.id;
 
-    const requisito = await Requisito.findOne({project_id: project_id, identificador: id});
-    if(!requisito)
-      res.status(404).render("requisitos", {
+  const hu = await HU.findOne({project_id: project_id, identificador: id});
+  if(!hu) {
+    return res.status(404).render("HUs", {
       title: "Sprint Pilot - Backlog",
-      requisitos: [],
+      hus: [],
       project_id: project_id,
-      error: "Requisitos con identificador: " + id + " no se a podido encontrar"
+      error: "HUs con identificador: " + id + " no se ha podido encontrar"
     });
+  }
 
-    res.status(200).render(vista, {
-      title: "Sprint Pilot - Ver Requsito",
-      requisito: requisito,
-      project_id: project_id
-    });
+  res.status(200).render(vista, {
+    title: "Sprint Pilot - Ver HU",
+    hu: hu,
+    project_id: project_id
+  });
 }
 
-const viewRequisito = async (req, res) => {
+const viewHU = async (req, res) => {
   try {
-    getRequisito("detallerequisito", req, res);
+    getHU("detalleHU", req, res);
   } catch (error) {
-    res.status(500).render("requisitos", {
+    res.status(500).render("HUs", {
       title: "Sprint Pilot - Backlog",
-      requisitos: [],
-      project_id: project_id,
-      error: "Requisitos con identificador: " + id + " no se a podido encontrar"
+      hus: [],
+      project_id: req.params.project_id,
+      error: "HUs con identificador: " + req.params.id + " no se ha podido encontrar"
     });
   }
 }
 
-const editRequisito = async (req, res) => {
+const editHU = async (req, res) => {
   try {
-    getRequisito("editarRequisito", req, res);
+    getHU("editarHU", req, res);
   } catch (error) {
-    res.status(500).render("requisitos", {
+    res.status(500).render("HUs", {
       title: "Sprint Pilot - Backlog",
-      requisitos: [],
-      project_id: project_id,
-      error: "Requisitos con identificador: " + id + " no se a podido encontrar"
+      hus: [],
+      project_id: req.params.project_id,
+      error: "HUs con identificador: " + req.params.id + " no se ha podido encontrar"
     });
   }
 }
 
 /* ============= Otras operaciones ============= */
 
-// Mover requisito hacia arriba
+// Mover hu hacia arriba
 const moverArriba = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
@@ -186,10 +184,10 @@ const moverArriba = async (req, res) => {
     let project_id = req.params.project_id;
     let id = req.params.id;
 
-    const actual = await Requisito.findOne({project_id: project_id, identificador: id});
+    const actual = await HU.findOne({project_id: project_id, identificador: id});
     if (!actual) return res.status(404).send("No encontrado");
 
-    const superior = await Requisito.findOne({ 
+    const superior = await HU.findOne({ 
       project_id: actual.project_id, 
       orden: { $lt: actual.orden } 
     }).sort({ orden: -1 });
@@ -210,7 +208,7 @@ const moverArriba = async (req, res) => {
   }
 };
 
-// Mover requisito hacia abajo
+// Mover hu hacia abajo
 const moverAbajo = async (req, res) => {
   try {
     Utils.printLog(req, true, false);
@@ -218,10 +216,10 @@ const moverAbajo = async (req, res) => {
     let project_id = req.params.project_id;
     let id = req.params.id;
 
-    const actual = await Requisito.findOne({project_id: project_id, identificador: id});
+    const actual = await HU.findOne({project_id: project_id, identificador: id});
     if (!actual) return res.status(404).send("No encontrado");
 
-    const inferior = await Requisito.findOne({ 
+    const inferior = await HU.findOne({ 
       project_id: actual.project_id, 
       orden: { $gt: actual.orden } 
     }).sort({ orden: 1 });
@@ -243,12 +241,12 @@ const moverAbajo = async (req, res) => {
 };
 
 module.exports = {
-  getAllRequisitos,
-  createRequisito,
-  updateRequisito,
-  deleteRequisito,
-  viewRequisito,
-  editRequisito,
+  getAllHUs,
+  createHU,
+  updateHU,
+  deleteHU,
+  viewHU,
+  editHU,
   moverArriba,
   moverAbajo,
 };

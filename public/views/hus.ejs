@@ -11,39 +11,30 @@
     <div class="container-lg main-container">
       <div class="table-card">
         <div class="table-header d-flex justify-content-between align-items-center gap-2 flex-wrap">
-          <span>Backlog de proyecto: Requisitos</span>
+          <span>Backlog de proyecto: HUs</span>
           <button
             type="button"
             class="btn btn-light btn-sm"
             data-bs-toggle="modal"
-            data-bs-target="#addRequisitoModal"
+            data-bs-target="#addHUModal"
           >
-            Add Requisito
+            Add HU
           </button>
         </div>
-        <table class="table table-hover">
+          <table class="table table-hover align-middle">
           <thead>
             <tr>
-              <th>ID de Tarea</th>
-              <th>Nombre de Requisito</th>
-              <th>Prioridad</th>
-              <th>Estado</th>
-              <th>Responsable</th>
-              <th>Acciones</th>
+              <th style="width: 15%;">ID de Tarea</th>
+              <th style="width: 65%;">Título</th>
+              <th style="width: 20%;">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <% if (requisitos && requisitos.length > 0) { %>
-            <% requisitos.forEach(function(req) { %>
+            <% if (hus && hus.length > 0) { %>
+            <% hus.forEach(function(req) { %>
             <tr>
               <td><%= project_id + "-" + req.identificador %></td>
-              <td><%= req.nombre %></td>
-              <td>
-                <%= req.prioridadIcono %>
-                <%= req.prioridad %>
-              </td>
-              <td><span class="status-badge <%= req.estadoClase %>"><%= req.estado %></span></td>
-              <td><%= req.responsable %></td>
+              <td><%= req.titulo %></td>
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-sm btn-light move-up">
@@ -52,8 +43,8 @@
                   <button class="btn btn-sm btn-light move-down">
                     ⬇️
                   </button>
-                  <a class="btn btn-sm btn-view" href="/<%= project_id %>/requisitos/<%= req.identificador %>/view">Ver</a>
-                  <a class="btn btn-sm btn-edit" href="/<%= project_id %>/requisitos/<%= req.identificador %>/edit">Editar</a>
+                  <a class="btn btn-sm btn-view" href="/<%= project_id %>/hus/<%= req.identificador %>/view">Ver</a>
+                  <a class="btn btn-sm btn-edit" href="/<%= project_id %>/hus/<%= req.identificador %>/edit">Editar</a>
                   <input type="hidden" value="<%= req.identificador %>">
                 </div>
               </td>
@@ -73,15 +64,15 @@
 
     <div
       class="modal fade"
-      id="addRequisitoModal"
+      id="addHUModal"
       tabindex="-1"
-      aria-labelledby="addRequisitoModalLabel"
+      aria-labelledby="addHUModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addRequisitoModalLabel">Add Requisito</h5>
+            <h5 class="modal-title" id="addHUModalLabel">Add HU</h5>
             <button
               type="button"
               class="btn-close"
@@ -89,40 +80,19 @@
               aria-label="Close"
             ></button>
           </div>
-          <form id="addRequisitoForm">
+          <form id="addHUForm">
             <div class="modal-body">
               <div class="row g-3">
-                <div class="col-12">
-                  <label for="nombre" class="form-label">Nombre de Tarea</label>
-                  <input type="text" class="form-control" id="nombre" name="nombre" required />
+                <div class="col-md-4">
+                  <label for="identificador" class="form-label">ID</label>
+                  <input type="number" class="form-control" id="identificador" name="identificador" placeholder="Auto" />
+                </div>
+                <div class="col-md-8">
+                  <label for="titulo" class="form-label">Título</label>
+                  <input type="text" class="form-control" id="titulo" name="titulo" required />
                 </div>
 
-                <div class="col-md-6">
-                  <label for="responsable" class="form-label">Responsable</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="responsable"
-                    name="responsable"
-                  />
-                </div>
 
-                <div class="col-md-6">
-                  <label for="prioridad" class="form-label">Prioridad</label>
-                  <select class="form-select" id="prioridad" name="prioridad">
-                    <option value="medium" selected>Medium</option>
-                    <option value="high">High</option>
-                    <option value="low">Low</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label for="estado" class="form-label">Estado</label>
-                  <select class="form-select" id="estado" name="estado">
-                    <option value="pending" selected>Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </div>
                 <div class="col-12">
                   <label for="descripcion" class="form-label">Descripcion</label>
                   <textarea
@@ -156,6 +126,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script src="/js/requisitosValidation.js"></script>
+    <script src="/js/husValidation.js"></script>
   </body>
 </html>

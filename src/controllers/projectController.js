@@ -96,7 +96,7 @@ const createProject = async (req, res) => {
       identificador: id.trim(),
       nombre: nombre.trim(),
       descripcion: descripcion ? descripcion.trim() : "",
-      num_requisitos: 0
+      num_HUs: 0
     });
 
     await nuevoProyecto.save();
