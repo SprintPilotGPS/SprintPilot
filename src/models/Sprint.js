@@ -11,6 +11,11 @@ const sprintSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  estado: {
+  type: String,
+  enum: ['activo', 'completado'],
+  default: 'activo'
+  },
   fechaIni: {
     type: Date,
     required: true

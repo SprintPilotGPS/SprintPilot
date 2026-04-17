@@ -30,7 +30,19 @@ const getSprint = async (req, res) => {
 };
 
 const getAllSprintPasados = async (req, res) => {
-  res.status(501).json({ error: "No implementado todavía" });
+   try {
+    const { project_id } = req.params;
+    const sprints = await Sprint.find({ project_id, estado: "completado" }).sort({ numero: -1 });
+
+    res.render("SprintPasados", {
+      title: "Sprint Pilot - Sprints Pasados",
+      project_id,
+      sprints,
+    });
+  } catch (error) {
+    console.error("Error al obtener sprints pasados:", error);
+    res.status(500).send("Error interno del servidor");
+  }
 };
 
 const getAllSprints = async (req, res) => {
