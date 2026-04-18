@@ -29,13 +29,18 @@ describe("sprintController unit tests - crearSprint", () => {
 
   test("debería crear un nuevo sprint con éxito (201)", async () => {
     const req = {
-      params: { idProyecto: "proy-123" },
-      body: { id: 1, fechaIni: "2023-01-01", fechaFin: "2023-01-15", sprintGoal: "Mi meta" }
+      params: { project_id: "proy-123" },
+      body: { fechaIni: "2023-01-01", fechaFin: "2023-01-15", sprintGoal: "Mi meta" }
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    Sprint.findOne.mockResolvedValue(null);
+    
+    // Mock para las dos llamadas a findOne en crearSprint
+    Sprint.findOne
+      .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue(null) }) // Para numSprint
+      .mockResolvedValueOnce(null); // Para duplicateId
+
     Sprint.prototype.save = jest.fn().mockResolvedValue({});
 
     await sprintController.crearSprint(req, res);
@@ -45,8 +50,13 @@ describe("sprintController unit tests - crearSprint", () => {
   });
 
   test("debería devolver 400 si faltan campos", async () => {
-    const req = { params: { idProyecto: "proy-123" }, body: {} };
+    const req = { params: { project_id: "proy-123" }, body: {} };
     const res = mockRes();
+
+    // Mock para el primer findOne (numSprint)
+    Sprint.findOne.mockReturnValueOnce({
+      sort: jest.fn().mockResolvedValue(null)
+    });
 
     await sprintController.crearSprint(req, res);
 
@@ -56,13 +66,17 @@ describe("sprintController unit tests - crearSprint", () => {
 
   test("debería devolver 409 si el sprint ya existe", async () => {
     const req = {
-      params: { idProyecto: "proy-123" },
-      body: { id: 1, fechaIni: "2023-01-01", fechaFin: "2023-01-15" }
+      params: { project_id: "proy-123" },
+      body: { fechaIni: "2023-01-01", fechaFin: "2023-01-15" }
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    Sprint.findOne.mockResolvedValue({ id: 1 });
+    
+    // Mock para las dos llamadas a findOne
+    Sprint.findOne
+      .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue({ id: 1 }) }) // Para calcular el nuevo ID (dará 2)
+      .mockResolvedValueOnce({ id: 2 }); // Para el chequeo de duplicados (dirá que el 2 ya existe)
 
     await sprintController.crearSprint(req, res);
 
@@ -117,4 +131,4 @@ describe("sprintController unit tests - getSprint", () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Error BD" }));
   });
-});
+});

@@ -32,7 +32,7 @@ const getSprint = async (req, res) => {
 const getAllSprintPasados = async (req, res) => {
   try {
     const { project_id } = req.params;
-    const sprints = await Sprint.find({ project_id, estado: "completado" }).sort({ numero: -1 });
+    const sprints = await Sprint.find({ idProyecto: project_id, estado: "completado" }).sort({ id: -1 });
 
     res.render("SprintPasados", {
       title: "Sprint Pilot - Sprints Pasados",
@@ -50,13 +50,13 @@ const getAllSprints = async (req, res) => {
     const { status, page = 1, limit = 10 } = req.query;
     const filter = {};
     if (status) {
-      filter.status = status;
+      filter.estado = status;
     }
 
     const skip = (page - 1) * limit;
 
     const sprints = await Sprint.find(filter)
-      .sort({ startDate: -1 })
+      .sort({ fechaIni: -1 })
       .skip(skip)
       .limit(Number(limit));
 
@@ -82,10 +82,10 @@ const getAllSprints = async (req, res) => {
 
 const crearSprint = async (req, res) => {
   try {
-    // 1. Extraer el idProyecto de la URL (/api/{idProyecto}/crearSprint)
-    const idProyecto = req.params.idProyecto ? req.params.idProyecto.trim() : "";
-    const numSprint = await Sprint.findOne({ idProyecto }).sort({ numero: -1 });
-    const id = numSprint ? numSprint.numero + 1 : 1;
+    // 1. Extraer el idProyecto de la URL (/api/{project_id}/crearSprint)
+    const idProyecto = req.params.project_id ? req.params.project_id.trim() : "";
+    const numSprint = await Sprint.findOne({ idProyecto }).sort({ id: -1 });
+    const id = numSprint ? numSprint.id + 1 : 1;
 
     // 2. Extraer los datos del body
     const fechaIni = req.body.fechaIni ? req.body.fechaIni.trim() : "";
