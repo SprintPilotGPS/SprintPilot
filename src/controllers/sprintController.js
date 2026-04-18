@@ -57,9 +57,10 @@ const crearSprint = async (req, res) => {
   try {
     // 1. Extraer el idProyecto de la URL (/api/{idProyecto}/crearSprint)
     const idProyecto = req.params.idProyecto ? req.params.idProyecto.trim() : "";
+    const numSprint = await Sprint.findOne({ idProyecto }).sort({ numero: -1 });
+    const id = numSprint ? numSprint.numero + 1 : 1;
 
     // 2. Extraer los datos del body
-    const id = req.body.id; 
     const fechaIni = req.body.fechaIni ? req.body.fechaIni.trim() : "";
     const fechaFin = req.body.fechaFin ? req.body.fechaFin.trim() : "";
     const sprintGoal = req.body.sprintGoal ? req.body.sprintGoal.trim() : "";
