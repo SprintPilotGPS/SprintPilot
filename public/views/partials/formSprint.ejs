@@ -1,0 +1,38 @@
+<div id="sprintModal" class="modal-new-project">
+  <div class="rounded border border-3 border-black">
+    <h2 class="text-center">Crear Sprint</h2>
+
+    <form id="sprintForm" method="POST">
+      <input type="hidden" id="project_id" value="<%= project_id %>">
+
+      <div class="mb-3">
+        <label class="form-label" for="fechaIni">Fecha de inicio:</label>
+        <input 
+          class="form-control" 
+          type="date" 
+          id="fechaIni" 
+          name="fechaIni" 
+          maxlength="50" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="fechaFin">Fecha de final:</label>
+        <input
+          class="form-control"
+          type="date"
+          id="fechaFin"
+          name="fechaFin"
+          maxlength="50"
+          required
+        />
+      </div>
+      
+      <div class="d-flex justify-content-around">
+        <button class="btn btn-primary" type="submit">Guardar</button>
+        <button class="btn btn-danger" type="button" id="closeModal">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
