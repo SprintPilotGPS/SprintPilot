@@ -10,7 +10,7 @@ const Utils = require("./utils");
 const getSprint = async (req, res) => {
   try {
     const { project_id, id } = req.params;
-    
+
     // Busca el sprint por ID numérico e ID de proyecto
     const sprint = await Sprint.findOne({ idProyecto: project_id, id: Number(id) });
     if (!sprint) {
@@ -18,11 +18,11 @@ const getSprint = async (req, res) => {
     }
 
     // Busca las historias de usuario asociadas a este sprint
-    const hus = await HU.find({ 
-      project_id: project_id, 
-      identificador: { $in: sprint.HU } 
+    const hus = await HU.find({
+      project_id: project_id,
+      identificador: { $in: sprint.HU },
     }).sort({ orden: 1 });
-    
+
     res.json({ success: true, data: { sprint, hus } });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -30,7 +30,7 @@ const getSprint = async (req, res) => {
 };
 
 const getAllSprintPasados = async (req, res) => {
-   try {
+  try {
     const { project_id } = req.params;
     const sprints = await Sprint.find({ project_id, estado: "completado" }).sort({ numero: -1 });
 
@@ -46,7 +46,34 @@ const getAllSprintPasados = async (req, res) => {
 };
 
 const getAllSprints = async (req, res) => {
-  res.status(501).json({ error: "No implementado todavía" });
+  try {
+    const { status, page = 1, limit = 10 } = req.query;
+    const filter = {};
+    if (status) {
+      filter.status = status;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const sprints = await Sprint.find(filter)
+      .sort({ startDate: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Sprint.countDocuments(filter);
+
+    res.status(200).json({
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
+      data: sprints,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener los sprints",
+      error: error.message,
+    });
+  }
 };
 
 // ---------------------------------------------------------
@@ -70,16 +97,17 @@ const crearSprint = async (req, res) => {
     if (id === undefined || !idProyecto || !fechaIni || !fechaFin) {
       return res.status(400).json({
         success: false,
-        error: "El ID del sprint, el ID del proyecto, la fecha de inicio y la fecha de fin son obligatorios.",
+        error:
+          "El ID del sprint, el ID del proyecto, la fecha de inicio y la fecha de fin son obligatorios.",
       });
     }
 
     // 4. Validar que el Proyecto Padre realmente existe en la Base de Datos
     // Asumimos que el proyecto se busca por el campo 'identificador' que vimos en tu otro código
-    const proyectoExiste = await Proyectos.findOne({ 
-      identificador: { $regex: new RegExp(`^${idProyecto}$`, "i") } 
+    const proyectoExiste = await Proyectos.findOne({
+      identificador: { $regex: new RegExp(`^${idProyecto}$`, "i") },
     });
-    
+
     if (!proyectoExiste) {
       return res.status(404).json({
         success: false,
@@ -135,21 +163,20 @@ const crearSprint = async (req, res) => {
       fechaIni: fInicio,
       fechaFin: fFin,
       HU: Array.isArray(HU) ? HU : [],
-      sprintGoal: sprintGoal
+      sprintGoal: sprintGoal,
     });
 
     await nuevoSprint.save();
 
     res.status(201).json({
       success: true,
-      data: nuevoSprint
+      data: nuevoSprint,
     });
-
   } catch (error) {
     console.error("Error al crear sprint:", error);
     res.status(500).json({
       success: false,
-      error: "Error interno del servidor al crear el sprint. Vuelva a intentarlo."
+      error: "Error interno del servidor al crear el sprint. Vuelva a intentarlo.",
     });
   }
 };
@@ -158,5 +185,5 @@ module.exports = {
   getSprint,
   getAllSprintPasados,
   getAllSprints,
-  crearSprint
+  crearSprint,
 };
