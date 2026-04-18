@@ -31,14 +31,17 @@
         <p class="lead">Revisa el historial de trabajo completado en este proyecto.</p>
       </div>
 
+      <input type="hidden" id="project_id" value="<%= project_id %>">
+
       <div class="row row-cols-1 row-cols-md-3 g-4">
         <% if (sprints && sprints.length > 0) { %>
           <% sprints.forEach(s => { %>
             <div class="col">
-              <div class="card h-100 sprint-card border-0 shadow-sm rounded-4 overflow-hidden" onclick="viewSprintDetails('<%= s.numero %>')">
+              <div class="sprint card h-100 sprint-card border-0 shadow-sm rounded-4 overflow-hidden">
+                <input type="hidden" value="<%= s.id %>">
                 <div class="card-body p-4 position-relative">
-                  <div class="sprint-number">#<%= s.numero %></div>
-                  <h5 class="card-title fw-bold text-primary mb-3">Sprint <%= s.numero %></h5>
+                  <div class="sprint-number">#<%= s.id %></div>
+                  <h5 class="card-title fw-bold text-primary mb-3">Sprint <%= s.id %></h5>
                   
                   <div class="d-flex flex-column gap-2 mb-3">
                     <div class="small text-muted">
@@ -67,7 +70,7 @@
               <img src="https://illustrations.popsy.co/blue/astronaut-riding-a-rocket.svg" alt="No History" style="width: 250px;" class="mb-4">
               <h4 class="text-muted">Aún no hay historial</h4>
               <p class="text-muted">Los sprints aparecerán aquí una vez que los completes.</p>
-              <a href="/<%= project_id %>/sprints-actual" class="btn btn-primary mt-3 rounded-pill px-4">Ir al Sprint Actual</a>
+              <a href="/<%= project_id %>/sprint-actual" class="btn btn-primary mt-3 rounded-pill px-4">Ir al Sprint Actual</a>
             </div>
           </div>
         <% } %>
@@ -93,50 +96,6 @@
 
     <%- include('partials/footer') %>
 
-    <script>
-      async function viewSprintDetails(numero) {
-        const modal = document.getElementById("modal-view-sprint");
-        const title = document.getElementById("modal-sprint-title");
-        const content = document.getElementById("modal-sprint-content");
-        
-        modal.classList.add("show");
-        title.innerText = `Detalles del Sprint #${numero}`;
-        content.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
-
-        try {
-          const response = await fetch(`/api/<%= project_id %>/sprints/${numero}`);
-          const result = await response.json();
-          
-          if (result.success) {
-            const { hus } = result.data;
-            if (hus && hus.length > 0) {
-              let html = '<div class="list-group list-group-flush">';
-              hus.forEach(hu => {
-                html += `
-                  <div class="list-group-item px-0 py-3 border-light">
-                    <div class="d-flex justify-content-between">
-                      <h6 class="fw-bold mb-1">HU-${hu.identificador}: ${hu.titulo}</h6>
-                    </div>
-                    <p class="text-muted small mb-0">${hu.descripcion || 'Sin descripción'}</p>
-                  </div>
-                `;
-              });
-              html += '</div>';
-              content.innerHTML = html;
-            } else {
-              content.innerHTML = '<p class="text-center text-muted py-4">No se encontraron HUs en este sprint.</p>';
-            }
-          } else {
-            content.innerHTML = `<p class="text-danger text-center py-4">${result.error}</p>`;
-          }
-        } catch (error) {
-          content.innerHTML = '<p class="text-danger text-center py-4">Error al cargar los datos.</p>';
-        }
-      }
-
-      function hideDetailsModal() {
-        document.getElementById("modal-view-sprint").classList.remove("show");
-      }
-    </script>
+    <script src="/js/sprintPasadosValidation.js"></script>
   </body>
 </html>
