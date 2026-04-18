@@ -2,20 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("sprintModal");
   const form = document.getElementById("sprintForm");
 
-  // Abrir modal (si tienes botón con id openSprintModal)
-  const openBtn = document.getElementById("openSprintModal");
-  if (openBtn) {
-    openBtn.onclick = () => modal.classList.add("show");
-  }
+  // Abrir modal
+  const openBtn = document.querySelector(".openModalSprintCreate");
+  openBtn.onclick = () => modal.classList.add("show");
 
   // Cerrar modal
   const closeBtn = document.getElementById("closeModal");
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      modal.classList.remove("show");
-      form.reset();
-    };
-  }
+  closeBtn.onclick = () => {
+    modal.classList.remove("show");
+    form.reset();
+  };
 
   if (!form) return;
 
@@ -25,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fechaIni = document.getElementById("fechaIni").value;
     const fechaFin = document.getElementById("fechaFin").value;
-
     const projectId = document.getElementById("project_id").value;
 
     const data = {

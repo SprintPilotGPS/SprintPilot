@@ -3,16 +3,13 @@ const Proyectos = require("../models/Proyecto"); // Importamos Proyectos para va
 const HU = require("../models/HU");
 const Utils = require("./utils");
 
-// ---------------------------------------------------------
-// FUNCIONES PENDIENTES DE IMPLEMENTAR (Stubs)
-// ---------------------------------------------------------
 
 const getSprint = async (req, res) => {
   try {
     const { project_id, id } = req.params;
 
     // Busca el sprint por ID numérico e ID de proyecto
-    const sprint = await Sprint.findOne({ idProyecto: project_id, id: Number(id) });
+    const sprint = await Sprint.findOne({ project_id: project_id, id: Number(id) });
     if (!sprint) {
       return res.status(404).json({ success: false, error: "Sprint no encontrado" });
     }
@@ -28,6 +25,26 @@ const getSprint = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+const getSprintActual = async (req, res) => {
+  Utils.printLog(req, true, false);
+  try {
+    const project_id = req.params.project_id;
+
+    const sprint = await Sprint.findOne({ project_id, estado: "activo" }).sort({ id: -1 });
+    const hus = (sprint)? await HU.find({ project_id, sprint_id: sprint.id }).sort({ orden: 1 }) : [];
+
+    res.render("sprintActual", {
+          title: "SprintPilot - Proyectos",
+          project_id: project_id,
+          sprint: sprint,
+          hus: hus
+        });
+    Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
+  } catch (error) {
+    
+  }
+}
 
 const getAllSprintPasados = async (req, res) => {
   try {
@@ -76,25 +93,27 @@ const getAllSprints = async (req, res) => {
   }
 };
 
-// ---------------------------------------------------------
-// FUNCIÓN: CREAR SPRINT
-// ---------------------------------------------------------
-
 const crearSprint = async (req, res) => {
+  Utils.printLog(req, true, false);
   try {
+<<<<<<< HEAD
     // 1. Extraer el idProyecto de la URL (/api/{project_id}/crearSprint)
     const idProyecto = req.params.project_id ? req.params.project_id.trim() : "";
     const numSprint = await Sprint.findOne({ idProyecto }).sort({ id: -1 });
     const id = numSprint ? numSprint.id + 1 : 1;
+=======
+    const project_id = req.params.project_id;
+    const sprint = await Sprint.findOne({ project_id }).sort({ numero: -1 });
+    const id = (sprint) ? sprint.id + 1 : 1;
+    Utils.info("Id del nuevo sprint: " + id);
+>>>>>>> a0e93854bdf3646545eba1fae4a848df902ca59b
 
-    // 2. Extraer los datos del body
-    const fechaIni = req.body.fechaIni ? req.body.fechaIni.trim() : "";
-    const fechaFin = req.body.fechaFin ? req.body.fechaFin.trim() : "";
-    const sprintGoal = req.body.sprintGoal ? req.body.sprintGoal.trim() : "";
+    let fechaIni = req.body.fechaIni;
+    let fechaFin = req.body.fechaFin;
+    const sprintGoal = req.body.sprintGoal;
     const HU = req.body.HU || [];
 
-    // 3. Validación de campos obligatorios básicos
-    if (id === undefined || !idProyecto || !fechaIni || !fechaFin) {
+    if (!id || !project_id || !fechaIni || !fechaFin) {
       return res.status(400).json({
         success: false,
         error:
@@ -102,52 +121,43 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    // 4. Validar que el Proyecto Padre realmente existe en la Base de Datos
-    // Asumimos que el proyecto se busca por el campo 'identificador' que vimos en tu otro código
-    const proyectoExiste = await Proyectos.findOne({
-      identificador: { $regex: new RegExp(`^${idProyecto}$`, "i") },
-    });
-
+    const proyectoExiste = await Proyectos.findOne({identificador: project_id});
     if (!proyectoExiste) {
       return res.status(404).json({
         success: false,
-        error: `No se ha encontrado ningún proyecto con el identificador '${idProyecto}'. No se puede crear el Sprint.`,
+        error: `No se ha encontrado ningún proyecto con el identificador '${project_id}'. No se puede crear el Sprint.`,
       });
     }
 
-    // 5. Validación de tipos y formato del Sprint
-    if (isNaN(id)) {
-      return res.status(400).json({
-        success: false,
-        error: "El ID del sprint debe ser un número válido.",
-      });
-    }
-
-    const fInicio = new Date(fechaIni);
-    const fFin = new Date(fechaFin);
-
-    if (isNaN(fInicio.getTime()) || isNaN(fFin.getTime())) {
+    fechaIni = new Date(fechaIni);
+    fechaFin = new Date(fechaFin);
+    if (isNaN(fechaIni.getTime()) || isNaN(fechaFin.getTime())) {
       return res.status(400).json({
         success: false,
         error: "Las fechas introducidas no tienen un formato válido.",
       });
     }
 
-    if (fInicio >= fFin) {
+    if (fechaIni >= fechaFin) {
       return res.status(400).json({
         success: false,
         error: "La fecha de fin debe ser posterior a la fecha de inicio.",
       });
     }
 
-    if (sprintGoal.length > 250) {
+    // TODO incluir minima suración de sprint
+    let timeDiff = Math.abs(fechaFin.getTime() - fechaIni.getTime());
+    let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; 
+    Utils.info("Duración: " + diffDays + " dias");
+
+    // TODO cuando este el sprint goal descomentar
+    /* if (sprintGoal.length > 250) {
       return res.status(400).json({
         success: false,
         error: "El Sprint Goal no puede superar los 250 caracteres.",
       });
-    }
+    } */
 
-    // 6. Comprobar Identificador Duplicado (que no exista ya un Sprint con ese ID)
     const duplicateId = await Sprint.findOne({ id: Number(id) });
     if (duplicateId) {
       return res.status(409).json({
@@ -156,12 +166,11 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    // 7. Si todo está perfecto, creamos y guardamos el Sprint
     const nuevoSprint = new Sprint({
       id: Number(id),
-      idProyecto: proyectoExiste.identificador, // Usamos el ID validado de la BD
-      fechaIni: fInicio,
-      fechaFin: fFin,
+      project_id: proyectoExiste.identificador, // Usamos el ID validado de la BD
+      fechaIni: fechaIni,
+      fechaFin: fechaFin,
       HU: Array.isArray(HU) ? HU : [],
       sprintGoal: sprintGoal,
     });
@@ -183,6 +192,7 @@ const crearSprint = async (req, res) => {
 
 module.exports = {
   getSprint,
+  getSprintActual,
   getAllSprintPasados,
   getAllSprints,
   crearSprint,

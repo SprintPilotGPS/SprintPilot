@@ -7,14 +7,14 @@ const sprintSchema = new mongoose.Schema({
     required: true,
     unique: true // Al ser un ID, es buena idea que sea único
   },
-  idProyecto: {
+  project_id: {
     type: String,
     required: true
   },
   estado: {
-  type: String,
-  enum: ['activo', 'completado'],
-  default: 'activo'
+    type: String,
+    enum: ['activo', 'completado'],
+    default: 'activo'
   },
   fechaIni: {
     type: Date,

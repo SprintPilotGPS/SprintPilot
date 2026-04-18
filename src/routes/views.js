@@ -13,7 +13,7 @@ router.get('/:project_id/hus/:id/view', huController.viewHU);
 router.get('/:project_id/hus/:id/edit', huController.editHU);
 
 // --- Vista de sprints ---
-router.get("/:project_id/sprint-actual", sprintContoller.getSprint);
+router.get("/:project_id/sprint-actual", sprintContoller.getSprintActual);
 router.get("/:project_id/sprints-pasados", sprintContoller.getAllSprintPasados);
 
 module.exports = router;
