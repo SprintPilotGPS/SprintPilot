@@ -29,13 +29,15 @@ describe("sprintController unit tests - crearSprint", () => {
 
   test("debería crear un nuevo sprint con éxito (201)", async () => {
     const req = {
-      params: { idProyecto: "proy-123" },
+      params: { project_id: "proy-123" },
       body: { id: 1, fechaIni: "2023-01-01", fechaFin: "2023-01-15", sprintGoal: "Mi meta" }
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    Sprint.findOne.mockResolvedValue(null);
+    Sprint.findOne
+      .mockImplementationOnce(() => ({ sort: jest.fn().mockResolvedValue(null) }))
+      .mockResolvedValueOnce(null);
     Sprint.prototype.save = jest.fn().mockResolvedValue({});
 
     await sprintController.crearSprint(req, res);
@@ -45,8 +47,10 @@ describe("sprintController unit tests - crearSprint", () => {
   });
 
   test("debería devolver 400 si faltan campos", async () => {
-    const req = { params: { idProyecto: "proy-123" }, body: {} };
+    const req = { params: { project_id: "proy-123" }, body: {} };
     const res = mockRes();
+
+    Sprint.findOne.mockImplementation(() => ({ sort: jest.fn().mockResolvedValue(null) }));
 
     await sprintController.crearSprint(req, res);
 
@@ -56,13 +60,15 @@ describe("sprintController unit tests - crearSprint", () => {
 
   test("debería devolver 409 si el sprint ya existe", async () => {
     const req = {
-      params: { idProyecto: "proy-123" },
+      params: { project_id: "proy-123" },
       body: { id: 1, fechaIni: "2023-01-01", fechaFin: "2023-01-15" }
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    Sprint.findOne.mockResolvedValue({ id: 1 });
+    Sprint.findOne
+      .mockImplementationOnce(() => ({ sort: jest.fn().mockResolvedValue(null) }))
+      .mockResolvedValueOnce({ id: 1 });
 
     await sprintController.crearSprint(req, res);
 
@@ -92,7 +98,7 @@ describe("sprintController unit tests - getSprint", () => {
     const req = { params: { project_id: "proy-1", id: "1" } };
     const res = mockRes();
 
-    const mockSprint = { idProyecto: "proy-1", id: 1, HU: [10, 20] };
+    const mockSprint = { project_id: "proy-1", id: 1, HU: [10, 20] };
     const mockHUs = [{ identificador: 10 }, { identificador: 20 }];
 
     Sprint.findOne.mockResolvedValue(mockSprint);
