@@ -85,7 +85,7 @@ describe("Sprint API Tests", () => {
       
       await Sprint.create({ 
         id: 1, 
-        idProyecto: testProjectId, 
+        project_id: testProjectId, 
         estado: "activo",
         fechaIni,
         fechaFin,
