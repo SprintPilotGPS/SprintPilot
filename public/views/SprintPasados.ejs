@@ -40,23 +40,18 @@
               <div class="sprint card h-100 sprint-card border-0 shadow-sm rounded-4 overflow-hidden">
                 <input type="hidden" value="<%= s.id %>">
                 <div class="card-body p-4 position-relative">
-                  <% 
-                    const displayId = s.id || s.numero || '?';
-                    const displayInicio = s.fechaIni || s.fecha_inicio;
-                    const displayFin = s.fechaFin || s.fecha_fin;
-                  %>
-                  <div class="sprint-number">#<%= displayId %></div>
-                  <h5 class="card-title fw-bold text-primary mb-3">Sprint <%= displayId %></h5>
+                  <div class="sprint-number">#<%= s.id %></div>
+                  <h5 class="card-title fw-bold text-primary mb-3">Sprint <%= s.id %></h5>
                   
                   <div class="d-flex flex-column gap-2 mb-3">
                     <div class="small text-muted">
                       <i class="bi bi-calendar-check me-2"></i>
-                      Inicio: <%= displayInicio ? new Date(displayInicio).toLocaleDateString() : 'N/A' %>
+                      Inicio: <%= new Date(s.fecha_inicio).toLocaleDateString() %>
                     </div>
-                    <% if (displayFin) { %>
+                    <% if (s.fecha_fin) { %>
                       <div class="small text-muted">
                         <i class="bi bi-calendar-x me-2"></i>
-                        Fin: <%= new Date(displayFin).toLocaleDateString() %>
+                        Fin: <%= new Date(s.fecha_fin).toLocaleDateString() %>
                       </div>
                     <% } %>
                   </div>
@@ -72,6 +67,7 @@
         <% } else { %>
           <div class="col-12">
             <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+              <img src="https://illustrations.popsy.co/blue/astronaut-riding-a-rocket.svg" alt="No History" style="width: 250px;" class="mb-4">
               <h4 class="text-muted">Aún no hay historial</h4>
               <p class="text-muted">Los sprints aparecerán aquí una vez que los completes.</p>
               <a href="/<%= project_id %>/sprint-actual" class="btn btn-primary mt-3 rounded-pill px-4">Ir al Sprint Actual</a>

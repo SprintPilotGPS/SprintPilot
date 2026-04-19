@@ -32,22 +32,12 @@ const getSprintActual = async (req, res) => {
 
     const sprint = await Sprint.findOne({ project_id, estado: "activo" }).sort({ id: -1 });
     const hus = (sprint)? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 }) : [];
-    
-    // Obtenemos las HUs del proyecto que NO están en NINGÚN sprint (ni activo ni completado)
-    const todosSprints = await Sprint.find({ project_id });
-    const husEnSprints = todosSprints.reduce((acc, s) => acc.concat(s.HU), []);
-    
-    const backlog = await HU.find({ 
-      project_id, 
-      identificador: { $nin: husEnSprints } 
-    }).sort({ orden: 1 });
 
     res.render("sprintActual", {
           title: "SprintPilot - Proyectos",
           project_id: project_id,
           sprint: sprint,
-          hus: hus,
-          backlog: backlog
+          hus: hus
         });
     if (sprint) Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
   } catch (error) {
@@ -108,10 +98,7 @@ const crearSprint = async (req, res) => {
   try {
     const project_id = req.params.project_id ? req.params.project_id.trim() : "";
     const lastSprint = await Sprint.findOne({ project_id }).sort({ id: -1 });
-    let id = 1;
-    if (lastSprint && lastSprint.id !== undefined && lastSprint.id !== null) {
-      id = Number(lastSprint.id) + 1;
-    }
+    const id = lastSprint ? lastSprint.id + 1 : 1;
     Utils.info("Id del nuevo sprint: " + id);
 
     let fechaIni = req.body.fechaIni;
@@ -121,7 +108,6 @@ const crearSprint = async (req, res) => {
 
     // 3. Validación de campos obligatorios básicos
     if (!id || !project_id || !fechaIni || !fechaFin) {
-      Utils.info(`Faltan campos: id=${id}, project_id=${project_id}, fechaIni=${fechaIni}, fechaFin=${fechaFin}`);
       return res.status(400).json({
         success: false,
         error:
@@ -165,19 +151,16 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    // 6. Comprobar Identificador Duplicado DENTRO del mismo proyecto
-    const duplicateId = await Sprint.findOne({ project_id: proyectoExiste.identificador, id: Number(id) });
+    // 6. Comprobar Identificador Duplicado
+    const duplicateId = await Sprint.findOne({ id: Number(id) });
     if (duplicateId) {
       return res.status(409).json({
         success: false,
-        error: "Ya existe un Sprint con este ID numérico para este proyecto.",
+        error: "Ya existe un Sprint con este ID numérico.",
       });
     }
 
     // 7. Si todo está perfecto, creamos y guardamos el Sprint
-    // Pero antes, cerramos cualquier sprint activo previo para este proyecto
-    await Sprint.updateMany({ project_id: proyectoExiste.identificador, estado: "activo" }, { estado: "completado" });
-
     const nuevoSprint = new Sprint({
       id: Number(id),
       project_id: proyectoExiste.identificador,
@@ -185,18 +168,9 @@ const crearSprint = async (req, res) => {
       fechaFin: fFin,
       HU: Array.isArray(HU_ids) ? HU_ids : [],
       sprintGoal: sprintGoal,
-      estado: "activo" // Aseguramos que el nuevo sea el activo
     });
 
     await nuevoSprint.save();
-
-    // Actualizamos las HUs para que sepan a qué sprint pertenecen
-    if (HU_ids.length > 0) {
-      await HU.updateMany(
-        { project_id: proyectoExiste.identificador, identificador: { $in: HU_ids } },
-        { sprint_id: Number(id) }
-      );
-    }
 
     res.status(201).json({
       success: true,
@@ -211,39 +185,10 @@ const crearSprint = async (req, res) => {
   }
 };
 
-const addHUsToSprint = async (req, res) => {
-  try {
-    const { project_id, id } = req.params;
-    const { HU: HU_ids } = req.body;
-
-    if (!HU_ids || !Array.isArray(HU_ids)) {
-      return res.status(400).json({ success: false, error: "Se requiere un array de IDs de HU." });
-    }
-
-    // Actualizar el Sprint (añadir IDs al array)
-    await Sprint.updateOne(
-      { project_id, id: Number(id) },
-      { $addToSet: { HU: { $each: HU_ids } } }
-    );
-
-    // Actualizar las HUs (ponerles el sprint_id)
-    await HU.updateMany(
-      { project_id, identificador: { $in: HU_ids } },
-      { sprint_id: Number(id) }
-    );
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Error al añadir HUs al sprint:", error);
-    res.status(500).json({ success: false, error: "Error interno del servidor" });
-  }
-};
-
 module.exports = {
   getSprint,
   getSprintActual,
   getAllSprintPasados,
   getAllSprints,
   crearSprint,
-  addHUsToSprint,
 };

@@ -4,8 +4,8 @@ const mongoose = require("mongoose");
 const sprintSchema = new mongoose.Schema({
   id: {
     type: Number,
-    required: true
-    // Eliminamos unique: true global para permitir Sprint #1 en múltiples proyectos
+    required: true,
+    unique: true // Al ser un ID, es buena idea que sea único
   },
   project_id: {
     type: String,
@@ -34,9 +34,6 @@ const sprintSchema = new mongoose.Schema({
   // Esto añade automáticamente createdAt y updatedAt (opcional pero muy recomendado)
   timestamps: true 
 });
-
-// Definimos un índice compuesto único para que el ID de sprint sea único DENTRO de un proyecto
-sprintSchema.index({ project_id: 1, id: 1 }, { unique: true });
 
 // Creamos y exportamos el modelo
 const Sprint = mongoose.model("Sprint", sprintSchema);
