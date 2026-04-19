@@ -1,6 +1,11 @@
 
 
-document.querySelector(".sprint").onclick = e => viewSprintDetails(document.querySelector(".sprint input").value);
+document.querySelectorAll(".sprint").forEach(sprintCard => {
+  sprintCard.onclick = () => {
+    const sprintId = sprintCard.querySelector("input").value;
+    viewSprintDetails(sprintId);
+  };
+});
 
 async function viewSprintDetails(numero) {
         const modal = document.getElementById("modal-view-sprint");

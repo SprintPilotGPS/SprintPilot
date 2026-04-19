@@ -64,6 +64,43 @@ describe("Sprint API Tests", () => {
       expect(res.body.data.id).toBe(1);
     });
 
+    test("should allow two different projects to have their own Sprint #1", async () => {
+      // 1. Crear primer sprint para Proyecto A
+      await request(app)
+        .post(`/api/${testProjectId}/crearSprint`)
+        .send({ 
+          fechaIni: new Date().toISOString(),
+          fechaFin: new Date(Date.now() + 86400000).toISOString()
+        })
+        .expect(201);
+
+      // 2. Crear Proyecto B
+      const otherProjectId = "OTHER-PROJ";
+      await Proyecto.create({
+        identificador: otherProjectId,
+        nombre: "Otro Proyecto",
+        num_hus: 0
+      });
+
+      // 3. Crear primer sprint para Proyecto B
+      const res = await request(app)
+        .post(`/api/${otherProjectId}/crearSprint`)
+        .send({ 
+          fechaIni: new Date().toISOString(),
+          fechaFin: new Date(Date.now() + 86400000).toISOString()
+        })
+        .expect(201);
+
+      expect(res.body.data.id).toBe(1); // Ambos deben ser el #1 de sus respectivos proyectos
+      
+      const sprintA = await Sprint.findOne({ project_id: testProjectId, id: 1 });
+      const sprintB = await Sprint.findOne({ project_id: otherProjectId, id: 1 });
+      
+      expect(sprintA).toBeDefined();
+      expect(sprintB).toBeDefined();
+      expect(sprintA._id.toString()).not.toBe(sprintB._id.toString());
+    });
+
     test("should return 400 if required fields are missing", async () => {
       const res = await request(app)
         .post(`/api/${testProjectId}/crearSprint`)

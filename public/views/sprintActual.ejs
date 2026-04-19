@@ -28,7 +28,9 @@
           <div class="d-flex align-items-center">
             <span class="fs-4 me-2">🚀</span>
             <% if (sprint) { %>
+            <input type="hidden" id="current_sprint_id" value="<%= sprint.id %>">
             <span class="fs-3">Sprint #<%= sprint.id %></span>
+            <button class="btn btn-light btn-sm fw-bold px-3 ms-4 rounded-pill" id="openAddHUModal">Añadir</button>
             <% } else { %>
             <span>Sin Sprint Activo</span>
             <% } %>
@@ -79,6 +81,40 @@
     </div>
 
     <%- include('partials/formSprint') %>
+    
+    <!-- Modal Añadir HU -->
+    <div id="addHUModal" class="modal-new-project">
+      <div class="rounded border border-3 border-black bg-white" style="width: 400px; padding: 20px;">
+        <h2 class="text-center mb-4">Añadir HU</h2>
+        <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
+          <% if (backlog && backlog.length > 0) { %>
+            <table class="table table-sm">
+              <tbody>
+                <% backlog.forEach(hu => { %>
+                  <tr>
+                    <td>
+                      <input class="form-check-input hu-checkbox-add" type="checkbox" value="<%= hu.identificador %>" id="add_hu_<%= hu.identificador %>">
+                    </td>
+                    <td>
+                      <label class="form-check-label small fw-bold" for="add_hu_<%= hu.identificador %>">
+                        HU-<%= hu.identificador %>: <%= hu.titulo %>
+                      </label>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% } else { %>
+            <p class="text-center text-muted">No hay HUs disponibles en el backlog.</p>
+          <% } %>
+        </div>
+        <div class="d-flex justify-content-around">
+          <button class="btn btn-primary px-4" id="saveAddHU">Añadir</button>
+          <button class="btn btn-danger px-4" id="closeAddHUModal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
     <%- include('partials/footer') %>
 
     <script src="/js/sprintValidation.js"></script>
