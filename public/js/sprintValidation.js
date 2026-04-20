@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("sprintForm");
 
   // Abrir modal
-  const openBtn = document.querySelector(".openModalSprintCreate");
-  openBtn.onclick = () => modal.classList.add("show");
+  const openBtn = document.querySelectorAll(".openModalSprintCreate");
+  openBtn.forEach((e) => e.onclick = () => modal.classList.add("show"));
 
   // Cerrar modal
   const closeBtn = document.getElementById("closeModal");
