@@ -12,6 +12,33 @@
         transform: translateX(5px);
         box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
       }
+      .planning-section {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 8px solid var(--primary-color);
+      }
+      .planning-label {
+        font-weight: 700;
+        color: #4a5568;
+        min-width: 120px;
+        display: inline-block;
+      }
+      .planning-input {
+        border: none;
+        border-bottom: 2px solid #e2e8f0;
+        border-radius: 0;
+        padding: 5px 10px;
+        transition: border-color 0.3s;
+        width: 100%;
+        background: transparent;
+      }
+      .planning-input:focus {
+        outline: none;
+        border-bottom-color: var(--primary-color);
+        box-shadow: none;
+      }
     </style>
   </head>
   <body>
@@ -37,6 +64,19 @@
         </div>
 
         <div class="p-4 bg-light min-vh-50">
+          <% if (sprint) { %>
+            <div class="planning-section shadow-sm">
+              <div class="mb-0">
+                <div class="d-flex align-items-center">
+                  <span class="planning-label">Sprint Goal:</span>
+                  <div class="flex-grow-1 ms-3">
+                    <input type="text" class="planning-input" placeholder="Ej: Implementar el sistema de pagos y autenticación">
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+
           <% if (sprint && hus.length > 0) { %>
             <div class="row row-cols-1 row-cols-md-2 g-4">
               <% hus.forEach(hu => { %>
