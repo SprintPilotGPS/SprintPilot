@@ -28,9 +28,11 @@ describe("sprintController unit tests - crearSprint", () => {
   });
 
   test("debería crear un nuevo sprint con éxito (201)", async () => {
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate()+5);
     const req = {
       params: { project_id: "proy-123" },
-      body: { fechaIni: "2023-01-01", fechaFin: "2023-01-15", sprintGoal: "Mi meta" }
+      body: { fechaFin: fecha, sprintGoal: "Mi meta" }
     };
     const res = mockRes();
 
@@ -65,9 +67,11 @@ describe("sprintController unit tests - crearSprint", () => {
   });
 
   test("debería devolver 409 si el sprint ya existe", async () => {
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate()+5);
     const req = {
       params: { project_id: "proy-123" },
-      body: { fechaIni: "2023-01-01", fechaFin: "2023-01-15" }
+      body: { fechaFin: fecha }
     };
     const res = mockRes();
 
