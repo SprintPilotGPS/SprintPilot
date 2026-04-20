@@ -43,19 +43,14 @@
                   <div class="sprint-number">#<%= s.id %></div>
                   <h5 class="card-title fw-bold text-primary mb-3">Sprint <%= s.id %></h5>
                   
-                  <div class="d-flex flex-column gap-2 mb-3">
-                    <div class="small text-muted">
-                      <i class="bi bi-calendar-check me-2"></i>
-                      Inicio: <%= new Date(s.fecha_inicio).toLocaleDateString() %>
-                    </div>
-                    <% if (s.fecha_fin) { %>
-                      <div class="small text-muted">
-                        <i class="bi bi-calendar-x me-2"></i>
-                        Fin: <%= new Date(s.fecha_fin).toLocaleDateString() %>
-                      </div>
-                    <% } %>
+                  <div class="d-flex gap-4">
+                    <p class="fs-6 fw-bold text-secondary">
+                      Inicio: <%= new Date(s.fechaIni).toLocaleDateString("es-ES") %>
+                    </p>
+                    <p class="fs-6 fw-bold text-secondary">
+                      Fin: <%= new Date(s.fechaFin).toLocaleDateString("es-ES") %>
+                    </p>
                   </div>
-
                   <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">Completado</span>
                 </div>
                 <div class="card-footer bg-light border-0 py-3 text-center">

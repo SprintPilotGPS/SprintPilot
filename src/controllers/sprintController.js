@@ -101,12 +101,11 @@ const crearSprint = async (req, res) => {
     const id = lastSprint ? lastSprint.id + 1 : 1;
     Utils.info("Id del nuevo sprint: " + id);
 
-    let fechaIni = req.body.fechaIni;
+    let fechaIni = new Date();
     let fechaFin = req.body.fechaFin;
     const sprintGoal = req.body.sprintGoal ? req.body.sprintGoal.trim() : "";
     const HU_ids = req.body.HU || [];
 
-    // 3. Validación de campos obligatorios básicos
     if (!id || !project_id || !fechaIni || !fechaFin) {
       return res.status(400).json({
         success: false,
@@ -115,29 +114,16 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    // 4. Validar que el Proyecto Padre realmente existe en la Base de Datos
-    const proyectoExiste = await Proyectos.findOne({
-      identificador: { $regex: new RegExp(`^${project_id}$`, "i") },
-    });
+    fechaFin = new Date(fechaFin);
 
-    if (!proyectoExiste) {
-      return res.status(404).json({
-        success: false,
-        error: `No se ha encontrado ningún proyecto con el identificador '${project_id}'. No se puede crear el Sprint.`,
-      });
-    }
-
-    const fInicio = new Date(fechaIni);
-    const fFin = new Date(fechaFin);
-
-    if (isNaN(fInicio.getTime()) || isNaN(fFin.getTime())) {
+    if (isNaN(fechaIni.getTime()) || isNaN(fechaFin.getTime())) {
       return res.status(400).json({
         success: false,
         error: "Las fechas introducidas no tienen un formato válido.",
       });
     }
 
-    if (fInicio >= fFin) {
+    if (fechaIni >= fechaFin) {
       return res.status(400).json({
         success: false,
         error: "La fecha de fin debe ser posterior a la fecha de inicio.",
@@ -151,7 +137,6 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    // 6. Comprobar Identificador Duplicado
     const duplicateId = await Sprint.findOne({ id: Number(id) });
     if (duplicateId) {
       return res.status(409).json({
@@ -160,12 +145,13 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    // 7. Si todo está perfecto, creamos y guardamos el Sprint
+    if(lastSprint)
+      await lastSprint.updateOne({$set: {estado: "completado"}});
     const nuevoSprint = new Sprint({
       id: Number(id),
-      project_id: proyectoExiste.identificador,
-      fechaIni: fInicio,
-      fechaFin: fFin,
+      project_id: project_id,
+      fechaIni: fechaIni,
+      fechaFin: fechaFin,
       HU: Array.isArray(HU_ids) ? HU_ids : [],
       sprintGoal: sprintGoal,
     });

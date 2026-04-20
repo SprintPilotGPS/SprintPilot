@@ -2,6 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const HU = require("./src/models/HU");
 const Proyecto = require("./src/models/Proyecto");
+const Sprint = require("./src/models/Sprint");
 
 const husData = [
   {
@@ -74,6 +75,7 @@ const seedDatabase = async () => {
     // Limpiar datos existentes
     await HU.deleteMany({});
     await Proyecto.deleteMany({});
+    await Sprint.deleteMany({});
     console.log("🗑️  Datos existentes eliminados");
 
     // Insertar datos de ejemplo

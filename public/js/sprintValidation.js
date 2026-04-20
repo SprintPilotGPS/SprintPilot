@@ -19,14 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    const fechaIni = document.getElementById("fechaIni").value;
     const fechaFin = document.getElementById("fechaFin").value;
     const projectId = document.getElementById("project_id").value;
 
-    const data = {
-      fechaIni,
-      fechaFin
-    };
+    const data = {fechaFin};
 
     try {
       const response = await fetch(`/api/${projectId}/crearSprint`, {

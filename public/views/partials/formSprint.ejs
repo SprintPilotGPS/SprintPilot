@@ -5,16 +5,9 @@
     <form id="sprintForm" method="POST">
       <input type="hidden" id="project_id" value="<%= project_id %>">
 
-      <div class="mb-3">
-        <label class="form-label" for="fechaIni">Fecha de inicio:</label>
-        <input 
-          class="form-control" 
-          type="date" 
-          id="fechaIni" 
-          name="fechaIni" 
-          maxlength="50" 
-          required 
-        />
+      <div class="mb-3 p-2 bg-warning-subtle rounded-3">
+        <p class="m-0 text-center fs-3">⚠️</p>
+        <p class="text-center fw-bold">¡Una vez se inicie este sprint se finalizará el anterior y se empezará este automáticamente!</p>
       </div>
 
       <div class="mb-3">

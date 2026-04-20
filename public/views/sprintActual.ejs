@@ -20,17 +20,17 @@
     <div class="container main-container">
       <div class="welcome-section">
         <h1 class="display-4 fw-bold">Sprint Actual</h1>
-        <p class="lead">Visualiza y gestiona las Historias de Usuario de tu ciclo actual.</p>
       </div>
 
       <div class="table-card border-0">
         <div class="table-header d-flex justify-content-between align-items-center rounded-top">
-          <div class="d-flex align-items-center">
-            <span class="fs-4 me-2">🚀</span>
+          <div class="d-flex align-items-center gap-3">
             <% if (sprint) { %>
-            <span class="fs-3">Sprint #<%= sprint.id %></span>
+            <span class="fs-3">🚀 Sprint #<%= sprint.id %></span>
+            <span class="badge fs-6 bg-success">Inició: <%= sprint.fechaIni.toLocaleDateString("es-ES") %></span>
+            <span class="badge fs-6 bg-danger">Finaliza: <%= sprint.fechaFin.toLocaleDateString("es-ES") %></span>
             <% } else { %>
-            <span>Sin Sprint Activo</span>
+            <span>🚀 Sin Sprint Activo</span>
             <% } %>
           </div>
           <button class="openModalSprintCreate btn btn-light btn-sm fw-bold px-3 rounded-pill">+ Nuevo Sprint</button>
