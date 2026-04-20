@@ -5,9 +5,9 @@ const Utils = require("./utils");
 /* ============= Operaciones CRUD ============= */
 // Obtener todos los hus ordenados para la vista
 const getAllHUs = async (req, res) => {
+  Utils.printLog(req, true, false);
+  const project_id = req.params.project_id;
   try {
-    Utils.printLog(req, true, false);
-    const project_id = req.params.project_id;
 
     // Ordenamos por 'orden' para que la vista respete las flechas
     const hus = await HU.find({ project_id: project_id }).sort({ orden: 1 });
