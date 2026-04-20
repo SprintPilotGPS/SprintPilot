@@ -293,6 +293,29 @@ footer {
   border-color: black;
 }
 
+/* Sprints */
+.sprints-pasados-link{
+  position: relative;
+  text-decoration: none;
+}
+.sprints-pasados-link::after {
+  content: "";
+  position: absolute;
+  text-align: center;
+  bottom: -.2em;
+  left: 50%;
+  width: 100%;
+  height: .1em;
+  background: #fff;
+  border: none;
+
+  transform: translateX(-50%);
+  transition: width ease .2s;
+}
+.sprints-pasados-link:hover::after{
+  width: 0%;
+}
+
 .show {
   visibility: visible;
 }

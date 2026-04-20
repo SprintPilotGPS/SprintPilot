@@ -12,7 +12,6 @@ const huSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
     descripcion: {
       type: String,
       trim: true,
@@ -22,7 +21,9 @@ const huSchema = new mongoose.Schema(
       required: true,
       immutable: true,
     },
-    // CAMBIO CLAVE: Campo para gestionar la posición en la lista
+    sprint_id: {
+      type: Number
+    },
     orden: {
       type: Number,
       default: 0
