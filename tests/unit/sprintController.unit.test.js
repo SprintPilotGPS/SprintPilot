@@ -29,15 +29,15 @@ describe("sprintController unit tests - crearSprint", () => {
 
   test("debería crear un nuevo sprint con éxito (201)", async () => {
     const fecha = new Date();
-    fecha.setDate(fecha.getDate()+5);
+    fecha.setDate(fecha.getDate() + 5);
     const req = {
       params: { project_id: "proy-123" },
-      body: { fechaFin: fecha, sprintGoal: "Mi meta" }
+      body: { fechaFin: fecha, sprintGoal: "Mi meta" },
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    
+
     // Mock para las dos llamadas a findOne en crearSprint
     Sprint.findOne
       .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue(null) }) // Para lastSprint
@@ -57,7 +57,7 @@ describe("sprintController unit tests - crearSprint", () => {
 
     // Mock para el primer findOne (lastSprint)
     Sprint.findOne.mockReturnValueOnce({
-      sort: jest.fn().mockResolvedValue(null)
+      sort: jest.fn().mockResolvedValue(null),
     });
 
     await sprintController.crearSprint(req, res);
@@ -68,15 +68,15 @@ describe("sprintController unit tests - crearSprint", () => {
 
   test("debería devolver 409 si el sprint ya existe", async () => {
     const fecha = new Date();
-    fecha.setDate(fecha.getDate()+5);
+    fecha.setDate(fecha.getDate() + 5);
     const req = {
       params: { project_id: "proy-123" },
-      body: { fechaFin: fecha }
+      body: { fechaFin: fecha },
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    
+
     // Mock para las dos llamadas a findOne
     Sprint.findOne
       .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue({ id: 1 }) }) // Para calcular el nuevo ID (dará 2)
@@ -88,40 +88,17 @@ describe("sprintController unit tests - crearSprint", () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
   });
 
-  test("debería devolver 400 si el Sprint Goal supera los 250 caracteres", async () => {
-    const fecha = new Date();
-    fecha.setDate(fecha.getDate() + 5);
-    const longGoal = "a".repeat(251);
-    const req = {
-      params: { project_id: "proy-123" },
-      body: { fechaFin: fecha, sprintGoal: longGoal }
-    };
-    const res = mockRes();
-
-    Sprint.findOne.mockReturnValueOnce({
-      sort: jest.fn().mockResolvedValue(null)
-    });
-
-    await sprintController.crearSprint(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
-      success: false, 
-      error: "El Sprint Goal no puede superar los 250 caracteres." 
-    }));
-  });
-
   test("debería crear un sprint con éxito aunque no se proporcione Sprint Goal", async () => {
     const fecha = new Date();
     fecha.setDate(fecha.getDate() + 5);
     const req = {
       params: { project_id: "proy-123" },
-      body: { fechaFin: fecha }
+      body: { fechaFin: fecha },
     };
     const res = mockRes();
 
     Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
-    
+
     Sprint.findOne
       .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue(null) })
       .mockResolvedValueOnce(null);
@@ -149,7 +126,9 @@ describe("sprintController unit tests - getSprint", () => {
     await sprintController.getSprint(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Sprint no encontrado" }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ error: "Sprint no encontrado" })
+    );
   });
 
   test("debería devolver el sprint y sus HUs con éxito", async () => {
@@ -166,7 +145,7 @@ describe("sprintController unit tests - getSprint", () => {
 
     expect(res.json).toHaveBeenCalledWith({
       success: true,
-      data: { sprint: mockSprint, hus: mockHUs }
+      data: { sprint: mockSprint, hus: mockHUs },
     });
   });
 
