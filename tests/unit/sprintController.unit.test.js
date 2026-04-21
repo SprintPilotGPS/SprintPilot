@@ -87,6 +87,52 @@ describe("sprintController unit tests - crearSprint", () => {
     expect(res.status).toHaveBeenCalledWith(409);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
   });
+
+  test("debería devolver 400 si el Sprint Goal supera los 250 caracteres", async () => {
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() + 5);
+    const longGoal = "a".repeat(251);
+    const req = {
+      params: { project_id: "proy-123" },
+      body: { fechaFin: fecha, sprintGoal: longGoal }
+    };
+    const res = mockRes();
+
+    Sprint.findOne.mockReturnValueOnce({
+      sort: jest.fn().mockResolvedValue(null)
+    });
+
+    await sprintController.crearSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
+      success: false, 
+      error: "El Sprint Goal no puede superar los 250 caracteres." 
+    }));
+  });
+
+  test("debería crear un sprint con éxito aunque no se proporcione Sprint Goal", async () => {
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() + 5);
+    const req = {
+      params: { project_id: "proy-123" },
+      body: { fechaFin: fecha }
+    };
+    const res = mockRes();
+
+    Proyectos.findOne.mockResolvedValue({ identificador: "proy-123" });
+    
+    Sprint.findOne
+      .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue(null) })
+      .mockResolvedValueOnce(null);
+
+    Sprint.prototype.save = jest.fn().mockResolvedValue({});
+
+    await sprintController.crearSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+  });
 });
 
 describe("sprintController unit tests - getSprint", () => {
