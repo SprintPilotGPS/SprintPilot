@@ -31,6 +31,7 @@ const getSprintActual = async (req, res) => {
     const project_id = req.params.project_id;
 
     const sprint = await Sprint.findOne({ project_id, estado: "activo" }).sort({ id: -1 });
+
     const hus = sprint
       ? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 })
       : [];
@@ -175,7 +176,7 @@ const crearSprint = async (req, res) => {
   }
 };
 
-const editarSprintGoalController = async (req, res) => {
+const editarSprintGoal = async (req, res) => {
   Utils.printLog(req, true, false);
   try {
     const { id } = req.params;

@@ -3,7 +3,6 @@ const router = express.Router();
 const huController = require("../controllers/huController");
 const projectController = require("../controllers/projectController");
 const sprintController = require("../controllers/sprintController");
-const editarSprintGoalController = require("../controllers/editarSprintGoalController");
 
 // --- API de PROYECTOS ---
 router.post("/projects", projectController.createProject);
@@ -19,7 +18,7 @@ router.post("/:project_id/hus/:id/mover-abajo", huController.moverAbajo);
 // --- API de Sprints ---
 router.post("/:project_id/crearSprint", sprintController.crearSprint);
 router.get("/:project_id/sprints/:id", sprintController.getSprint);
-router.post("/:project_id/sprint/:id/goal", editarSprintGoalController.editarSprintGoal);
-router.put("/:project_id/sprint/:id", sprintController.editSprint);
+router.post("/:project_id/sprints/:id/goal", sprintController.editarSprintGoalController);
+router.put("/:project_id/sprints/:id", sprintController.editSprint);
 
 module.exports = router;
