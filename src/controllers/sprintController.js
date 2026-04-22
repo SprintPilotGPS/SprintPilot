@@ -210,5 +210,5 @@ module.exports = {
   getAllSprintPasados,
   getAllSprints,
   crearSprint,
-  editarSprintGoalController,
+  editarSprintGoal,
 };
