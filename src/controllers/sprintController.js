@@ -172,46 +172,49 @@ const crearSprint = async (req, res) => {
 };
 
 const actualizarHUSprint = async (req, res) => {
-  // 1. Registro de actividad (usando tus utilidades)
   Utils.printLog(req, true, false);
 
   try {
     const { project_id } = req.params;
-    // Extraemos el ID de la HU y el nuevo estado del cuerpo de la petición
-    const { identificador, nuevoEstado } = req.body;
+    // Recibimos el ID de la HU y el ID del Sprint al que se asigna
+    // Si se quita del sprint, sprint_id vendría como null
+    const { identificador, sprint_id } = req.body;
 
-    // 2. Validaciones de entrada
-    if (!identificador || !nuevoEstado) {
+    if (identificador === undefined) {
       return res.status(400).json({
         success: false,
-        error: "Faltan datos obligatorios: identificador de HU o nuevoEstado.",
+        error: "El identificador de la HU es obligatorio.",
       });
     }
 
-    // 3. Buscar la HU que pertenezca a ese proyecto específico
+    // Buscamos la HU por su identificador numérico y proyecto
     const hu = await HU.findOne({ 
-        project_id: project_id, 
-        identificador: identificador 
+      project_id: project_id, 
+      identificador: Number(identificador) 
     });
 
     if (!hu) {
       return res.status(404).json({
         success: false,
-        error: "La Historia de Usuario no existe en este proyecto.",
+        error: "No se encontró la Historia de Usuario especificada.",
       });
     }
 
-    // 4. Actualización del estado
-    // Nota: Asegúrate de que 'nuevoEstado' coincida con los valores de tu ENUM en el modelo (ej: 'To Do', 'Done')
-    hu.estado = nuevoEstado;
+    // Actualizamos el sprint_id (esto es lo que la mueve al Sprint Backlog o al Product Backlog)
+    hu.sprint_id = sprint_id ? Number(sprint_id) : null;
+    
+    // Si tu lógica de negocio requiere que al asignar a un sprint cambie el orden
+    if (req.body.orden !== undefined) {
+      hu.orden = Number(req.body.orden);
+    }
+
     await hu.save();
 
-    // 5. Log de éxito y respuesta
-    Utils.info(`HU ${identificador} actualizada correctamente a ${nuevoEstado}`);
-    
+    Utils.info(`HU ${identificador} actualizada: sprint_id asignado -> ${hu.sprint_id}`);
+
     res.status(200).json({
       success: true,
-      message: "HU actualizada con éxito",
+      message: "HU vinculada al sprint correctamente",
       data: hu,
     });
 
@@ -219,7 +222,7 @@ const actualizarHUSprint = async (req, res) => {
     console.error("Error en actualizarHUSprint:", error);
     res.status(500).json({
       success: false,
-      error: "Error interno del servidor al intentar actualizar la HU.",
+      error: "Error interno al procesar la actualización de la HU.",
     });
   }
 };
