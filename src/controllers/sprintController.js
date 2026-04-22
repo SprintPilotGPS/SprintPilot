@@ -171,10 +171,67 @@ const crearSprint = async (req, res) => {
   }
 };
 
+const actualizarHUSprint = async (req, res) => {
+  Utils.printLog(req, true, false);
+
+  try {
+    const { project_id } = req.params;
+    // Recibimos el ID de la HU y el ID del Sprint al que se asigna
+    // Si se quita del sprint, sprint_id vendría como null
+    const { identificador, sprint_id } = req.body;
+
+    if (identificador === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: "El identificador de la HU es obligatorio.",
+      });
+    }
+
+    // Buscamos la HU por su identificador numérico y proyecto
+    const hu = await HU.findOne({ 
+      project_id: project_id, 
+      identificador: Number(identificador) 
+    });
+
+    if (!hu) {
+      return res.status(404).json({
+        success: false,
+        error: "No se encontró la Historia de Usuario especificada.",
+      });
+    }
+
+    // Actualizamos el sprint_id (esto es lo que la mueve al Sprint Backlog o al Product Backlog)
+    hu.sprint_id = sprint_id ? Number(sprint_id) : null;
+    
+    // Si tu lógica de negocio requiere que al asignar a un sprint cambie el orden
+    if (req.body.orden !== undefined) {
+      hu.orden = Number(req.body.orden);
+    }
+
+    await hu.save();
+
+    Utils.info(`HU ${identificador} actualizada: sprint_id asignado -> ${hu.sprint_id}`);
+
+    res.status(200).json({
+      success: true,
+      message: "HU vinculada al sprint correctamente",
+      data: hu,
+    });
+
+  } catch (error) {
+    console.error("Error en actualizarHUSprint:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error interno al procesar la actualización de la HU.",
+    });
+  }
+};
+
 module.exports = {
   getSprint,
   getSprintActual,
   getAllSprintPasados,
   getAllSprints,
   crearSprint,
+  actualizarHUSprint,
 };
