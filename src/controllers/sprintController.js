@@ -31,25 +31,30 @@ const getSprintActual = async (req, res) => {
     const project_id = req.params.project_id;
 
     const sprint = await Sprint.findOne({ project_id, estado: "activo" }).sort({ id: -1 });
-    const hus = (sprint)? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 }) : [];
+    const hus = sprint
+      ? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 })
+      : [];
 
     res.render("sprintActual", {
-          title: "SprintPilot - Proyectos",
-          project_id: project_id,
-          sprint: sprint,
-          hus: hus
-        });
-    if (sprint) Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
+      title: "SprintPilot - Proyectos",
+      project_id: project_id,
+      sprint: sprint,
+      hus: hus,
+    });
+    if (sprint)
+      Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
   } catch (error) {
     console.error("Error al obtener sprint actual:", error);
     res.status(500).send("Error interno del servidor");
   }
-}
+};
 
 const getAllSprintPasados = async (req, res) => {
   try {
     const { project_id } = req.params;
-    const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({ id: -1 });
+    const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({
+      id: -1,
+    });
 
     res.render("SprintPasados", {
       title: "Sprint Pilot - Sprints Pasados",
@@ -145,8 +150,7 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    if(lastSprint)
-      await lastSprint.updateOne({$set: {estado: "completado"}});
+    if (lastSprint) await lastSprint.updateOne({ $set: { estado: "completado" } });
     const nuevoSprint = new Sprint({
       id: Number(id),
       project_id: project_id,
@@ -171,10 +175,39 @@ const crearSprint = async (req, res) => {
   }
 };
 
+const editarSprintGoalController = async (req, res) => {
+  Utils.printLog(req, true, false);
+  try {
+    const { id } = req.params;
+    const { sprintGoal } = req.body;
+
+    if (!id || !sprintGoal) {
+      return res.status(400).json({
+        success: false,
+        error: "El ID del sprint y el Sprint Goal son obligatorios.",
+      });
+    }
+
+    if (sprintGoal.length > 250) {
+      return res.status(400).json({
+        success: false,
+        error: "El Sprint Goal no puede superar los 250 caracteres.",
+      });
+    }
+  } catch (error) {
+    console.error("Error al editar el Sprint Goal:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error interno del servidor al editar el Sprint Goal. Vuelva a intentarlo.",
+    });
+  }
+};
+
 module.exports = {
   getSprint,
   getSprintActual,
   getAllSprintPasados,
   getAllSprints,
   crearSprint,
+  editarSprintGoalController,
 };
