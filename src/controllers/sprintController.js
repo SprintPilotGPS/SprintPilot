@@ -171,10 +171,64 @@ const crearSprint = async (req, res) => {
   }
 };
 
+const actualizarHUSprint = async (req, res) => {
+  // 1. Registro de actividad (usando tus utilidades)
+  Utils.printLog(req, true, false);
+
+  try {
+    const { project_id } = req.params;
+    // Extraemos el ID de la HU y el nuevo estado del cuerpo de la petición
+    const { identificador, nuevoEstado } = req.body;
+
+    // 2. Validaciones de entrada
+    if (!identificador || !nuevoEstado) {
+      return res.status(400).json({
+        success: false,
+        error: "Faltan datos obligatorios: identificador de HU o nuevoEstado.",
+      });
+    }
+
+    // 3. Buscar la HU que pertenezca a ese proyecto específico
+    const hu = await HU.findOne({ 
+        project_id: project_id, 
+        identificador: identificador 
+    });
+
+    if (!hu) {
+      return res.status(404).json({
+        success: false,
+        error: "La Historia de Usuario no existe en este proyecto.",
+      });
+    }
+
+    // 4. Actualización del estado
+    // Nota: Asegúrate de que 'nuevoEstado' coincida con los valores de tu ENUM en el modelo (ej: 'To Do', 'Done')
+    hu.estado = nuevoEstado;
+    await hu.save();
+
+    // 5. Log de éxito y respuesta
+    Utils.info(`HU ${identificador} actualizada correctamente a ${nuevoEstado}`);
+    
+    res.status(200).json({
+      success: true,
+      message: "HU actualizada con éxito",
+      data: hu,
+    });
+
+  } catch (error) {
+    console.error("Error en actualizarHUSprint:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error interno del servidor al intentar actualizar la HU.",
+    });
+  }
+};
+
 module.exports = {
   getSprint,
   getSprintActual,
   getAllSprintPasados,
   getAllSprints,
   crearSprint,
+  actualizarHUSprint,
 };
