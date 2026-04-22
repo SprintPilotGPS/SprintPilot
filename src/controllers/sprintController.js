@@ -179,7 +179,7 @@ const crearSprint = async (req, res) => {
 const editarSprintGoal = async (req, res) => {
   Utils.printLog(req, true, false);
   try {
-    const { id } = req.params;
+    const { project_id, id } = req.params;
     const { sprintGoal } = req.body;
 
     if (!id || !sprintGoal) {
@@ -195,6 +195,22 @@ const editarSprintGoal = async (req, res) => {
         error: "El Sprint Goal no puede superar los 250 caracteres.",
       });
     }
+
+    let sprint = Sprint.findOne({project_id: project_id, id: id}).sort({id: -1});
+
+    if(!sprint){
+      return res.status(400).json({
+        success: false,
+        error: "El sprint no existe.",
+      });
+    }
+
+    await sprint.updateOne({sprintGoal: sprintGoal});
+
+    res.status(201).json({
+      success: true,
+      sprintGoal: sprintGoal 
+    });
   } catch (error) {
     console.error("Error al editar el Sprint Goal:", error);
     res.status(500).json({

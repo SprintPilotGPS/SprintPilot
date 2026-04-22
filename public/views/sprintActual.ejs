@@ -58,6 +58,7 @@
             <span class="fs-4 me-2">🚀</span>
             <% if (sprint) { %>
             <span class="fs-3">Sprint #<%= sprint.id %></span>
+            <input type="hidden" id="sprintId" value="<%= sprint.id %>">
             <% } else { %>
             <span>Sin Sprint Activo</span>
             <% } %>
@@ -75,6 +76,7 @@
                 <span class="planning-label">Sprint Goal:</span>
                 <div class="flex-grow-1 ms-3">
                   <input
+                    id="sprintGoal"
                     type="text"
                     class="planning-input"
                     placeholder="Ej: Implementar el sistema de pagos y autenticación"
