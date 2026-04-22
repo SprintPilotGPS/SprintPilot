@@ -196,16 +196,15 @@ const editarSprintGoal = async (req, res) => {
       });
     }
 
-    let sprint = Sprint.findOne({project_id: project_id, id: id}).sort({id: -1});
-
-    if(!sprint){
+    let sprint = await Sprint.findOne({ project_id: project_id, id: Number(id) });
+    if (!sprint) {
       return res.status(400).json({
         success: false,
         error: "El sprint no existe.",
       });
     }
 
-    await sprint.updateOne({sprintGoal: sprintGoal});
+    await sprint.updateOne({ sprintGoal: sprintGoal });
 
     res.status(201).json({
       success: true,

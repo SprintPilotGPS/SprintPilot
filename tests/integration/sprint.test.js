@@ -48,6 +48,23 @@ describe("Sprint API Tests", () => {
       expect(res.body.data.estado).toBe("activo");
       expect(res.body.data.HU).toContain(1);
       expect(res.body.data.HU).toContain(2);
+      expect(res.body.data.sprintGoal).toBe("Test Sprint Goal");
+    });
+
+    test("should return 400 if sprintGoal exceeds 250 characters during creation", async () => {
+      const longGoal = "a".repeat(251);
+      const res = await request(app)
+        .post(`/api/${testProjectId}/crearSprint`)
+        .send({ 
+          HU: [],
+          fechaIni: new Date().toISOString(),
+          fechaFin: new Date(Date.now() + 86400000).toISOString(),
+          sprintGoal: longGoal
+        })
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe("El Sprint Goal no puede superar los 250 caracteres.");
     });
 
     test("should handle creation without HUs", async () => {
@@ -89,7 +106,8 @@ describe("Sprint API Tests", () => {
         estado: "activo",
         fechaIni,
         fechaFin,
-        HU: [1]
+        HU: [1],
+        sprintGoal: "HU en Sprint Goal"
       });
       
       await HU.create({ identificador: 1, titulo: "HU en Sprint", project_id: testProjectId });
@@ -101,6 +119,7 @@ describe("Sprint API Tests", () => {
 
       expect(res.body.success).toBe(true);
       expect(res.body.data.sprint.id).toBe(1);
+      expect(res.body.data.sprint.sprintGoal).toBe("HU en Sprint Goal");
       expect(res.body.data.hus.length).toBe(1);
       expect(res.body.data.hus[0].titulo).toBe("HU en Sprint");
     });
@@ -109,6 +128,59 @@ describe("Sprint API Tests", () => {
       await request(app)
         .get(`/api/${testProjectId}/sprints/999`)
         .expect(404);
+    });
+  });
+
+  describe("POST /api/:project_id/sprint/:id/goal", () => {
+    test("should update sprint goal successfully", async () => {
+      // 1. Crear un sprint primero
+      const sprint = await Sprint.create({
+        id: 1,
+        project_id: testProjectId,
+        fechaIni: new Date(),
+        fechaFin: new Date(Date.now() + 86400000),
+        sprintGoal: "Old Goal"
+      });
+
+      const res = await request(app)
+        .post(`/api/${testProjectId}/sprint/1/goal`)
+        .send({ sprintGoal: "New Goal" })
+        .expect(201);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.sprintGoal).toBe("New Goal");
+
+      // Verificar en la DB
+      const updatedSprint = await Sprint.findOne({ project_id: testProjectId, id: 1 });
+      expect(updatedSprint.sprintGoal).toBe("New Goal");
+    });
+
+    test("should return 400 if sprintGoal is missing", async () => {
+      await request(app)
+        .post(`/api/${testProjectId}/sprint/1/goal`)
+        .send({})
+        .expect(400);
+    });
+
+    test("should return 400 if sprintGoal exceeds 250 characters", async () => {
+      const longGoal = "a".repeat(251);
+      const res = await request(app)
+        .post(`/api/${testProjectId}/sprint/1/goal`)
+        .send({ sprintGoal: longGoal })
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe("El Sprint Goal no puede superar los 250 caracteres.");
+    });
+
+    test("should return 400 if sprint does not exist", async () => {
+      const res = await request(app)
+        .post(`/api/${testProjectId}/sprint/999/goal`)
+        .send({ sprintGoal: "Some Goal" })
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe("El sprint no existe.");
     });
   });
 });
