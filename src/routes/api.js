@@ -18,7 +18,6 @@ router.post("/:project_id/hus/:id/mover-abajo", huController.moverAbajo);
 // --- API de Sprints ---
 router.post("/:project_id/crearSprint", sprintController.crearSprint);
 router.get("/:project_id/sprints/:id", sprintController.getSprint);
-router.post("/:project_id/sprints/:id/goal", sprintController.editarSprintGoalController);
-router.put("/:project_id/sprints/:id", sprintController.editSprint);
+router.post("/:project_id/sprint/:id/goal", sprintController.editarSprintGoal);
 
 module.exports = router;
