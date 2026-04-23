@@ -12,6 +12,9 @@
         transform: translateX(5px);
         box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
       }
+      .modal-hu-selector-box {
+        width: min(860px, 92vw) !important;
+      }
     </style>
   </head>
   <body>
@@ -37,7 +40,9 @@
         </div>
 
         <div class="p-4 bg-light min-vh-50">
-          <button class="openModalAniadirHUs text-white btn btn-light btn-sm fw-bold px-3 rounded-pill float-end" style="background-color:#764ba2;">+ Añadir HUs</button>
+          <% if (sprint) { %>
+            <button class="openModalAniadirHUs text-white btn btn-light btn-sm fw-bold px-3 rounded-pill float-end" style="background-color:#764ba2;">+ Añadir HUs</button>
+          <% } %>
           <% if (sprint && hus.length > 0) { %>
             <div class="row row-cols-1 row-cols-md-2 g-4">
               <% hus.forEach(hu => { %>
@@ -80,6 +85,7 @@
     </div>
 
     <%- include('partials/formSprint') %>
+  <%- include('partials/formSelectHus') %>
     <%- include('partials/footer') %>
 
     <script src="/js/sprintValidation.js"></script>

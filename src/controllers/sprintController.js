@@ -31,25 +31,32 @@ const getSprintActual = async (req, res) => {
     const project_id = req.params.project_id;
 
     const sprint = await Sprint.findOne({ project_id, estado: "activo" }).sort({ id: -1 });
-    const hus = (sprint)? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 }) : [];
+    const hus = sprint
+      ? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 })
+      : [];
+    const allHus = await HU.find({ project_id }).sort({ orden: 1, identificador: 1 });
 
     res.render("sprintActual", {
-          title: "SprintPilot - Proyectos",
-          project_id: project_id,
-          sprint: sprint,
-          hus: hus
-        });
-    if (sprint) Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
+      title: "SprintPilot - Proyectos",
+      project_id: project_id,
+      sprint: sprint,
+      hus: hus,
+      allHus: allHus,
+    });
+    if (sprint)
+      Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
   } catch (error) {
     console.error("Error al obtener sprint actual:", error);
     res.status(500).send("Error interno del servidor");
   }
-}
+};
 
 const getAllSprintPasados = async (req, res) => {
   try {
     const { project_id } = req.params;
-    const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({ id: -1 });
+    const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({
+      id: -1,
+    });
 
     res.render("SprintPasados", {
       title: "Sprint Pilot - Sprints Pasados",
@@ -145,8 +152,7 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    if(lastSprint)
-      await lastSprint.updateOne({$set: {estado: "completado"}});
+    if (lastSprint) await lastSprint.updateOne({ $set: { estado: "completado" } });
     const nuevoSprint = new Sprint({
       id: Number(id),
       project_id: project_id,
@@ -175,49 +181,75 @@ const actualizarHUSprint = async (req, res) => {
   Utils.printLog(req, true, false);
 
   try {
-    const { project_id } = req.params;
-    // Recibimos el ID de la HU y el ID del Sprint al que se asigna
-    // Si se quita del sprint, sprint_id vendría como null
-    const { identificador, sprint_id } = req.body;
+    const { project_id, id } = req.params;
+    const sprintId = Number(id);
+    const { hu_ids } = req.body;
 
-    if (identificador === undefined) {
+    if (!Array.isArray(hu_ids)) {
       return res.status(400).json({
         success: false,
-        error: "El identificador de la HU es obligatorio.",
+        error: "Debe enviar un array hu_ids con los identificadores de HUs.",
       });
     }
 
-    // Buscamos la HU por su identificador numérico y proyecto
-    const hu = await HU.findOne({ 
-      project_id: project_id, 
-      identificador: Number(identificador) 
-    });
+    const parsedHuIds = hu_ids.map((huId) => Number(huId));
+    const invalidHuIds = parsedHuIds.filter(
+      (parsedHuId) => !Number.isInteger(parsedHuId) || parsedHuId < 0
+    );
+    const hasInvalidHuId = invalidHuIds.length > 0;
 
-    if (!hu) {
+    if (hasInvalidHuId) {
+      return res.status(400).json({
+        success: false,
+        error: "Todos los hu_ids deben ser números enteros positivos.",
+        invalid_hu_ids: invalidHuIds,
+      });
+    }
+
+    const normalizedHuIds = [...new Set(parsedHuIds)];
+
+    const sprint = await Sprint.findOne({ project_id, id: sprintId });
+    if (!sprint) {
       return res.status(404).json({
         success: false,
-        error: "No se encontró la Historia de Usuario especificada.",
+        error: "Sprint no encontrado",
       });
     }
 
-    // Actualizamos el sprint_id (esto es lo que la mueve al Sprint Backlog o al Product Backlog)
-    hu.sprint_id = sprint_id ? Number(sprint_id) : null;
-    
-    // Si tu lógica de negocio requiere que al asignar a un sprint cambie el orden
-    if (req.body.orden !== undefined) {
-      hu.orden = Number(req.body.orden);
+    const existingHus = await HU.find({
+      project_id,
+      identificador: { $in: normalizedHuIds },
+    }).select("identificador");
+
+    if (existingHus.length !== normalizedHuIds.length) {
+      return res.status(400).json({
+        success: false,
+        error: "Uno o más hu_ids no existen en este proyecto.",
+      });
     }
 
-    await hu.save();
+    sprint.HU = normalizedHuIds;
+    await sprint.save();
 
-    Utils.info(`HU ${identificador} actualizada: sprint_id asignado -> ${hu.sprint_id}`);
+    await HU.updateMany({ project_id, sprint_id: sprintId }, { $set: { sprint_id: null } });
+
+    if (normalizedHuIds.length > 0) {
+      await HU.updateMany(
+        { project_id, identificador: { $in: normalizedHuIds } },
+        { $set: { sprint_id: sprintId } }
+      );
+    }
+
+    Utils.info(`Sprint ${sprintId} actualizado con ${normalizedHuIds.length} HUs`);
 
     res.status(200).json({
       success: true,
-      message: "HU vinculada al sprint correctamente",
-      data: hu,
+      message: "HUs del sprint actualizadas correctamente",
+      data: {
+        sprint_id: sprintId,
+        hu_ids: normalizedHuIds,
+      },
     });
-
   } catch (error) {
     console.error("Error en actualizarHUSprint:", error);
     res.status(500).json({
