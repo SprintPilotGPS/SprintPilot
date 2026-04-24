@@ -183,7 +183,7 @@ const actualizarHUSprint = async (req, res) => {
   try {
     const { project_id, id } = req.params;
     const sprintId = Number(id);
-    const { hu_ids } = req.body;
+    let { hu_ids } = req.body;
 
     if (!Array.isArray(hu_ids)) {
       return res.status(400).json({
@@ -192,21 +192,18 @@ const actualizarHUSprint = async (req, res) => {
       });
     }
 
-    const parsedHuIds = hu_ids.map((huId) => Number(huId));
-    const invalidHuIds = parsedHuIds.filter(
-      (parsedHuId) => !Number.isInteger(parsedHuId) || parsedHuId < 0
-    );
-    const hasInvalidHuId = invalidHuIds.length > 0;
+    // Comprobamos que sean numeros los ids
+    hu_ids.forEach((id) => {
+      if(!Number.isInteger(id)){
+        return res.status(400).json({
+          success: false,
+          error: "Todos los hu_ids deben ser números enteros positivos.",
+          invalid_hu_ids: invalidHuIds,
+        });
+      }
+    })
 
-    if (hasInvalidHuId) {
-      return res.status(400).json({
-        success: false,
-        error: "Todos los hu_ids deben ser números enteros positivos.",
-        invalid_hu_ids: invalidHuIds,
-      });
-    }
-
-    const normalizedHuIds = [...new Set(parsedHuIds)];
+    hu_ids = [...new Set(hu_ids)];
 
     const sprint = await Sprint.findOne({ project_id, id: sprintId });
     if (!sprint) {
@@ -218,36 +215,36 @@ const actualizarHUSprint = async (req, res) => {
 
     const existingHus = await HU.find({
       project_id,
-      identificador: { $in: normalizedHuIds },
+      identificador: { $in: hu_ids },
     }).select("identificador");
 
-    if (existingHus.length !== normalizedHuIds.length) {
+    if (existingHus.length !== hu_ids.length) {
       return res.status(400).json({
         success: false,
         error: "Uno o más hu_ids no existen en este proyecto.",
       });
     }
 
-    sprint.HU = normalizedHuIds;
+    sprint.HU = hu_ids;
     await sprint.save();
 
     await HU.updateMany({ project_id, sprint_id: sprintId }, { $set: { sprint_id: null } });
 
-    if (normalizedHuIds.length > 0) {
+    if (hu_ids.length > 0) {
       await HU.updateMany(
-        { project_id, identificador: { $in: normalizedHuIds } },
+        { project_id, identificador: { $in: hu_ids } },
         { $set: { sprint_id: sprintId } }
       );
     }
 
-    Utils.info(`Sprint ${sprintId} actualizado con ${normalizedHuIds.length} HUs`);
+    Utils.info(`Sprint ${sprintId} actualizado con ${hu_ids.length} HUs`);
 
     res.status(200).json({
       success: true,
       message: "HUs del sprint actualizadas correctamente",
       data: {
         sprint_id: sprintId,
-        hu_ids: normalizedHuIds,
+        hu_ids: hu_ids,
       },
     });
   } catch (error) {
