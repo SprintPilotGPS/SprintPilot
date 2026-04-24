@@ -195,15 +195,13 @@ const actualizarHUSprint = async (req, res) => {
     }
 
     // Comprobamos que sean numeros los ids
-    hu_ids.forEach((id) => {
-      if(!Number.isInteger(id)){
-        return res.status(400).json({
-          success: false,
-          error: "Todos los hu_ids deben ser números enteros positivos.",
-          invalid_hu_ids: invalidHuIds,
-        });
-      }
-    })
+    const allIntegers = hu_ids.every(id => Number.isInteger(id));
+    if (!allIntegers) {
+      return res.status(400).json({
+        success: false,
+        error: "Todos los hu_ids deben ser números enteros positivos.",
+      });
+    }
 
     hu_ids = [...new Set(hu_ids)];
 
