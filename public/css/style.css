@@ -323,3 +323,59 @@ footer {
 textarea {
   max-height: 7em;
 }
+
+/* --- Estilos Crear CA --- */
+.ca-container {
+  max-width: 800px;
+  margin: 50px auto;
+}
+
+.preview-box {
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  color: #495057;
+  padding: 25px;
+  border-radius: 12px;
+  min-height: 80px;
+  text-align: center;
+  font-style: italic;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.preview-box.active {
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  font-style: normal;
+}
+
+.preview-box strong {
+  color: #212529;
+}
+
+.input-group-text {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.form-control:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 0.25rem rgba(118, 75, 162, 0.25);
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+  border-radius: 15px 15px 0 0 !important;
+  padding: 20px;
+}
