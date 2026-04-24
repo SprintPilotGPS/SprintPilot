@@ -5,9 +5,7 @@
     <title><%= title %></title>
     <style>
       .hu-card {
-        transition:
-          transform 0.2s,
-          box-shadow 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
         border-left: 5px solid var(--primary-color) !important;
       }
       .hu-card:hover {
@@ -20,6 +18,10 @@
         padding: 25px;
         margin-bottom: 30px;
         border-left: 8px solid var(--primary-color);
+        transition: box-shadow 0.3s ease;
+      }
+      .planning-section:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       }
       .planning-label {
         font-weight: 700;
@@ -27,19 +29,66 @@
         min-width: 120px;
         display: inline-block;
       }
+      .planning-input-container {
+        position: relative;
+        width: 100%;
+      }
       .planning-input {
         border: none;
         border-bottom: 2px solid #e2e8f0;
         border-radius: 0;
-        padding: 5px 10px;
-        transition: border-color 0.3s;
+        padding: 8px 45px 8px 10px;
+        transition: all 0.3s ease;
         width: 100%;
         background: transparent;
+        font-size: 1.1rem;
       }
       .planning-input:focus {
         outline: none;
         border-bottom-color: var(--primary-color);
+        background: rgba(var(--primary-rgb), 0.02);
         box-shadow: none;
+      }
+      .planning-input.is-invalid {
+        border-bottom-color: #e53e3e;
+      }
+      .goal-counter {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+      .error-message {
+        background: #fff5f5;
+        border: 1px solid #feb2b2;
+        color: #c53030;
+        padding: 10px 18px;
+        border-radius: 10px;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(229, 62, 62, 0.05);
+        animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .error-icon {
+        background: #feb2b2;
+        color: #fff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
       }
     </style>
   </head>
@@ -74,15 +123,21 @@
             <div class="mb-0">
               <div class="d-flex align-items-center">
                 <span class="planning-label">Sprint Goal:</span>
-                <div class="flex-grow-1 ms-3">
+                <div class="flex-grow-1 ms-3 planning-input-container">
                   <input
                     id="sprintGoal"
                     type="text"
                     class="planning-input"
-                    placeholder="Ej: Implementar el sistema de pagos y autenticación"
+                    placeholder="No puede superar los 250 caracteres"
                     value="<%= sprint.sprintGoal %>"
+                    autocomplete="off"
                   />
+                  <span id="goalCounter" class="goal-counter text-muted">0/250</span>
                 </div>
+              </div>
+              <div id="sprintGoalError" class="error-message d-none ms-5 ps-3">
+                <div class="error-icon">!</div>
+                <span id="goalErrorText">El Sprint Goal no puede superar los 250 caracteres.</span>
               </div>
             </div>
           </div>

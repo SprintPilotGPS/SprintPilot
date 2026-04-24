@@ -112,13 +112,6 @@ const crearSprint = async (req, res) => {
     const sprintGoal = req.body.sprintGoal ? req.body.sprintGoal.trim() : "";
     const HU_ids = req.body.HU || [];
 
-    if (!id || !project_id || !fechaIni || !fechaFin) {
-      return res.status(400).json({
-        success: false,
-        error:
-          "El ID del sprint, el ID del proyecto, la fecha de inicio y la fecha de fin son obligatorios.",
-      });
-    }
 
     fechaFin = new Date(fechaFin);
 
@@ -180,7 +173,8 @@ const editarSprintGoal = async (req, res) => {
   Utils.printLog(req, true, false);
   try {
     const { project_id, id } = req.params;
-    const { sprintGoal } = req.body;
+    let { sprintGoal } = req.body;
+    sprintGoal = typeof sprintGoal === 'string' ? sprintGoal.trim() : "";
 
     if (!id || !sprintGoal) {
       return res.status(400).json({
