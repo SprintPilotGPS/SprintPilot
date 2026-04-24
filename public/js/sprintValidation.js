@@ -7,17 +7,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalCounter = document.getElementById("goalCounter");
 
   const checkSprintGoalRequirement = () => {
-    if (!goalInput) return true; // No hay sprint activo, se puede crear uno
-    const sprintGoalValue = goalInput.value.trim();
-    return sprintGoalValue.length > 0;
+    if (!goalInput) return { valid: true };
+    const length = goalInput.value.trim().length;
+    if (length === 0) return { valid: false, error: "No puedes iniciar un nuevo sprint hasta que el actual tenga un objetivo." };
+    if (length > 250) return { valid: false, error: "No puedes iniciar un nuevo sprint si el objetivo actual supera los 250 caracteres." };
+    return { valid: true };
   };
 
   // Abrir modal
   const openBtn = document.querySelectorAll(".openModalSprintCreate");
   openBtn.forEach((e) => {
     e.onclick = () => {
-      if (!checkSprintGoalRequirement()) {
-        showGoalError("No puedes iniciar un nuevo sprint hasta que el actual tenga un objetivo.");
+      const validation = checkSprintGoalRequirement();
+      if (!validation.valid) {
+        showGoalError(validation.error);
         goalInput.focus();
         goalInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
@@ -119,6 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Capturamos el objetivo actual para guardarlo en el último momento si ha cambiado
     const currentGoal = goalInput ? goalInput.value.trim() : "";
+
+    if (currentGoal.length > 250) {
+      showGoalError("El objetivo del sprint actual no puede superar los 250 caracteres.");
+      goalInput.focus();
+      return;
+    }
 
     const data = {
       fechaFin,

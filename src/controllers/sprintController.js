@@ -149,6 +149,14 @@ const crearSprint = async (req, res) => {
     if (lastSprint) {
       // Actualizamos el objetivo del sprint anterior al cerrarlo (por si el usuario escribió algo y no pulsó Enter)
       const finalGoal = (typeof currentGoal === "string" && currentGoal.trim()) ? currentGoal.trim() : lastSprint.sprintGoal;
+      
+      if (finalGoal.length > 250) {
+        return res.status(400).json({
+          success: false,
+          error: "El objetivo del sprint actual no puede superar los 250 caracteres.",
+        });
+      }
+
       await Sprint.updateOne({ _id: lastSprint._id }, { 
         $set: { 
           estado: "completado",

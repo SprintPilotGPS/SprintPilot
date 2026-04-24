@@ -80,6 +80,28 @@ describe("sprintController unit tests - Exhaustive", () => {
 
       expect(res.status).toHaveBeenCalledWith(500);
     });
+
+    test("debería devolver 400 si currentGoal supera los 250 caracteres", async () => {
+      const req = {
+        params: { project_id: "p1" },
+        body: { 
+          fechaFin: new Date(Date.now() + 100000),
+          currentGoal: "a".repeat(251)
+        }
+      };
+      const res = mockRes();
+
+      Sprint.findOne
+        .mockReturnValueOnce({ sort: jest.fn().mockResolvedValue({ _id: "old", id: 1, sprintGoal: "old goal" }) })
+        .mockResolvedValueOnce(null);
+      
+      Sprint.prototype.save = jest.fn().mockResolvedValue({});
+
+      await sprintController.crearSprint(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "El objetivo del sprint actual no puede superar los 250 caracteres." }));
+    });
   });
 
   describe("editarSprintGoal", () => {

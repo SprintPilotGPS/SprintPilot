@@ -78,6 +78,26 @@ describe("Sprint API Tests - Exhaustive Coverage", () => {
       expect(oldSprint.sprintGoal).toBe("Initial Goal");
       expect(oldSprint.estado).toBe("completado");
     });
+
+    test("should return 400 if currentGoal is longer than 250 characters", async () => {
+      await Sprint.create({
+        id: 1,
+        project_id: testProjectId,
+        estado: "activo",
+        fechaIni: new Date(),
+        fechaFin: new Date(Date.now() + 1000),
+        sprintGoal: "Initial Goal"
+      });
+
+      const longGoal = "c".repeat(251);
+      await request(app)
+        .post(`/api/${testProjectId}/crearSprint`)
+        .send({ 
+          fechaFin: new Date(Date.now() + 86400000).toISOString(),
+          currentGoal: longGoal
+        })
+        .expect(400);
+    });
   });
 
   describe("POST /api/:project_id/sprint/:id/goal", () => {
