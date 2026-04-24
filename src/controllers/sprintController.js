@@ -144,7 +144,7 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    const duplicateId = await Sprint.findOne({ id: Number(id) });
+    const duplicateId = await Sprint.findOne({ project_id: project_id, id: Number(id) });
     if (duplicateId) {
       return res.status(409).json({
         success: false,
