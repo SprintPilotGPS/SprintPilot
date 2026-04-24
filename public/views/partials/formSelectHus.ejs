@@ -1,0 +1,47 @@
+<div id="selectionModal" class="modal-new-project">
+  <div class="rounded border border-3 border-black bg-white modal-hu-selector-box">
+    <h2 class="text-center mb-3">Selecciona HUs para sprint</h2>
+
+    <form id="huSelectionForm" method="POST">
+      <input type="hidden" id="selection_project_id" value="<%= project_id %>">
+      <input type="hidden" id="selection_sprint_id" value="<%= sprint ? sprint.id : '' %>">
+
+      <% if (allHus && allHus.length > 0) { %>
+        <div class="table-responsive border rounded p-2 bg-light" style="max-height: 380px; overflow-y: auto;">
+          <table class="table table-sm align-middle mb-0">
+            <thead class="table-secondary sticky-top">
+              <tr>
+                <th scope="col">HU</th>
+                <th scope="col">Titulo</th>
+                <th scope="col" class="text-center">Incluir</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% allHus.forEach(hu => { %>
+                <tr>
+                  <td class="fw-bold">HU-<%= hu.identificador %></td>
+                  <td><%= hu.titulo %></td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input hu-selection-checkbox"
+                      type="checkbox"
+                      value="<%= hu.identificador %>"
+                      <%= sprint && sprint.HU && sprint.HU.includes(hu.identificador) ? 'checked' : '' %>
+                    />
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p class="text-center text-muted py-4 mb-0">No hay HUs creadas en este proyecto.</p>
+      <% } %>
+
+      <div class="d-flex justify-content-around mt-4">
+        <button class="btn btn-primary" type="submit">Guardar</button>
+        <button class="btn btn-danger" type="button" id="closeSelectionModal">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

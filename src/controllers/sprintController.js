@@ -4,6 +4,7 @@ const HU = require("../models/HU");
 const Utils = require("./utils");
 
 const getSprint = async (req, res) => {
+  Utils.printLog(req, true, false);
   try {
     const { project_id, id } = req.params;
 
@@ -20,6 +21,7 @@ const getSprint = async (req, res) => {
     }).sort({ orden: 1 });
 
     res.json({ success: true, data: { sprint, hus } });
+    Utils.info("Mandado correctamente sprint: " + JSON.stringify(sprint.toJSON()));
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -31,25 +33,32 @@ const getSprintActual = async (req, res) => {
     const project_id = req.params.project_id;
 
     const sprint = await Sprint.findOne({ project_id, estado: "activo" }).sort({ id: -1 });
-    const hus = (sprint)? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 }) : [];
+    const hus = sprint
+      ? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 })
+      : [];
+    const allHus = await HU.find({ project_id }).sort({ orden: 1, identificador: 1 });
 
     res.render("sprintActual", {
-          title: "SprintPilot - Proyectos",
-          project_id: project_id,
-          sprint: sprint,
-          hus: hus
-        });
-    if (sprint) Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
+      title: "SprintPilot - Proyectos",
+      project_id: project_id,
+      sprint: sprint,
+      hus: hus,
+      allHus: allHus,
+    });
+    if (sprint)
+      Utils.info("Enviado info de sprint actual correctamente: " + JSON.stringify(sprint.toJSON()));
   } catch (error) {
     console.error("Error al obtener sprint actual:", error);
     res.status(500).send("Error interno del servidor");
   }
-}
+};
 
 const getAllSprintPasados = async (req, res) => {
   try {
     const { project_id } = req.params;
-    const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({ id: -1 });
+    const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({
+      id: -1,
+    });
 
     res.render("SprintPasados", {
       title: "Sprint Pilot - Sprints Pasados",
@@ -145,8 +154,7 @@ const crearSprint = async (req, res) => {
       });
     }
 
-    if(lastSprint)
-      await lastSprint.updateOne({$set: {estado: "completado"}});
+    if (lastSprint) await lastSprint.updateOne({ $set: { estado: "completado" } });
     const nuevoSprint = new Sprint({
       id: Number(id),
       project_id: project_id,
@@ -171,10 +179,88 @@ const crearSprint = async (req, res) => {
   }
 };
 
+const actualizarHUSprint = async (req, res) => {
+  Utils.printLog(req, true, false);
+
+  try {
+    const { project_id, id } = req.params;
+    const sprintId = Number(id);
+    let { hu_ids } = req.body;
+
+    if (!Array.isArray(hu_ids)) {
+      return res.status(400).json({
+        success: false,
+        error: "Debe enviar un array hu_ids con los identificadores de HUs.",
+      });
+    }
+
+    // Comprobamos que sean numeros los ids
+    const allIntegers = hu_ids.every(id => Number.isInteger(id));
+    if (!allIntegers) {
+      return res.status(400).json({
+        success: false,
+        error: "Todos los hu_ids deben ser números enteros positivos.",
+      });
+    }
+
+    hu_ids = [...new Set(hu_ids)];
+
+    const sprint = await Sprint.findOne({ project_id, id: sprintId });
+    if (!sprint) {
+      return res.status(404).json({
+        success: false,
+        error: "Sprint no encontrado",
+      });
+    }
+
+    const existingHus = await HU.find({
+      project_id,
+      identificador: { $in: hu_ids },
+    }).select("identificador");
+
+    if (existingHus.length !== hu_ids.length) {
+      return res.status(400).json({
+        success: false,
+        error: "Uno o más hu_ids no existen en este proyecto.",
+      });
+    }
+
+    sprint.HU = hu_ids;
+    await sprint.save();
+
+    await HU.updateMany({ project_id, sprint_id: sprintId }, { $set: { sprint_id: null } });
+
+    if (hu_ids.length > 0) {
+      await HU.updateMany(
+        { project_id, identificador: { $in: hu_ids } },
+        { $set: { sprint_id: sprintId } }
+      );
+    }
+
+    Utils.info(`Sprint ${sprintId} actualizado con ${hu_ids.length} HUs`);
+
+    res.status(200).json({
+      success: true,
+      message: "HUs del sprint actualizadas correctamente",
+      data: {
+        sprint_id: sprintId,
+        hu_ids: hu_ids,
+      },
+    });
+  } catch (error) {
+    console.error("Error en actualizarHUSprint:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error interno al procesar la actualización de la HU.",
+    });
+  }
+};
+
 module.exports = {
   getSprint,
   getSprintActual,
   getAllSprintPasados,
   getAllSprints,
   crearSprint,
+  actualizarHUSprint,
 };
