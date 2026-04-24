@@ -58,7 +58,7 @@ describe("huController unit tests", () => {
 
     expect(res.status).toHaveBeenCalledWith(404);
     console.log(res.render);
-    expect(res.render).toHaveBeenCalledWith("HUs", {
+    expect(res.render).toHaveBeenCalledWith("hus", {
       title: "Sprint Pilot - Backlog",
       hus: [],
       project_id: "PR",

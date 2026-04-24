@@ -12,14 +12,14 @@ const getAllHUs = async (req, res) => {
     // Ordenamos por 'orden' para que la vista respete las flechas
     const hus = await HU.find({ project_id: project_id }).sort({ orden: 1 });
     
-    res.render("HUs", {
+    res.render("hus", {
       title: "Sprint Pilot - Backlog",
       hus: hus,
       project_id: project_id,
     });
   } catch (error) {
     console.error("Error al obtener hus:", error);
-    res.status(500).render("HUs", {
+    res.status(500).render("hus", {
       title: "Sprint Pilot",
       hus: [],
       project_id: project_id,
@@ -133,7 +133,7 @@ async function getHU(vista, req, res){
 
   const hu = await HU.findOne({project_id: project_id, identificador: id});
   if(!hu) {
-    return res.status(404).render("HUs", {
+    return res.status(404).render("hus", {
       title: "Sprint Pilot - Backlog",
       hus: [],
       project_id: project_id,
@@ -152,7 +152,7 @@ const viewHU = async (req, res) => {
   try {
     getHU("detalleHU", req, res);
   } catch (error) {
-    res.status(500).render("HUs", {
+    res.status(500).render("hus", {
       title: "Sprint Pilot - Backlog",
       hus: [],
       project_id: req.params.project_id,
@@ -165,7 +165,7 @@ const editHU = async (req, res) => {
   try {
     getHU("editarHU", req, res);
   } catch (error) {
-    res.status(500).render("HUs", {
+    res.status(500).render("hus", {
       title: "Sprint Pilot - Backlog",
       hus: [],
       project_id: req.params.project_id,
