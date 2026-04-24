@@ -34,7 +34,7 @@ const getSprintActual = async (req, res) => {
     const hus = sprint
       ? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 })
       : [];
-    const allHus = await HU.find({ project_id }).sort({ orden: 1, identificador: 1 });
+    const allHus = await HU.find({ project_id, $or: [{sprint_id: null}, {sprint_id: sprint.id}]}).sort({ orden: 1, identificador: 1 });
 
     res.render("sprintActual", {
       title: "SprintPilot - Proyectos",

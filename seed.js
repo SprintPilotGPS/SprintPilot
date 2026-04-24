@@ -10,6 +10,7 @@ const husData = [
     titulo: "Completar sistema de autenticación de usuarios",
     descripcion: "Implementar autenticación JWT y funcionalidad de inicio de sesión y registro",
     project_id: "PR",
+    sprint_id: null,
     orden: 1,
   },
   {
@@ -17,6 +18,7 @@ const husData = [
     titulo: "Optimizar el rendimiento de consultas de base de datos",
     descripcion: "Agregar índices y optimizar consultas lentas",
     project_id: "PR",
+    sprint_id: null,
     orden: 2,
   },
   {
@@ -24,6 +26,7 @@ const husData = [
     titulo: "Reestructuración de páginas frontend",
     descripcion: "Reestructurar página frontend usando Bootstrap",
     project_id: "LO",
+    sprint_id: null,
     orden: 1,
   },
   {
@@ -31,6 +34,7 @@ const husData = [
     titulo: "Redacción de documentación de API",
     descripcion: "Escribir documentación completa de interfaz API",
     project_id: "LO",
+    sprint_id: null,
     orden: 2,
   },
   {
@@ -38,6 +42,7 @@ const husData = [
     titulo: "Cobertura de pruebas unitarias",
     descripcion: "Mejorar cobertura de pruebas de código a 80% o superior",
     project_id: "LO",
+    sprint_id: null,
     orden: 3,
   },
 ];
