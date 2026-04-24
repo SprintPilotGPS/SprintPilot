@@ -4,6 +4,7 @@ const HU = require("../models/HU");
 const Utils = require("./utils");
 
 const getSprint = async (req, res) => {
+  Utils.printLog(req, true, false);
   try {
     const { project_id, id } = req.params;
 
@@ -20,6 +21,7 @@ const getSprint = async (req, res) => {
     }).sort({ orden: 1 });
 
     res.json({ success: true, data: { sprint, hus } });
+    Utils.info("Mandado correctamente sprint: " + JSON.stringify(sprint.toJSON()));
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
