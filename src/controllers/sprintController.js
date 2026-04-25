@@ -14,7 +14,7 @@ const getSprint = async (req, res) => {
       project_id: project_id,
       identificador: { $in: sprint.HU },
     }).sort({ orden: 1 });
-    res.json({ success: true, data: { sprint, hus } });
+    res.status(200).json({ success: true, data: { sprint, hus } });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -28,8 +28,8 @@ const getSprintActual = async (req, res) => {
     const hus = sprint
       ? await HU.find({ project_id, identificador: { $in: sprint.HU } }).sort({ orden: 1 })
       : [];
-    res.render("sprintActual", {
-      title: "SprintPilot - Proyectos",
+    res.status(200).render("sprintActual", {
+      title: "SprintPilot - Sprint Actual",
       project_id: project_id,
       sprint: sprint,
       hus: hus,
@@ -48,8 +48,8 @@ const getAllSprintPasados = async (req, res) => {
     const sprints = await Sprint.find({ project_id: project_id, estado: "completado" }).sort({
       id: -1,
     });
-    res.render("SprintPasados", {
-      title: "Sprint Pilot - Sprints Pasados",
+    res.status(200).render("SprintPasados", {
+      title: "SprintPilot - Sprints Pasados",
       project_id,
       sprints,
     });

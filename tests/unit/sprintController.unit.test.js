@@ -16,10 +16,12 @@ function mockRes() {
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
   res.render = jest.fn().mockReturnValue(res);
+  res.sendStatus = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
   return res;
 }
 
-describe("sprintController unit tests - Exhaustive", () => {
+describe("sprintController unit tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -102,6 +104,199 @@ describe("sprintController unit tests - Exhaustive", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "El objetivo del sprint actual no puede superar los 250 caracteres." }));
     });
+  });
+
+  describe("getSprint", () => {
+    test("getSprint should return 200", async () => {
+      const req = {
+        params: { project_id: "PR", id: 0 }
+      };
+      const res = mockRes();
+
+      const mockSprint = {
+        id: 0,
+        project_id: "PR",
+        estado: "activo",
+        fechaIni: new Date(),
+        fechaFin: new Date(Date.now() + 100000),
+        HU: [0],
+        sprintGoal: "Prueba"
+      }
+      const mockHUs = [
+        {
+          identificador: 0,
+          titulo: "Completar sistema de autenticación de usuarios",
+          project_id: "PR",
+          orden: 0
+        },
+      ]
+
+      Sprint.findOne.mockResolvedValue(mockSprint);
+      HU.find.mockReturnValue({
+        sort: jest.fn().mockReturnValue(mockHUs)
+      });
+
+      await sprintController.getSprint(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: {
+          sprint: mockSprint,
+          hus: mockHUs
+        }
+      });
+    });
+
+    test("getSprint should return 404 when sprint does not exist", async () => {
+      const req = {
+        params: { project_id: "PR", id: 0 }
+      };
+      const res = mockRes();
+
+      Sprint.findOne.mockResolvedValue(null);
+
+      await sprintController.getSprint(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: "Sprint no encontrado"
+      });
+    });
+
+    test("getSprintActual should return 200", async () => {
+      const req = {
+        params: { project_id: "PR" }
+      };
+      const res = mockRes();
+
+      const mockSprint = {
+        id: 0,
+        project_id: "PR",
+        estado: "activo",
+        fechaIni: new Date(),
+        fechaFin: new Date(Date.now() + 100000),
+        HU: [0],
+        sprintGoal: "Prueba"
+      }
+      const mockHUs = [
+        {
+          identificador: 0,
+          titulo: "Completar sistema de autenticación de usuarios",
+          project_id: "PR",
+          orden: 0
+        },
+      ]
+
+      Sprint.findOne.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(mockSprint)
+      });
+      HU.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(mockHUs)
+      });
+
+      await sprintController.getSprintActual(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.render).toHaveBeenCalledWith("sprintActual", {
+        title: "SprintPilot - Sprint Actual",
+        project_id: "PR",
+        sprint: mockSprint,
+        hus: mockHUs
+      })      
+    });
+
+    test("getSprintActual should return 200 when no sprint are active", async () => {
+      const req = {
+        params: { project_id: "PR" }
+      };
+      const res = mockRes();
+
+      Sprint.findOne.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(null)
+      });
+
+      await sprintController.getSprintActual(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.render).toHaveBeenCalledWith("sprintActual", {
+        title: "SprintPilot - Sprint Actual",
+        project_id: "PR",
+        sprint: null,
+        hus: []
+      })      
+    });
+
+    test("getAllSprintPasados should return 200", async () => {
+      const req = {
+        params: { project_id: "PR" }
+      };
+      const res = mockRes();
+
+      const mockSprints =[ 
+        {
+          id: 0,
+          project_id: "PR",
+          estado: "completado",
+          fechaIni: new Date(),
+          fechaFin: new Date(Date.now() + 100000),
+          HU: [0],
+          sprintGoal: "Prueba"
+        },
+      ]
+
+      Sprint.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(mockSprints)
+      });
+
+      await sprintController.getAllSprintPasados(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.render).toHaveBeenCalledWith("SprintPasados", {
+        title: "SprintPilot - Sprints Pasados",
+        project_id: "PR",
+        sprints: mockSprints
+      })      
+    });
+
+    test("getAllSprints should return 200", async () => {
+      const req = {
+        params: { project_id: "PR" },
+        query: { status: "activo", page: 1, limit: 10 }
+      };
+      const res = mockRes();
+
+      const mockSprints =[ 
+        {
+          id: 0,
+          project_id: "PR",
+          estado: "activo",
+          fechaIni: new Date(),
+          fechaFin: new Date(Date.now() + 100000),
+          HU: [0],
+          sprintGoal: "Prueba"
+        },
+      ]
+
+      Sprint.find.mockReturnValue({
+        sort: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValue(mockSprints)
+      });
+      Sprint.countDocuments.mockResolvedValue(1)
+
+      await sprintController.getAllSprints(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        total: 1,
+        page: 1,
+        pages: 1,
+        data: mockSprints
+      })      
+    });
+
   });
 
   describe("editarSprintGoal", () => {
