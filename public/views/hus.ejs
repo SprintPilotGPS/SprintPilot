@@ -18,15 +18,15 @@
             data-bs-toggle="modal"
             data-bs-target="#addHUModal"
           >
-            Add HU
+            Añadir HU
           </button>
         </div>
-          <table class="table table-hover align-middle">
+        <table class="table table-hover align-middle">
           <thead>
             <tr>
-              <th style="width: 15%;">ID de Tarea</th>
-              <th style="width: 65%;">Título</th>
-              <th style="width: 20%;">Acciones</th>
+              <th style="width: 15%">ID de Tarea</th>
+              <th style="width: 65%">Título</th>
+              <th style="width: 20%">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -37,15 +37,19 @@
               <td><%= req.titulo %></td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn btn-sm btn-light move-up">
-                    ⬆️
-                  </button>
-                  <button class="btn btn-sm btn-light move-down">
-                    ⬇️
-                  </button>
-                  <a class="btn btn-sm btn-view" href="/<%= project_id %>/hus/<%= req.identificador %>/view">Ver</a>
-                  <a class="btn btn-sm btn-edit" href="/<%= project_id %>/hus/<%= req.identificador %>/edit">Editar</a>
-                  <input type="hidden" value="<%= req.identificador %>">
+                  <button class="btn btn-sm btn-light move-up">⬆️</button>
+                  <button class="btn btn-sm btn-light move-down">⬇️</button>
+                  <a
+                    class="btn btn-sm btn-view"
+                    href="/<%= project_id %>/hus/<%= req.identificador %>/view"
+                    >Ver</a
+                  >
+                  <a
+                    class="btn btn-sm btn-edit"
+                    href="/<%= project_id %>/hus/<%= req.identificador %>/edit"
+                    >Editar</a
+                  >
+                  <input type="hidden" value="<%= req.identificador %>" />
                 </div>
               </td>
             </tr>
@@ -85,13 +89,18 @@
               <div class="row g-3">
                 <div class="col-md-4">
                   <label for="identificador" class="form-label">ID</label>
-                  <input type="number" class="form-control" id="identificador" name="identificador" placeholder="Auto" />
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="identificador"
+                    name="identificador"
+                    placeholder="Auto"
+                  />
                 </div>
                 <div class="col-md-8">
                   <label for="titulo" class="form-label">Título</label>
                   <input type="text" class="form-control" id="titulo" name="titulo" required />
                 </div>
-
 
                 <div class="col-12">
                   <label for="descripcion" class="form-label">Descripcion</label>
@@ -103,7 +112,7 @@
                     placeholder="Detalle opcional"
                   ></textarea>
                 </div>
-                <input id="project_id" name="project_id" type="hidden" value="<%= project_id %>">
+                <input id="project_id" name="project_id" type="hidden" value="<%= project_id %>" />
               </div>
             </div>
             <div class="modal-footer">

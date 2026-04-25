@@ -20,4 +20,9 @@ router.post('/:project_id/hus/update/:id', huController.updateHU);
 router.post("/:project_id/crearSprint", sprintContoller.crearSprint);
 router.get("/:project_id/sprints/:id", sprintContoller.getSprint);
 
+// --- API de Criterios de Aceptación ---
+const criteriosController = require("../controllers/criteriosController");
+router.post("/criterios", criteriosController.crearCriterio);
+router.get("/criterios", criteriosController.obtenerCriterios);
+
 module.exports = router;
