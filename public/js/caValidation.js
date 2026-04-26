@@ -42,10 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
   caForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const finalCA = preview.textContent;
+    const isPreviewActive = preview.classList.contains("active");
+    const finalCA = preview.innerHTML;
 
-    if (!finalCA || finalCA.trim() === "") {
-      alert("El criterio está vacío");
+    if (!isPreviewActive || !finalCA || finalCA.trim() === "") {
+      alert("El criterio está vacío. Por favor, completa al menos uno de los campos.");
       return;
     }
 
@@ -73,10 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       console.log("Guardado:", data);
       alert("✅ Criterio guardado correctamente");
-      window.location.reload();
+      
+      // Redirigir al detalle de la HU para ver el criterio añadido
+      window.location.href = `/${projectId}/hus/${huId}/view`;
     } catch (error) {
       console.error(error);
-      alert("❌ Error al guardar el criterio");
+      alert("❌ Error al guardar el criterio: " + error.message);
     }
   });
 });
