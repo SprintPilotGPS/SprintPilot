@@ -88,7 +88,7 @@ describe("sprintController unit tests", () => {
         params: { project_id: "p1" },
         body: { 
           fechaFin: new Date(Date.now() + 100000),
-          currentGoal: "a".repeat(251)
+          sprintGoal: "a".repeat(251)
         }
       };
       const res = mockRes();
@@ -102,7 +102,10 @@ describe("sprintController unit tests", () => {
       await sprintController.crearSprint(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "El objetivo del sprint actual no puede superar los 250 caracteres." }));
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: "El Sprint Goal no puede superar los 250 caracteres.",
+      });
     });
   });
 
@@ -120,7 +123,16 @@ describe("sprintController unit tests", () => {
         fechaIni: new Date(),
         fechaFin: new Date(Date.now() + 100000),
         HU: [0],
-        sprintGoal: "Prueba"
+        sprintGoal: "Prueba",
+        toJSON: jest.fn().mockReturnValue({
+          id: 0,
+          project_id: "PR",
+          estado: "activo",
+          fechaIni: new Date(),
+          fechaFin: new Date(Date.now() + 100000),
+          HU: [0],
+          sprintGoal: "Prueba",
+        })
       }
       const mockHUs = [
         {
@@ -178,7 +190,16 @@ describe("sprintController unit tests", () => {
         fechaIni: new Date(),
         fechaFin: new Date(Date.now() + 100000),
         HU: [0],
-        sprintGoal: "Prueba"
+        sprintGoal: "Prueba",
+        toJSON: jest.fn().mockReturnValue({
+          id: 0,
+          project_id: "PR",
+          estado: "activo",
+          fechaIni: new Date(),
+          fechaFin: new Date(Date.now() + 100000),
+          HU: [0],
+          sprintGoal: "Prueba",
+        })
       }
       const mockHUs = [
         {
@@ -203,7 +224,8 @@ describe("sprintController unit tests", () => {
         title: "SprintPilot - Sprint Actual",
         project_id: "PR",
         sprint: mockSprint,
-        hus: mockHUs
+        hus: mockHUs,
+        allHus: mockHUs,
       })      
     });
 
@@ -216,6 +238,9 @@ describe("sprintController unit tests", () => {
       Sprint.findOne.mockReturnValue({
         sort: jest.fn().mockResolvedValue(null)
       });
+      HU.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(null)
+      });
 
       await sprintController.getSprintActual(req, res);
 
@@ -224,7 +249,8 @@ describe("sprintController unit tests", () => {
         title: "SprintPilot - Sprint Actual",
         project_id: "PR",
         sprint: null,
-        hus: []
+        hus: [],
+        allHus: null,
       })      
     });
 

@@ -97,7 +97,7 @@ const crearSprint = async (req, res) => {
   Utils.printLog(req, true, false);
   try {
     const project_id = req.params.project_id ? req.params.project_id.trim() : "";
-    let { fechaFin, sprintGoal, HU: HU_ids, currentGoal } = req.body;
+    let { fechaFin, sprintGoal, HU: HU_ids } = req.body;
     
     if (!project_id || !fechaFin) {
       return res.status(400).json({

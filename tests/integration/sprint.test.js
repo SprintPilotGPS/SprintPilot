@@ -94,7 +94,7 @@ describe("Sprint API Tests - Exhaustive Coverage", () => {
         .post(`/api/${testProjectId}/crearSprint`)
         .send({ 
           fechaFin: new Date(Date.now() + 86400000).toISOString(),
-          currentGoal: longGoal
+          sprintGoal: longGoal
         })
         .expect(400);
     });

@@ -127,9 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const projectId = document.getElementById("project_id").value;
 
       // Capturamos el objetivo actual para guardarlo en el último momento si ha cambiado
-      const currentGoal = goalInput ? goalInput.value.trim() : "";
+      const sprintGoal = goalInput ? goalInput.value.trim() : "";
 
-      if (currentGoal.length > 250) {
+      if (sprintGoal.length > 250) {
         showGoalError("El objetivo del sprint actual no puede superar los 250 caracteres.");
         goalInput.focus();
         return;
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = { 
         fechaFin,
-        currentGoal
+        sprintGoal
       };
 
       try {
