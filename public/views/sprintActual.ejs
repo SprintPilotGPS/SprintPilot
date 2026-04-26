@@ -15,8 +15,8 @@
       .planning-section {
         background: #fff;
         border-radius: 15px;
-        padding: 25px;
-        margin-bottom: 30px;
+        padding: 1em;
+        margin-bottom: 1em;
         border-left: 8px solid var(--primary-color);
         transition: box-shadow 0.3s ease;
       }
@@ -122,7 +122,10 @@
 
         <div class="p-4 bg-light min-vh-50">
           <% if (sprint) { %>
-            <button class="openModalAniadirHUs text-white btn btn-light btn-sm fw-bold px-3 rounded-pill float-end" style="background-color:#764ba2;">+ Añadir HUs</button>
+            <div class="mb-3 d-flex justify-content-end">
+              <button class="openModalAniadirHUs text-white btn btn-light btn-sm fw-bold px-3 rounded-pill float-end" style="background-color:#764ba2;">+ Añadir HUs</button>
+            </div>
+
             <div class="planning-section shadow-sm">
               <div class="mb-0">
                 <div class="d-flex align-items-center">
