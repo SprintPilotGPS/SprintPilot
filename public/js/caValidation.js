@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!comoInput || !siInput || !entoncesInput || !preview || !caForm) return;
 
+  const projectId = caForm.dataset.projectId;
+  const huId = caForm.dataset.huId;
+
   function updatePreview() {
     const como = comoInput.value.trim();
     const si = siInput.value.trim();
@@ -46,8 +49,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (!projectId || !huId) {
+      alert("No se encontraron el proyecto o la HU para guardar el criterio");
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:3000/api/criterios", {
+      const response = await fetch(`/api/${projectId}/HU/${huId}/crearCA`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,11 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       console.log("Guardado:", data);
       alert("✅ Criterio guardado correctamente");
-
-      // limpiar formulario
-      caForm.reset();
-      preview.textContent = "Empieza a escribir para ver el resultado...";
-      preview.classList.remove("active");
+      window.location.reload();
     } catch (error) {
       console.error(error);
       alert("❌ Error al guardar el criterio");
