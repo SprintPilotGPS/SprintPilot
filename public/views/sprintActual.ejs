@@ -10,7 +10,85 @@
       }
       .hu-card:hover {
         transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+      }
+      .planning-section {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 8px solid var(--primary-color);
+        transition: box-shadow 0.3s ease;
+      }
+      .planning-section:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      }
+      .planning-label {
+        font-weight: 700;
+        color: #4a5568;
+        min-width: 120px;
+        display: inline-block;
+      }
+      .planning-input-container {
+        position: relative;
+        width: 100%;
+      }
+      .planning-input {
+        border: none;
+        border-bottom: 2px solid #e2e8f0;
+        border-radius: 0;
+        padding: 8px 65px 8px 10px;
+        transition: all 0.3s ease;
+        width: 100%;
+        background: transparent;
+        font-size: 1.1rem;
+      }
+      .planning-input:focus {
+        outline: none;
+        border-bottom-color: var(--primary-color);
+        background: rgba(var(--primary-rgb), 0.02);
+        box-shadow: none;
+      }
+      .planning-input.is-invalid {
+        border-bottom-color: #e53e3e;
+      }
+      .goal-counter {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+      .error-message {
+        background: #fff5f5;
+        border: 1px solid #feb2b2;
+        color: #c53030;
+        padding: 10px 18px;
+        border-radius: 10px;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(229, 62, 62, 0.05);
+        animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .error-icon {
+        background: #feb2b2;
+        color: #fff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
       }
     </style>
   </head>
@@ -20,59 +98,98 @@
     <div class="container main-container">
       <div class="welcome-section">
         <h1 class="display-4 fw-bold">Sprint Actual</h1>
+        <p class="lead">Visualiza y gestiona las Historias de Usuario de tu ciclo actual.</p>
       </div>
 
       <div class="table-card border-0">
         <div class="table-header d-flex justify-content-between align-items-center rounded-top">
-          <div class="d-flex align-items-center gap-3">
+          <div class="d-flex align-items-center">
+            <span class="fs-4 me-2">🚀</span>
             <% if (sprint) { %>
-            <span class="fs-3">🚀 Sprint #<%= sprint.id %></span>
-            <span class="badge fs-6 bg-success">Inició: <%= sprint.fechaIni.toLocaleDateString("es-ES") %></span>
-            <span class="badge fs-6 bg-danger">Finaliza: <%= sprint.fechaFin.toLocaleDateString("es-ES") %></span>
+            <span class="fs-3">Sprint #<%= sprint.id %></span>
+            <input type="hidden" id="sprintId" value="<%= sprint.id %>">
             <% } else { %>
-            <span>🚀 Sin Sprint Activo</span>
+            <span>Sin Sprint Activo</span>
             <% } %>
           </div>
-          <button class="openModalSprintCreate btn btn-light btn-sm fw-bold px-3 rounded-pill">+ Iniciar nuevo Sprint</button>
+          <button class="openModalSprintCreate btn btn-light btn-sm fw-bold px-3 rounded-pill">
+            + Nuevo Sprint
+          </button>
         </div>
 
         <div class="p-4 bg-light min-vh-50">
-          <% if (sprint && hus.length > 0) { %>
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-              <% hus.forEach(hu => { %>
-                <div class="col">
-                  <div class="card h-100 hu-card shadow-sm border-0 rounded-3">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between align-items-start mb-2">
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">HU-<%= hu.identificador %></span>
-                      </div>
-                      <h5 class="card-title fw-bold text-dark"><%= hu.titulo %></h5>
-                      <p class="card-text text-muted small"><%= hu.descripcion %></p>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
-                      <a href="/<%= project_id %>/hus/<%= hu.identificador %>/view" class="btn btn-outline-primary btn-sm rounded-pill px-3">Ver Detalle</a>
-                    </div>
-                  </div>
+          <% if (sprint) { %>
+          <div class="planning-section shadow-sm">
+            <div class="mb-0">
+              <div class="d-flex align-items-center">
+                <span class="planning-label">Sprint Goal:</span>
+                <div class="flex-grow-1 ms-3 planning-input-container">
+                  <input
+                    id="sprintGoal"
+                    type="text"
+                    class="planning-input"
+                    placeholder="No puede superar los 250 caracteres"
+                    value="<%= sprint.sprintGoal %>"
+                    autocomplete="off"
+                  />
+                  <span id="goalCounter" class="goal-counter text-muted">0/250</span>
                 </div>
-              <% }) %>
+              </div>
+              <div id="sprintGoalError" class="error-message d-none ms-5 ps-3">
+                <div class="error-icon">!</div>
+                <span id="goalErrorText">El Sprint Goal no puede superar los 250 caracteres.</span>
+              </div>
             </div>
+          </div>
+          <% } %>
+
+          <% if (sprint && hus.length > 0) { %>
+          <div class="row row-cols-1 row-cols-md-2 g-4">
+            <% hus.forEach(hu => { %>
+            <div class="col">
+              <div class="card h-100 hu-card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle"
+                      >HU-<%= hu.identificador %></span
+                    >
+                  </div>
+                  <h5 class="card-title fw-bold text-dark"><%= hu.titulo %></h5>
+                  <p class="card-text text-muted small"><%= hu.descripcion %></p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                  <a
+                    href="/<%= project_id %>/hus/<%= hu.identificador %>/view"
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                    >Ver Detalle</a
+                  >
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
           <% } else if (sprint) { %>
-            <div class="text-center py-5">
-              <h4 class="text-muted">No hay HUs en este sprint</h4>
-              <p class="text-muted">Este sprint está vacío. ¡Ánimo con la planificación!</p>
-            </div>
+          <div class="text-center py-5">
+            <h4 class="text-muted">No hay HUs en este sprint</h4>
+            <p class="text-muted">Este sprint está vacío. ¡Ánimo con la planificación!</p>
+          </div>
           <% } else { %>
-            <div class="text-center py-5">
-              <h4 class="text-muted">¡Listos para despegar!</h4>
-              <p class="text-muted">No hay ningún sprint activo.</p>
-              <button class="openModalSprintCreate btn btn-primary mt-3 rounded-pill px-4">Iniciar Primer Sprint</button>
-            </div>
+          <div class="text-center py-5">
+            <h4 class="text-muted">¡Listos para despegar!</h4>
+            <p class="text-muted">No hay ningún sprint activo.</p>
+            <button class="openModalSprintCreate btn btn-primary mt-3 rounded-pill px-4">
+              Iniciar Primer Sprint
+            </button>
+          </div>
           <% } %>
         </div>
       </div>
 
       <div class="text-center mt-5 mb-5">
-        <a href="/<%= project_id %>/sprints-pasados" class="sprints-pasados-link fs-4 text-white hover-opacity-100">
+        <a
+          href="/<%= project_id %>/sprints-pasados"
+          class="sprints-pasados-link fs-4 text-white hover-opacity-100"
+        >
           Ver historial de sprints pasados
         </a>
       </div>

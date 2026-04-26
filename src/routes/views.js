@@ -16,4 +16,6 @@ router.get('/:project_id/hus/:id/edit', huController.editHU);
 router.get("/:project_id/sprint-actual", sprintContoller.getSprintActual);
 router.get("/:project_id/sprints-pasados", sprintContoller.getAllSprintPasados);
 
+
+
 module.exports = router;

@@ -42,7 +42,15 @@
                 <div class="card-body p-4 position-relative">
                   <div class="sprint-number">#<%= s.id %></div>
                   <h5 class="card-title fw-bold text-primary mb-3">Sprint <%= s.id %></h5>
-                  
+
+                    <div class="mb-3">
+                      <p class="fs-6">
+                        <span class="fw-bold text-dark">Sprint Goal:</span> 
+                        <span class="<%= s.sprintGoal ? '' : 'text-muted fst-italic' %>">
+                          <%= s.sprintGoal || "Sin especificar" %>
+                        </span>
+                      </p>
+                    </div>
                   <div class="d-flex gap-4">
                     <p class="fs-6 fw-bold text-secondary">
                       Inicio: <%= new Date(s.fechaIni).toLocaleDateString("es-ES") %>
