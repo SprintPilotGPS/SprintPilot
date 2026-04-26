@@ -190,21 +190,26 @@ footer {
 }
 
 /* Estilos para la ver un proyecto */
-.card-hu{
+.card-hu {
   background: white;
   box-shadow: 0.3em 0.3em 0.75em 0.3em rgba(0, 0, 0, 0.4);
 }
 
-.card-hu hr{
+.card-hu hr {
   margin: auto;
-  margin-top: .2em;
+  margin-top: 0.2em;
   width: 65%;
-  height: .15em;
-  background: linear-gradient(90deg,rgba(112, 64, 201, 1) 0%, rgba(88, 90, 219, 1) 25%, rgba(184, 87, 199, 1) 99%);
+  height: 0.15em;
+  background: linear-gradient(
+    90deg,
+    rgba(112, 64, 201, 1) 0%,
+    rgba(88, 90, 219, 1) 25%,
+    rgba(184, 87, 199, 1) 99%
+  );
   opacity: 1;
 }
 
-.card-hu .req-body{
+.card-hu .req-body {
   margin: auto;
   width: 80%;
 }
@@ -214,7 +219,7 @@ footer {
   margin: auto;
   margin-top: 2em;
   width: 90%;
-  color: #fff;
+  color: #ffffff;
 }
 
 .proyect hr {
@@ -294,7 +299,7 @@ footer {
 }
 
 /* Sprints */
-.sprints-pasados-link{
+.sprints-pasados-link {
   position: relative;
   text-decoration: none;
 }
@@ -302,17 +307,17 @@ footer {
   content: "";
   position: absolute;
   text-align: center;
-  bottom: -.2em;
+  bottom: -0.2em;
   left: 50%;
   width: 100%;
-  height: .1em;
+  height: 0.1em;
   background: #fff;
   border: none;
 
   transform: translateX(-50%);
-  transition: width ease .2s;
+  transition: width ease 0.2s;
 }
-.sprints-pasados-link:hover::after{
+.sprints-pasados-link:hover::after {
   width: 0%;
 }
 

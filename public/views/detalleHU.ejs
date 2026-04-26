@@ -4,7 +4,10 @@
     <%- include('./partials/head') %>
     <title><%= title %></title>
     <!-- Font Awesome para los iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       .detalle-container {
         max-width: 900px;
@@ -76,7 +79,7 @@
         border-radius: 8px;
         padding: 15px 20px;
         margin-bottom: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
         display: flex;
         align-items: flex-start;
         gap: 15px;
@@ -112,10 +115,12 @@
     <%- include('./partials/navbar') %>
 
     <main class="container detalle-container">
-      
       <!-- Botón de volver superior -->
       <div class="mb-3">
-        <a href="/<%= hu.project_id %>/backlog" class="btn btn-outline-secondary fw-bold rounded-pill shadow-sm">
+        <a
+          href="/<%= hu.project_id %>/backlog"
+          class="btn btn-outline-secondary fw-bold rounded-pill"
+        >
           <i class="fa-solid fa-arrow-left me-2"></i> Volver al Backlog
         </a>
       </div>
@@ -124,29 +129,30 @@
         <!-- Cabecera -->
         <div class="hu-header">
           <div class="hu-badge shadow-sm">
-            <i class="fa-solid fa-tag me-2"></i><%= project_id + "-" + hu.identificador %>
+            <i class="fa-solid fa-tag me-2"></i
+            ><%= project_id + "-" + hu.identificador %>
           </div>
-          <h2 class="hu-title text-truncate" title="<%= hu.titulo %>">
-            <%= hu.titulo %>
-          </h2>
+          <h2 class="hu-title text-truncate" title="<%= hu.titulo %>"><%= hu.titulo %></h2>
           <!-- Opcional: Botón editar en la cabecera como en el diseño -->
-          <a href="/<%= project_id %>/hus/<%= hu.identificador %>/edit" class="btn btn-light btn-sm fw-bold shadow-sm rounded-pill px-3">
+          <a
+            href="/<%= project_id %>/hus/<%= hu.identificador %>/edit"
+            class="btn btn-light btn-sm fw-bold shadow-sm rounded-pill px-3"
+          >
             <i class="fa-solid fa-pen me-2"></i>Editar
           </a>
         </div>
-        
+
         <!-- Cuerpo de la tarjeta -->
         <div class="hu-body">
-          
           <!-- Descripción -->
           <h4 class="section-title">
             <i class="fa-solid fa-align-left"></i> Descripción de la Historia
           </h4>
           <div class="hu-desc-box shadow-sm">
-            <% if (hu.descripcion) { %>
-              <%= hu.descripcion %>
-            <% } else { %>
-              <span class="text-muted fst-italic">No hay descripción proporcionada para esta historia de usuario.</span>
+            <% if (hu.descripcion) { %> <%= hu.descripcion %> <% } else { %>
+            <span class="text-muted fst-italic"
+              >No hay descripción proporcionada para esta historia de usuario.</span
+            >
             <% } %>
           </div>
 
@@ -159,30 +165,32 @@
 
           <div class="ca-section mb-4">
             <% if (hu.criterios_aceptacion && hu.criterios_aceptacion.length > 0) { %>
-              <ul class="ca-list">
-                <% hu.criterios_aceptacion.forEach(function(ca) { %>
-                  <li class="ca-item">
-                    <i class="fa-solid fa-circle-check ca-icon"></i>
-                    <div><%- ca %></div>
-                  </li>
-                <% }); %>
-              </ul>
+            <ul class="ca-list">
+              <% hu.criterios_aceptacion.forEach(function(ca) { %>
+              <li class="ca-item">
+                <i class="fa-solid fa-circle-check ca-icon"></i>
+                <div><%- ca %></div>
+              </li>
+              <% }); %>
+            </ul>
             <% } else { %>
-              <div class="empty-state shadow-sm">
-                <i class="fa-solid fa-clipboard-list fs-1 mb-3 text-muted opacity-50"></i>
-                <p class="mb-0">Aún no se han definido Criterios de Aceptación para esta HU.</p>
-              </div>
+            <div class="empty-state shadow-sm">
+              <i class="fa-solid fa-clipboard-list fs-1 mb-3 text-muted opacity-50"></i>
+              <p class="mb-0">Aún no se han definido Criterios de Aceptación para esta HU.</p>
+            </div>
             <% } %>
           </div>
 
           <!-- Botón Añadir CA (inferior derecha según diseño) -->
           <div class="d-flex justify-content-end">
             <!-- Ruta oficial de vista para crear CA -->
-            <a href="/<%= project_id %>/hus/<%= hu.identificador %>/ca/crear" class="btn btn-primary btn-view fw-bold px-4 py-2 shadow rounded-pill">
+            <a
+              href="/<%= project_id %>/hus/<%= hu.identificador %>/ca/crear"
+              class="btn btn-primary btn-view fw-bold px-4 py-2 shadow rounded-pill"
+            >
               <i class="fa-solid fa-plus me-2"></i> Añadir Criterio
             </a>
           </div>
-
         </div>
       </div>
     </main>
