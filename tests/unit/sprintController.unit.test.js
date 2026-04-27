@@ -88,7 +88,7 @@ describe("sprintController unit tests", () => {
         params: { project_id: "p1" },
         body: { 
           fechaFin: new Date(Date.now() + 100000),
-          currentGoal: "a".repeat(251)
+          sprintGoal: "a".repeat(251)
         }
       };
       const res = mockRes();
@@ -102,7 +102,10 @@ describe("sprintController unit tests", () => {
       await sprintController.crearSprint(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "El objetivo del sprint actual no puede superar los 250 caracteres." }));
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        error: "El Sprint Goal no puede superar los 250 caracteres.",
+      });
     });
   });
 
@@ -120,7 +123,16 @@ describe("sprintController unit tests", () => {
         fechaIni: new Date(),
         fechaFin: new Date(Date.now() + 100000),
         HU: [0],
-        sprintGoal: "Prueba"
+        sprintGoal: "Prueba",
+        toJSON: jest.fn().mockReturnValue({
+          id: 0,
+          project_id: "PR",
+          estado: "activo",
+          fechaIni: new Date(),
+          fechaFin: new Date(Date.now() + 100000),
+          HU: [0],
+          sprintGoal: "Prueba",
+        })
       }
       const mockHUs = [
         {
@@ -178,7 +190,16 @@ describe("sprintController unit tests", () => {
         fechaIni: new Date(),
         fechaFin: new Date(Date.now() + 100000),
         HU: [0],
-        sprintGoal: "Prueba"
+        sprintGoal: "Prueba",
+        toJSON: jest.fn().mockReturnValue({
+          id: 0,
+          project_id: "PR",
+          estado: "activo",
+          fechaIni: new Date(),
+          fechaFin: new Date(Date.now() + 100000),
+          HU: [0],
+          sprintGoal: "Prueba",
+        })
       }
       const mockHUs = [
         {
@@ -203,7 +224,8 @@ describe("sprintController unit tests", () => {
         title: "SprintPilot - Sprint Actual",
         project_id: "PR",
         sprint: mockSprint,
-        hus: mockHUs
+        hus: mockHUs,
+        allHus: mockHUs,
       })      
     });
 
@@ -216,6 +238,9 @@ describe("sprintController unit tests", () => {
       Sprint.findOne.mockReturnValue({
         sort: jest.fn().mockResolvedValue(null)
       });
+      HU.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(null)
+      });
 
       await sprintController.getSprintActual(req, res);
 
@@ -224,7 +249,8 @@ describe("sprintController unit tests", () => {
         title: "SprintPilot - Sprint Actual",
         project_id: "PR",
         sprint: null,
-        hus: []
+        hus: [],
+        allHus: null,
       })      
     });
 
@@ -342,5 +368,129 @@ describe("sprintController unit tests", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "El Sprint Goal no puede superar los 250 caracteres." }));
     });
+  });
+});
+
+describe("sprintController unit tests - actualizarHUSprint", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test("debería actualizar HUs del sprint con éxito (200)", async () => {
+    const req = {
+      params: { project_id: "proy-1", id: "1" },
+      body: { hu_ids: [1, 2] }
+    };
+    const res = mockRes();
+
+    const mockSprint = { 
+      project_id: "proy-1", 
+      id: 1, 
+      HU: [], 
+      save: jest.fn().mockResolvedValue(true) 
+    };
+
+    Sprint.findOne.mockResolvedValue(mockSprint);
+    HU.find.mockReturnValue({
+      select: jest.fn().mockResolvedValue([{ identificador: 1 }, { identificador: 2 }])
+    });
+    HU.updateMany.mockResolvedValue({ nModified: 2 });
+
+    await sprintController.actualizarHUSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      success: true,
+      message: "HUs del sprint actualizadas correctamente"
+    }));
+    expect(mockSprint.HU).toEqual([1, 2]);
+    expect(mockSprint.save).toHaveBeenCalled();
+  });
+
+  test("debería devolver 400 si hu_ids no es un array", async () => {
+    const req = {
+      params: { project_id: "proy-1", id: "1" },
+      body: { hu_ids: "no-es-un-array" }
+    };
+    const res = mockRes();
+
+    await sprintController.actualizarHUSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      error: "Debe enviar un array hu_ids con los identificadores de HUs."
+    }));
+  });
+
+  test("debería devolver 400 si hu_ids contiene elementos no enteros", async () => {
+    const req = {
+      params: { project_id: "proy-1", id: "1" },
+      body: { hu_ids: [1, "a"] }
+    };
+    const res = mockRes();
+
+    await sprintController.actualizarHUSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      error: "Todos los hu_ids deben ser números enteros positivos."
+    }));
+  });
+
+  test("debería devolver 404 si el sprint no existe", async () => {
+    const req = {
+      params: { project_id: "proy-1", id: "99" },
+      body: { hu_ids: [1] }
+    };
+    const res = mockRes();
+
+    Sprint.findOne.mockResolvedValue(null);
+
+    await sprintController.actualizarHUSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      error: "Sprint no encontrado"
+    }));
+  });
+
+  test("debería devolver 400 si alguna HU no existe en el proyecto", async () => {
+    const req = {
+      params: { project_id: "proy-1", id: "1" },
+      body: { hu_ids: [1, 99] }
+    };
+    const res = mockRes();
+
+    const mockSprint = { project_id: "proy-1", id: 1, HU: [] };
+    Sprint.findOne.mockResolvedValue(mockSprint);
+    
+    // Solo se encuentra una HU (el array devuelto tiene longitud 1, pero enviamos 2 IDs)
+    HU.find.mockReturnValue({
+      select: jest.fn().mockResolvedValue([{ identificador: 1 }])
+    });
+
+    await sprintController.actualizarHUSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      error: "Uno o más hu_ids no existen en este proyecto."
+    }));
+  });
+
+  test("debería devolver 500 si ocurre un error en la base de datos", async () => {
+    const req = {
+      params: { project_id: "proy-1", id: "1" },
+      body: { hu_ids: [1] }
+    };
+    const res = mockRes();
+
+    Sprint.findOne.mockRejectedValue(new Error("Error de DB"));
+
+    await sprintController.actualizarHUSprint(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      error: "Error interno al procesar la actualización de la HU."
+    }));
   });
 });
