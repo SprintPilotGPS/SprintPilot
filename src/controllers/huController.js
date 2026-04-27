@@ -69,7 +69,7 @@ const createHU = async (req, res) => {
     const nuevoOrden = ultimoHU && typeof ultimoHU.orden === "number" ? ultimoHU.orden + 1 : 1;
 
     const hu = new HU({
-      identificador: project.num_HUs,
+      identificador: project.num_HUs || 0,
       titulo: titulo.trim(),
       descripcion,
       project_id: project_id,
