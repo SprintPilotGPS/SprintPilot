@@ -164,9 +164,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Abrir modal de selección de HUs
+
+  let originalSelectedHUs = [];
   const openHuSelectionBtn = document.querySelectorAll(".openModalAniadirHUs");
   openHuSelectionBtn.forEach((e) => {
-    e.onclick = () => huSelectionModal.classList.add("show");
+    e.onclick = () => {
+      huSelectionModal.classList.add("show");
+
+      originalSelectedHUs = Array.from(
+      document.querySelectorAll(".hu-selection-checkbox:checked")
+    ).map(cb => cb.value);
+    };
   });
 
   // Cerrar modal de selección de HUs
@@ -174,8 +182,18 @@ document.addEventListener("DOMContentLoaded", () => {
   if (closeHuSelectionBtn) {
     closeHuSelectionBtn.onclick = () => {
       huSelectionModal.classList.remove("show");
+
+      const checkboxes = document.querySelectorAll(".hu-selection-checkbox");
+
+      checkboxes.forEach(cb => {
+        if (originalSelectedHUs.includes(cb.value)) {
+          cb.checked = true;   // estaba en sprint → se queda
+        } else {
+          cb.checked = false;  // selección temporal → se borra
+        }
+      })
     };
-  }
+  };
 
   if (huSelectionForm) {
     huSelectionForm.onsubmit = async (e) => {

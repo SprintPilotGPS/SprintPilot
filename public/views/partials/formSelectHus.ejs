@@ -19,7 +19,7 @@
             <tbody>
               <% allHus.forEach(hu => { %>
                 <tr>
-                  <td class="fw-bold">HU-<%= hu.identificador %></td>
+                  <td class="fw-bold"><%= project_id %>-<%= hu.identificador %></td>
                   <td><%= hu.titulo %></td>
                   <td class="text-center">
                     <input
