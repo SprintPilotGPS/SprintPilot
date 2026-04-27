@@ -111,6 +111,10 @@
             <% if (sprint) { %>
             <span class="fs-3">Sprint #<%= sprint.id %></span>
             <input type="hidden" id="sprintId" value="<%= sprint.id %>">
+            <div class="ms-3 d-flex gap-3 align-items-center justify-content-center">
+              <p class="mb-0 badge bg-success fs-6">Inició: <%= new Date(sprint.fechaIni).toLocaleDateString("es-ES") %></p>
+              <p class="mb-0 badge bg-danger fs-6">Finaliza: <%= new Date(sprint.fechaFin).toLocaleDateString("es-ES") %></p>
+            </div>
             <% } else { %>
             <span>Sin Sprint Activo</span>
             <% } %>
@@ -122,10 +126,6 @@
 
         <div class="p-4 bg-light min-vh-50">
           <% if (sprint) { %>
-            <div class="mb-3 d-flex justify-content-end">
-              <button class="openModalAniadirHUs text-white btn btn-light btn-sm fw-bold px-3 rounded-pill float-end" style="background-color:#764ba2;">+ Añadir HUs</button>
-            </div>
-
             <div class="planning-section shadow-sm">
               <div class="mb-0">
                 <div class="d-flex align-items-center">
@@ -147,6 +147,9 @@
                   <span id="goalErrorText">El Sprint Goal no puede superar los 250 caracteres.</span>
                 </div>
               </div>
+            </div>
+            <div class="mb-3 d-flex justify-content-end">
+              <button class="openModalAniadirHUs text-white btn btn-light btn-sm fw-bold px-3 rounded-pill float-end" style="background-color:#764ba2;">+ Añadir HUs</button>
             </div>
           <% } %>
 
@@ -176,7 +179,7 @@
             <% }) %>
           </div>
           <% } else if (sprint) { %>
-          <div class="text-center py-5">
+          <div class="bg-white text-center py-5">
             <h4 class="text-muted">No hay HUs en este sprint</h4>
             <p class="text-muted">Este sprint está vacío. ¡Ánimo con la planificación!</p>
           </div>
