@@ -43,15 +43,22 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     const isPreviewActive = preview.classList.contains("active");
-    const finalCA = preview.innerHTML;
+    const como = comoInput.value.trim();
+    const si = siInput.value.trim();
+    const entonces = entoncesInput.value.trim();
+    let finalCA = preview.innerHTML;
 
-    if (!isPreviewActive || !finalCA || finalCA.trim() === "") {
-      alert("El criterio está vacío. Por favor, completa al menos uno de los campos.");
+    if (!isPreviewActive || !finalCA || finalCA.trim() === "" || como == "" || si == "" || entonces == "") {
+      document.querySelector("#message").innerHTML = `
+        <p class="p-2 bg-warning-subtle fw-bold text-center border border-warning rounded-3">⚠️ Debes rellenar todos los campos.</p>
+      `;
       return;
     }
 
     if (!projectId || !huId) {
-      alert("No se encontraron el proyecto o la HU para guardar el criterio");
+      document.querySelector("#message").innerHTML = `
+        <p class="p-2 bg-danger-subtle fw-bold text-center border border-danger rounded-3">❌ No se encontraron el proyecto o la HU para guardar el criterio</p>
+      `;
       return;
     }
 
@@ -62,6 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          como,
+          si,
+          entonces,
           texto: finalCA,
         }),
       });
@@ -78,7 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `/${projectId}/hus/${huId}/view`;
     } catch (error) {
       console.error(error);
-      alert("❌ Error al guardar el criterio: " + error.message);
+      document.querySelector("#message").innerHTML = `
+        <p class="p-2 bg-danger-subtle fw-bold text-center border border-danger rounded-3">❌ Error al guardar el criterio: ${error.message}</p>
+      `;
     }
   });
 });

@@ -18,7 +18,7 @@
         </div>
         <div class="card-body p-4">
           <form id="caForm" data-project-id="<%= project_id %>" data-hu-id="<%= hu_id %>">
-            <div class="row mb-4">
+            <div class="row">
               <div class="col-12 mb-3">
                 <label for="como" class="form-label fw-bold text-muted text-uppercase small">
                   <i class="fa-solid fa-user-tag me-1"></i> Contexto / Rol
@@ -39,7 +39,7 @@
                 </div>
               </div>
 
-              <div class="col-12 mb-4">
+              <div class="col-12 mb-3">
                 <label for="entonces" class="form-label fw-bold text-muted text-uppercase small">
                   <i class="fa-solid fa-circle-check me-1"></i> Resultado Esperado
                 </label>
@@ -49,6 +49,8 @@
                 </div>
               </div>
             </div>
+
+            <div id="message"></div>
 
             <div class="mb-4">
               <label class="form-label fw-bold text-muted text-uppercase small">Previsualización</label>
