@@ -10,8 +10,8 @@
     />
     <style>
       .detalle-container {
-        max-width: 900px;
-        margin: 40px auto;
+        width: 80%;
+        margin: auto;
       }
       .hu-card {
         background: white;
@@ -114,12 +114,12 @@
   <body>
     <%- include('./partials/navbar') %>
 
-    <main class="container detalle-container">
+    <main class="detalle-container">
       <!-- Botón de volver superior -->
       <div class="mb-3">
         <a
           href="/<%= hu.project_id %>/backlog"
-          class="btn btn-outline-secondary fw-bold rounded-pill"
+          class="btn btn-secondary fw-bold rounded-pill"
         >
           <i class="fa-solid fa-arrow-left me-2"></i> Volver al Backlog
         </a>
