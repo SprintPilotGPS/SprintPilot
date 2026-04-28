@@ -2,32 +2,98 @@
 <html lang="es">
   <head>
     <%- include('./partials/head') %>
-    <title><%= title %></title>
+    <title>Sprint Pilot - Editar HU</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .detalle-container {
+        width: 80%;
+        margin: auto;
+      }
+      .hu-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        border: none;
+      }
+      .hu-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 25px 30px;
+        border-radius: .8em .8em 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .hu-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+      .hu-title {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.8rem;
+        flex-grow: 1;
+        margin-left: 20px;
+      }
+      .hu-body {
+        padding: 30px;
+      }
+    </style>
   </head>
 
   <body>
     <%- include('./partials/navbar') %>
-    <div class="container mt-5">
-        <h2>Editar HU</h2>
-        <form action="/api/<%= project_id %>/hus/update/<%= hu._id %>" method="POST">
+    <main class="detalle-container mt-3">
+      <div class="mb-3">
+        <a
+          href="/<%= hu.project_id %>/backlog"
+          class="btn btn-secondary fw-bold rounded-pill"
+        >
+          <i class="fa-solid fa-arrow-left me-2"></i> Volver al Backlog
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="hu-header justify-content-start gap-3">
+          <div class="hu-badge shadow-sm">
+            <i class="fa-solid fa-tag me-2"></i
+            ><%= project_id + "-" + hu.identificador %>
+          </div>
+          <h2>Editar HU</h2>
+        </div>
+        <div class="hu-body">
+          <form action="/api/<%= project_id %>/hus/update/<%= hu._id %>" method="POST">
             <div class="mb-3">
-                <label for="identificador" class="form-label">ID</label>
-                <input type="number" id="identificador" name="identificador" value="<%= hu.identificador %>" class="form-control" readonly>
+              <label for="titulo" class="fs-3 fw-bold">Título</label>
+              <input
+                type="text"
+                id="titulo"
+                name="titulo"
+                value="<%= hu.titulo %>"
+                class="form-control"
+                required
+              />
             </div>
             <div class="mb-3">
-                <label for="titulo" class="form-label">Título</label>
-                <input type="text" id="titulo" name="titulo" value="<%= hu.titulo %>" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea id="descripcion" name="descripcion" class="form-control" rows="4"><%= hu.descripcion %></textarea>
+              <label for="descripcion" class="fs-3 fw-bold">Descripción</label>
+              <textarea id="descripcion" name="descripcion" class="form-control" rows="4"><%= hu.descripcion %></textarea>
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                <a href="/<%= project_id %>/backlog" class="btn btn-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
-        </form>
-    </div>
+          </form>
+        </div>
+      </div>
+    </main>
     <%- include('./partials/footer') %>
   </body>
 </html>

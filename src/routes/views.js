@@ -16,6 +16,7 @@ router.get('/:project_id/hus/:id/edit', huController.editHU);
 router.get("/:project_id/sprint-actual", sprintContoller.getSprintActual);
 router.get("/:project_id/sprints-pasados", sprintContoller.getAllSprintPasados);
 
-
+// --- Vistas de Criterios de Aceptación ---
+router.get('/:project_id/hus/:id/ca/crear', huController.verCA);
 
 module.exports = router;

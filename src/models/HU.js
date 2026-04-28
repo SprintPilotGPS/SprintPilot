@@ -22,12 +22,17 @@ const huSchema = new mongoose.Schema(
       immutable: true,
     },
     sprint_id: {
-      type: Number
+      type: Number,
     },
     orden: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
+    criterios_aceptacion: [
+      {
+        type: String,
+      },
+    ],
   },
   { timestamps: true }
 );

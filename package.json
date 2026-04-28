@@ -15,6 +15,7 @@
     "format:check": "prettier . --check"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "ejs": "^3.1.9",
     "express": "^5.2.1",
@@ -36,5 +37,17 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SprintPilotGPS/SprintPilot.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SprintPilotGPS/SprintPilot/issues"
+  },
+  "homepage": "https://github.com/SprintPilotGPS/SprintPilot#readme"
 }
