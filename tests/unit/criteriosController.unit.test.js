@@ -1,4 +1,4 @@
-const controller = require("../../src/controllers/criteriosController");
+const controller = require("../../src/controllers/huController");
 const HU = require("../../src/models/HU");
 
 jest.mock("../../src/models/HU");
@@ -15,20 +15,20 @@ describe("criteriosController unit tests", () => {
     jest.clearAllMocks();
   });
 
-  test("crearCriterio should return 400 if texto is missing", async () => {
+  test("crearCA should return 400 if texto is missing", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
       body: { texto: "" }
     };
     const res = mockRes();
 
-    await controller.crearCriterio(req, res);
+    await controller.crearCA(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ mensaje: "El criterio está vacío" });
   });
 
-  test("crearCriterio should return 404 if HU is not found", async () => {
+  test("crearCA should return 404 if HU is not found", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
       body: { texto: "Criterio de prueba" }
@@ -37,13 +37,13 @@ describe("criteriosController unit tests", () => {
 
     HU.findOne.mockResolvedValue(null);
 
-    await controller.crearCriterio(req, res);
+    await controller.crearCA(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ mensaje: "Historia de usuario no encontrada" });
   });
 
-  test("crearCriterio should return 201 on success", async () => {
+  test("crearCA should return 201 on success", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
       body: { texto: "Criterio de prueba" }
@@ -57,7 +57,7 @@ describe("criteriosController unit tests", () => {
 
     HU.findOne.mockResolvedValue(mockHU);
 
-    await controller.crearCriterio(req, res);
+    await controller.crearCA(req, res);
 
     expect(mockHU.criterios_aceptacion).toContain("Criterio de prueba");
     expect(mockHU.save).toHaveBeenCalled();
@@ -69,7 +69,7 @@ describe("criteriosController unit tests", () => {
     });
   });
 
-  test("crearCriterio should return 500 on database error", async () => {
+  test("crearCA should return 500 on database error", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
       body: { texto: "Criterio de prueba" }
@@ -78,7 +78,7 @@ describe("criteriosController unit tests", () => {
 
     HU.findOne.mockRejectedValue(new Error("Database failure"));
 
-    await controller.crearCriterio(req, res);
+    await controller.crearCA(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
