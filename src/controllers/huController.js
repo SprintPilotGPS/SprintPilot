@@ -10,7 +10,7 @@ const getAllHUs = async (req, res) => {
   try {
     // Ordenamos por 'orden' para que la vista respete las flechas
     const hus = await HU.find({ project_id: project_id }).sort({ orden: 1 });
-
+    
     res.render("hus", {
       title: "Sprint Pilot - Backlog",
       hus: hus,
@@ -69,7 +69,7 @@ const createHU = async (req, res) => {
     const nuevoOrden = ultimoHU && typeof ultimoHU.orden === "number" ? ultimoHU.orden + 1 : 1;
 
     const hu = new HU({
-      identificador: req.body.identificador || (project.num_HUs || project.num_hus || 0) + 1,
+      identificador: project.num_HUs || 0,
       titulo: titulo.trim(),
       descripcion,
       project_id: project_id,
@@ -126,8 +126,8 @@ async function getHU(vista, req, res) {
   let project_id = req.params.project_id;
   let id = req.params.id;
 
-  const hu = await HU.findOne({ project_id: project_id, identificador: id });
-  if (!hu) {
+  const hu = await HU.findOne({project_id: project_id, identificador: id});
+  if(!hu) {
     return res.status(404).render("hus", {
       title: "Sprint Pilot - Backlog",
       hus: [],

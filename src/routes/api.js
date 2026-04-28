@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const huController = require("../controllers/huController");
 const projectController = require("../controllers/projectController");
-const sprintContoller = require("../controllers/sprintController");
+const sprintController = require("../controllers/sprintController");
 
 // --- API de PROYECTOS ---
 router.post("/projects", projectController.createProject);
@@ -17,8 +17,10 @@ router.post("/:project_id/hus/:id/mover-abajo", huController.moverAbajo);
 router.post("/:project_id/hus/update/:id", huController.updateHU);
 
 // --- API de Sprints ---
-router.post("/:project_id/crearSprint", sprintContoller.crearSprint);
-router.get("/:project_id/sprints/:id", sprintContoller.getSprint);
+router.post("/:project_id/crearSprint", sprintController.crearSprint);
+router.get("/:project_id/sprints/:id", sprintController.getSprint);
+router.post("/:project_id/sprint/:id/hu", sprintController.actualizarHUSprint);
+router.post("/:project_id/sprint/:id/goal", sprintController.editarSprintGoal);
 
 // --- API de Criterios de Aceptación ---
 const criteriosController = require("../controllers/criteriosController");
