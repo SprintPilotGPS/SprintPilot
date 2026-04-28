@@ -161,7 +161,7 @@ const editHU = async (req, res) => {
     getHU("editarHU", req, res);
   } catch (error) {
     res.status(500).render("hus", {
-      title: "Sprint Pilot - Backlog",
+      title: "Sprint Pilot - Editar HU",
       hus: [],
       project_id: req.params.project_id,
       error: "HUs con identificador: " + req.params.id + " no se ha podido encontrar",
