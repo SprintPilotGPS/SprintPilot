@@ -114,7 +114,7 @@
   <body>
     <%- include('./partials/navbar') %>
 
-    <main class="detalle-container">
+    <main class="my-3 detalle-container">
       <!-- Botón de volver superior -->
       <div class="mb-3">
         <a
@@ -166,12 +166,13 @@
           <div class="ca-section mb-4">
             <% if (hu.criterios_aceptacion && hu.criterios_aceptacion.length > 0) { %>
             <ul class="ca-list">
-              <% hu.criterios_aceptacion.forEach(function(ca) { %>
+              <% for(let i = 0; i < hu.criterios_aceptacion.length; i++){  %>
               <li class="ca-item">
                 <i class="fa-solid fa-circle-check ca-icon"></i>
-                <div><%- ca %></div>
+                <p class="m-0 fw-bold" style="min-width: fit-content;"><%= project_id + "-" + hu.identificador + "-" + i %>:</p>
+                <p class="m-0 flex-shrink-1"><%- hu.criterios_aceptacion[i] %></p>
               </li>
-              <% }); %>
+              <% } %>
             </ul>
             <% } else { %>
             <div class="empty-state shadow-sm">

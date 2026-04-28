@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       console.log("Guardado:", data);
-      alert("✅ Criterio guardado correctamente");
       
       // Redirigir al detalle de la HU para ver el criterio añadido
       window.location.href = `/${projectId}/hus/${huId}/view`;
