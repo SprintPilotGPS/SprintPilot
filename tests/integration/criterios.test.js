@@ -42,7 +42,10 @@ describe("Criterios de Aceptación API Tests", () => {
     // 1. TEST POSITIVO: Creación correcta de un criterio
     test("should add a new acceptance criterion to an existing HU", async () => {
       const criterio = {
-        texto: "Nuevo criterio de prueba"
+        texto: "Nuevo criterio de prueba",
+        como: "Como PO", 
+        si: " si lo que sea ",
+        entonces: "entonces ya sabes."
       };
 
       const res = await request(app)
@@ -65,15 +68,19 @@ describe("Criterios de Aceptación API Tests", () => {
         .send({ texto: "" })
         .expect(400);
 
-      expect(res.body.mensaje).toBe("El criterio está vacío");
+      expect(res.body.mensaje).toBe("Se debe rellenar todos los campos");
     });
 
     // 3. TEST NEGATIVO: HU inexistente
     test("should return 404 if HU does not exist", async () => {
       await request(app)
         .post(`/api/${testProjectId}/HU/999/crearCA`)
-        .send({ texto: "Criterio hu inexistente" })
-        .expect(404);
+        .send({
+              texto: "Nuevo criterio de prueba",
+              como: "Como PO", 
+              si: " si lo que sea ",
+              entonces: "entonces ya sabes."
+        }).expect(404);
     });
 
     // 4. TEST NEGATIVO: Proyecto inexistente
@@ -82,8 +89,12 @@ describe("Criterios de Aceptación API Tests", () => {
       // la búsqueda de la HU fallará y devolverá 404
       await request(app)
         .post(`/api/NO-EXISTE/HU/${testHUId}/crearCA`)
-        .send({ texto: "Criterio proyecto inexistente" })
-        .expect(404);
+        .send({
+              texto: "Nuevo criterio de prueba",
+              como: "Como PO", 
+              si: " si lo que sea ",
+              entonces: "entonces ya sabes."
+        }).expect(404);
     });
   });
 });
