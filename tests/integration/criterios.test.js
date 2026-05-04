@@ -43,7 +43,7 @@ describe("Criterios de Aceptación API Tests", () => {
     test("should add a new acceptance criterion to an existing HU", async () => {
       const criterio = {
         texto: "Nuevo criterio de prueba",
-        como: "Como PO", 
+        cuando: "Cuando PO", 
         si: " si lo que sea ",
         entonces: "entonces ya sabes."
       };
@@ -68,7 +68,7 @@ describe("Criterios de Aceptación API Tests", () => {
         .send({ texto: "" })
         .expect(400);
 
-      expect(res.body.mensaje).toBe("Se debe rellenar todos los campos");
+      expect(res.body.mensaje).toBe("Se debe rellenar todos los campos obligatorios");
     });
 
     // 3. TEST NEGATIVO: HU inexistente
@@ -77,7 +77,7 @@ describe("Criterios de Aceptación API Tests", () => {
         .post(`/api/${testProjectId}/HU/999/crearCA`)
         .send({
               texto: "Nuevo criterio de prueba",
-              como: "Como PO", 
+              cuando: "Cuando PO", 
               si: " si lo que sea ",
               entonces: "entonces ya sabes."
         }).expect(404);
@@ -91,7 +91,7 @@ describe("Criterios de Aceptación API Tests", () => {
         .post(`/api/NO-EXISTE/HU/${testHUId}/crearCA`)
         .send({
               texto: "Nuevo criterio de prueba",
-              como: "Como PO", 
+              cuando: "Cuando PO", 
               si: " si lo que sea ",
               entonces: "entonces ya sabes."
         }).expect(404);

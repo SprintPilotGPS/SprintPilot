@@ -248,11 +248,10 @@ const verCA = async (req, res) => {
 const crearCA = async (req, res) => {
   try {
     const { project_id, id } = req.params; // ID de proyecto e historia de usuario
-    const { como, si, entonces, texto } = req.body;
+    const { cuando, si, entonces, texto } = req.body;
 
-    if (!texto || texto.trim() === "" || !como || como.trim() === "" ||
-        !si || si.trim() === "" || !entonces || entonces.trim() === "") {
-      return res.status(400).json({ mensaje: "Se debe rellenar todos los campos" });
+    if (!texto || texto.trim() === "" || !cuando || cuando.trim() === "" || !entonces || entonces.trim() === "") {
+      return res.status(400).json({ mensaje: "Se debe rellenar todos los campos obligatorios" });
     }
 
     const project_id_normalized = project_id ? project_id.toUpperCase() : "";

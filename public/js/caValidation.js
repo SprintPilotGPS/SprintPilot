@@ -1,23 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const comoInput = document.getElementById("como");
+  const cuandoInput = document.getElementById("cuando");
   const siInput = document.getElementById("si");
   const entoncesInput = document.getElementById("entonces");
   const preview = document.getElementById("preview");
   const caForm = document.getElementById("caForm");
 
-  if (!comoInput || !siInput || !entoncesInput || !preview || !caForm) return;
+  if (!cuandoInput || !siInput || !entoncesInput || !preview || !caForm) return;
 
   const projectId = caForm.dataset.projectId;
   const huId = caForm.dataset.huId;
 
   function updatePreview() {
-    const como = comoInput.value.trim();
+    const cuando = cuandoInput.value.trim();
     const si = siInput.value.trim();
     const entonces = entoncesInput.value.trim();
 
-    if (como || si || entonces) {
+    if (cuando || si || entonces) {
       let html = "";
-      if (como) html += `<strong>Como</strong>&nbsp;${como}`;
+      if (cuando) html += `<strong>Cuando</strong>&nbsp;${cuando}`;
       if (si)
         html += html ? `,&nbsp;<strong>si</strong>&nbsp;${si}` : `<strong>Si</strong>&nbsp;${si}`;
       if (entonces)
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  comoInput.addEventListener("input", updatePreview);
+  cuandoInput.addEventListener("input", updatePreview);
   siInput.addEventListener("input", updatePreview);
   entoncesInput.addEventListener("input", updatePreview);
 
@@ -43,14 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     const isPreviewActive = preview.classList.contains("active");
-    const como = comoInput.value.trim();
+    const cuando = cuandoInput.value.trim();
     const si = siInput.value.trim();
     const entonces = entoncesInput.value.trim();
     let finalCA = preview.innerHTML;
 
-    if (!isPreviewActive || !finalCA || finalCA.trim() === "" || como == "" || si == "" || entonces == "") {
+    if (!isPreviewActive || !finalCA || finalCA.trim() === "" || cuando == "" || entonces == "") {
       document.querySelector("#message").innerHTML = `
-        <p class="p-2 bg-warning-subtle fw-bold text-center border border-warning rounded-3">⚠️ Debes rellenar todos los campos.</p>
+        <p class="p-2 bg-warning-subtle fw-bold text-center border border-warning rounded-3">⚠️ Debes rellenar todos los campos obligatorios.</p>
       `;
       return;
     }
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          como,
+          cuando,
           si,
           entonces,
           texto: finalCA,
