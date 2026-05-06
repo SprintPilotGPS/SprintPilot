@@ -293,13 +293,13 @@ describe("huController unit tests", () => {
     await controller.crearCA(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ mensaje: "Se debe rellenar todos los campos" });
+    expect(res.json).toHaveBeenCalledWith({ mensaje: "Se debe rellenar todos los campos obligatorios" });
   });
 
   test("crearCA should return 404 if HU is not found", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
-      body: { texto: "Criterio de prueba", como: "Como PO", si: " si lo que sea ", entonces: "entonces ya sabes."}
+      body: { texto: "Criterio de prueba", cuando: "Cuando PO", si: " si lo que sea ", entonces: "entonces ya sabes."}
     };
     const res = mockRes();
 
@@ -314,7 +314,7 @@ describe("huController unit tests", () => {
   test("crearCA should return 201 on success", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
-      body: { texto: "Criterio de prueba", como: "Como PO", si: " si lo que sea ", entonces: "entonces ya sabes."}
+      body: { texto: "Criterio de prueba", cuando: "Cuando PO", si: " si lo que sea ", entonces: "entonces ya sabes."}
     };
     const res = mockRes();
 
@@ -340,7 +340,7 @@ describe("huController unit tests", () => {
   test("crearCA should return 500 on database error", async () => {
     const req = {
       params: { project_id: "PRJ", id: "1" },
-      body: { texto: "Criterio de prueba", como: "Como PO", si: " si lo que sea ", entonces: "entonces ya sabes."}
+      body: { texto: "Criterio de prueba", cuando: "Cuando PO", si: " si lo que sea ", entonces: "entonces ya sabes."}
     };
     const res = mockRes();
 

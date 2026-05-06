@@ -384,3 +384,7 @@ textarea {
   border-radius: 15px 15px 0 0 !important;
   padding: 20px;
 }
+
+.card-header-nobg{
+  background: none;
+}
